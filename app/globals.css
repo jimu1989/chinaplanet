@@ -1,30 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  /* ألوان الهوية الأساسية */
-  --background: #080808;
-  --foreground: #f5f5f5;
+  /* =========================
+     CHINA PLANET COLORS
+     ========================= */
 
-  /* الخلفيات */
+  --background: #070707;
+  --foreground: #ffffff;
+
+  --red-dark: #4d0508;
+  --red: #8f090d;
+  --red-bright: #c5161d;
+  --red-light: #e3292f;
+
+  --gold-dark: #9b651c;
+  --gold: #d99a32;
+  --gold-light: #f3c76a;
+  --gold-bright: #ffd98a;
+
+  --cream: #f7f1e6;
+  --white: #ffffff;
+
+  --text-primary: #ffffff;
+  --text-secondary: #d4d4d4;
+  --text-muted: #8f8f8f;
+
   --surface: #111111;
-  --surface-soft: #151515;
+  --surface-light: #181818;
 
-  /* النصوص */
-  --text-primary: #f5f5f5;
-  --text-secondary: #a3a3a3;
-  --text-muted: #666666;
+  --border: rgba(255, 255, 255, 0.12);
+  --border-gold: rgba(217, 154, 50, 0.45);
 
-  /* الحدود */
-  --border: #262626;
-  --border-soft: rgba(255, 255, 255, 0.08);
-
-  /* الألوان التفاعلية */
-  --accent: #ffffff;
-  --accent-foreground: #000000;
-
-  /* الظلال */
   --shadow: rgba(0, 0, 0, 0.45);
 }
+
+/* =========================
+   RESET
+   ========================= */
 
 * {
   box-sizing: border-box;
@@ -37,10 +49,24 @@ html {
 body {
   margin: 0;
   min-height: 100vh;
+
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+
+  font-family:
+    Arial,
+    Helvetica,
+    sans-serif;
+
   overflow-x: hidden;
+}
+
+body,
+button,
+input,
+textarea,
+select {
+  font-family: inherit;
 }
 
 a {
@@ -57,24 +83,70 @@ a {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* =========================
+   SELECTION
+   ========================= */
+
 ::selection {
-  background: var(--accent);
-  color: var(--accent-foreground);
+  background: var(--gold);
+  color: #160b02;
 }
+
+/* =========================
+   SCROLLBAR
+   ========================= */
 
 ::-webkit-scrollbar {
   width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: #080808;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #333333;
+  background: #6f080c;
   border-radius: 999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555555;
+  background: var(--gold-dark);
+}
+
+/* =========================
+   GLOBAL UTILITIES
+   ========================= */
+
+.cp-gold {
+  color: var(--gold-light);
+}
+
+.cp-red {
+  color: var(--red-bright);
+}
+
+.cp-glass {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 10, 10, 0.55);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.cp-gold-line {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--gold),
+    transparent
+  );
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 640px) {
+  body {
+    font-size: 15px;
+  }
 }

@@ -36,15 +36,23 @@ ${details || "لا توجد تفاصيل إضافية."}`;
   return (
     <section
       id="contact"
-      className="bg-[#080808] px-6 py-24 text-white sm:py-32"
+      dir="rtl"
+      className="relative overflow-hidden bg-[#080808] py-20 text-white sm:py-28"
     >
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+      {/* لمعة ذهبية */}
+      <div className="pointer-events-none absolute right-[-150px] top-1/3 h-96 w-96 rounded-full bg-[#d99a32]/10 blur-[130px]" />
+
+      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
           {/* النص */}
           <div>
-            <span className="text-xs tracking-[0.25em] text-white/25">
-              CONTACT CHINA PLANET
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="h-px w-10 bg-[#d99a32]" />
+
+              <span className="text-xs font-bold tracking-[0.2em] text-[#d99a32]">
+                CONTACT CHINA PLANET
+              </span>
+            </div>
 
             <h2 className="mt-5 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
               خطوتك الأولى
@@ -61,9 +69,9 @@ ${details || "لا توجد تفاصيل إضافية."}`;
             <div className="mt-10 space-y-4">
               <a
                 href="tel:+966560406506"
-                className="block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:bg-white/[0.06]"
+                className="block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-[#d99a32]/30 hover:bg-white/[0.06]"
               >
-                <div className="text-[10px] text-white/25">
+                <div className="text-[10px] text-[#d99a32]/60">
                   الهاتف
                 </div>
 
@@ -74,9 +82,9 @@ ${details || "لا توجد تفاصيل إضافية."}`;
 
               <a
                 href="mailto:jimu1989@gmail.com"
-                className="block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-colors hover:bg-white/[0.06]"
+                className="block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-[#d99a32]/30 hover:bg-white/[0.06]"
               >
-                <div className="text-[10px] text-white/25">
+                <div className="text-[10px] text-[#d99a32]/60">
                   البريد الإلكتروني
                 </div>
 
@@ -108,7 +116,7 @@ ${details || "لا توجد تفاصيل إضافية."}`;
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="اكتب اسمك"
-                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white outline-none placeholder:text-white/20 focus:border-white/30"
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white outline-none placeholder:text-white/20 transition-colors focus:border-[#d99a32]/50"
               />
             </div>
 
@@ -126,8 +134,8 @@ ${details || "لا توجد تفاصيل إضافية."}`;
                     onClick={() => setService(item)}
                     className={`rounded-2xl border px-4 py-4 text-right text-sm transition-all ${
                       service === item
-                        ? "!border-white/40 !bg-white !text-black"
-                        : "border-white/10 bg-white/[0.02] text-white/50 hover:border-white/25 hover:text-white"
+                        ? "border-[#d99a32] bg-[#d99a32] text-black"
+                        : "border-white/10 bg-white/[0.02] text-white/50 hover:border-[#d99a32]/40 hover:text-white"
                     }`}
                   >
                     {item}
@@ -147,7 +155,7 @@ ${details || "لا توجد تفاصيل إضافية."}`;
                 onChange={(e) => setDetails(e.target.value)}
                 placeholder="اكتب لنا ما تحتاجه بالتفصيل..."
                 rows={5}
-                className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white outline-none placeholder:text-white/20 focus:border-white/30"
+                className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white outline-none placeholder:text-white/20 transition-colors focus:border-[#d99a32]/50"
               />
             </div>
 
@@ -155,7 +163,7 @@ ${details || "لا توجد تفاصيل إضافية."}`;
             <button
               type="button"
               onClick={sendWhatsApp}
-              className="mt-8 w-full rounded-2xl bg-white px-6 py-4 text-sm font-bold !text-black transition-transform hover:scale-[1.01]"
+              className="mt-8 w-full rounded-2xl bg-[#d99a32] px-6 py-4 text-sm font-bold text-black transition-all duration-300 hover:-translate-y-1 hover:bg-[#f3c76a]"
             >
               تواصل معنا عبر واتساب
             </button>

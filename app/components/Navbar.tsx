@@ -1,103 +1,170 @@
 "use client";
 
-import { useState } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 
 const links = [
   { label: "الرئيسية", href: "#home" },
-  { label: "لماذا نحن", href: "#why-us" },
   { label: "الخدمات", href: "#services" },
-  { label: "المدن", href: "#gallery" },
+  { label: "المدن الصينية", href: "#gallery" },
+  { label: "عن كوكب الصين", href: "#why-us" },
+  { label: "المدونة", href: "#goals" },
   { label: "تواصل معنا", href: "#contact" },
 ];
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 30);
+    };
+
+    handleScroll();
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [open]);
 
   return (
     <header className="fixed inset-x-0 top-0 z-50">
-      <div className="mx-auto max-w-7xl px-4 pt-4 sm:px-6 lg:px-8">
-        <nav className="rounded-2xl border border-white/10 bg-black/55 px-4 py-3 shadow-2xl backdrop-blur-xl sm:px-6">
-          <div className="flex items-center justify-between gap-4">
-            {/* الشعار */}
+      <div
+        className={`mx-auto max-w-[1500px] px-3 transition-all duration-500 sm:px-6 lg:px-8 ${
+          scrolled ? "pt-2" : "pt-3"
+        }`}
+      >
+        <nav
+          className={`relative border transition-all duration-500 ${
+            scrolled
+              ? "rounded-2xl border-red-500/30 bg-[#4d0508]/90 shadow-2xl shadow-black/40 backdrop-blur-2xl"
+              : "rounded-2xl border-white/10 bg-[#4d0508]/75 backdrop-blur-xl"
+          }`}
+        >
+          <div className="flex h-[74px] items-center justify-between gap-4 px-4 sm:px-6">
+            {/* LOGO */}
+
             <a
               href="#home"
+              aria-label="كوكب الصين - China Planet"
               onClick={() => setOpen(false)}
-              className="group flex items-center gap-3"
+              className="shrink-0"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-white text-sm font-black !text-black transition-transform group-hover:rotate-6">
-                CP
-              </div>
-
-              <div className="hidden text-right sm:block">
-                <div className="text-sm font-black text-white">
-                  كوكب الصين
-                </div>
-
-                <div className="text-[9px] tracking-[0.2em] text-white/30">
-                  CHINA PLANET
-                </div>
-              </div>
+              <Image
+                src="/brand/china-planet-logo.png"
+                alt="كوكب الصين China Planet"
+                width={330}
+                height={100}
+                priority
+                className="h-[58px] w-auto object-contain sm:h-[66px]"
+              />
             </a>
 
-            {/* روابط سطح المكتب */}
-            <div className="hidden items-center gap-1 lg:flex">
-              {links.map((link) => (
+            {/* DESKTOP NAV */}
+
+            <div className="hidden items-center gap-1 xl:flex">
+              {links.map((link, index) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="rounded-xl px-4 py-3 text-xs text-white/45 transition-colors hover:bg-white/[0.06] hover:text-white"
+                  className={`relative rounded-xl px-4 py-3 text-sm transition-all duration-300 ${
+                    index === 0
+                      ? "font-bold text-[#f3c76a]"
+                      : "text-white/80 hover:bg-white/[0.06] hover:text-white"
+                  }`}
                 >
                   {link.label}
+
+                  {index === 0 && (
+                    <span className="absolute inset-x-3 -bottom-1 h-[2px] rounded-full bg-[#d99a32]" />
+                  )}
                 </a>
               ))}
             </div>
 
-            {/* زر التواصل */}
-            <a
-              href="#contact"
-              className="hidden rounded-full bg-white px-5 py-3 text-xs font-bold !text-black transition-transform hover:scale-[1.02] sm:block"
-            >
-              ابدأ الآن
-            </a>
+            {/* LANGUAGE */}
 
-            {/* زر الجوال */}
+            <div className="hidden items-center gap-5 text-sm xl:flex">
+              <button className="rounded-xl border border-red-400/50 bg-red-950/40 px-4 py-2.5 text-white">
+                العربية
+                <span className="mr-2 text-[#f3c76a]">⌄</span>
+              </button>
+
+              <button className="text-white/80 transition-colors hover:text-white">
+                中文
+              </button>
+
+              <button className="text-white/80 transition-colors hover:text-white">
+                EN
+              </button>
+
+              <span className="text-xl text-white/80">
+                ◎
+              </span>
+            </div>
+
+            {/* MOBILE BUTTON */}
+
             <button
               type="button"
               aria-label={open ? "إغلاق القائمة" : "فتح القائمة"}
-              onClick={() => setOpen(!open)}
-              className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 text-white lg:hidden"
+              aria-expanded={open}
+              onClick={() => setOpen((value) => !value)}
+              className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/15 bg-white/[0.05] text-xl text-white xl:hidden"
             >
-              <span className="text-lg">
-                {open ? "×" : "☰"}
-              </span>
+              {open ? "×" : "☰"}
             </button>
           </div>
 
-          {/* قائمة الجوال */}
-          {open && (
-            <div className="mt-3 border-t border-white/10 pt-3 lg:hidden">
+          {/* MOBILE MENU */}
+
+          <div
+            className={`overflow-hidden transition-all duration-500 xl:hidden ${
+              open
+                ? "max-h-[600px] opacity-100"
+                : "max-h-0 opacity-0"
+            }`}
+          >
+            <div className="border-t border-white/10 px-4 pb-5 pt-3">
               <div className="grid gap-1">
                 {links.map((link) => (
                   <a
                     key={link.href}
                     href={link.href}
                     onClick={() => setOpen(false)}
-                    className="rounded-xl px-4 py-3 text-sm text-white/60 transition-colors hover:bg-white/[0.05] hover:text-white"
+                    className="rounded-xl px-4 py-3.5 text-sm text-white/75 transition-colors hover:bg-white/[0.06] hover:text-white"
                   >
                     {link.label}
                   </a>
                 ))}
+              </div>
 
-                <a
-                  href="#contact"
-                  onClick={() => setOpen(false)}
-                  className="mt-2 rounded-xl bg-white px-4 py-3 text-center text-sm font-bold !text-black"
-                >
-                  ابدأ الآن
-                </a>
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                <button className="rounded-xl border border-red-400/30 bg-red-950/40 py-3 text-xs text-white">
+                  العربية
+                </button>
+
+                <button className="rounded-xl border border-white/10 bg-white/[0.04] py-3 text-xs text-white/70">
+                  中文
+                </button>
+
+                <button className="rounded-xl border border-white/10 bg-white/[0.04] py-3 text-xs text-white/70">
+                  EN
+                </button>
               </div>
             </div>
-          )}
+          </div>
         </nav>
       </div>
     </header>
