@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { siteConfig } from "../lib/site";
 
 const services = [
   "السياحة في الصين",
@@ -16,161 +17,218 @@ export default function Contact() {
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
 
-  const whatsappNumber = "966560406506";
+  const handleWhatsApp = () => {
+    const customerName = name.trim() || "عميل";
+    const selectedService = service || "استفسار عام";
+    const customerDetails =
+      details.trim() || "أرغب في معرفة المزيد عن الخدمة.";
 
-  const sendWhatsApp = () => {
-    const message = `مرحبًا، أريد التواصل مع كوكب الصين.
+    const message = [
+      "السلام عليكم،",
+      "",
+      `أنا ${customerName}.`,
+      "",
+      `أرغب بالاستفسار عن: ${selectedService}`,
+      "",
+      "تفاصيل الطلب:",
+      customerDetails,
+      "",
+      "أرسلت هذا الطلب من موقع كوكب الصين.",
+    ].join("\n");
 
-الاسم: ${name || "لم يذكر الاسم"}
-الخدمة: ${service || "لم يتم اختيار خدمة"}
+    const whatsappUrl = `https://wa.me/${
+      siteConfig.contact.whatsapp
+    }?text=${encodeURIComponent(message)}`;
 
-تفاصيل الطلب:
-${details || "لا توجد تفاصيل إضافية."}`;
-
-    window.open(
-      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
-      "_blank"
-    );
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
     <section
       id="contact"
-      dir="rtl"
-      className="relative overflow-hidden bg-[#080808] py-20 text-white sm:py-28"
+      className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8"
     >
-      {/* لمعة ذهبية */}
-      <div className="pointer-events-none absolute right-[-150px] top-1/3 h-96 w-96 rounded-full bg-[#d99a32]/10 blur-[130px]" />
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-12 text-center">
+          <p className="text-sm font-bold tracking-wide text-[#f3c76a]">
+            تواصل معنا
+          </p>
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid gap-10 lg:grid-cols-2 lg:items-start">
-          {/* النص */}
-          <div>
-            <div className="flex items-center gap-3">
-              <span className="h-px w-10 bg-[#d99a32]" />
+          <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
+            ابدأ رحلتك مع الصين
+          </h2>
 
-              <span className="text-xs font-bold tracking-[0.2em] text-[#d99a32]">
-                CONTACT CHINA PLANET
-              </span>
-            </div>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-8 text-white/60 sm:text-base">
+            أخبرنا بما تحتاج إليه، وسنتواصل معك عبر WhatsApp لمساعدتك في اختيار
+            الخدمة المناسبة.
+          </p>
+        </div>
 
-            <h2 className="mt-5 text-4xl font-black leading-tight sm:text-5xl lg:text-6xl">
-              خطوتك الأولى
-              <span className="block text-white/25">
-                تبدأ من هنا.
-              </span>
-            </h2>
+        <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr]">
+          {/* FORM */}
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl sm:p-8">
+            <div className="grid gap-5">
+              {/* NAME */}
+              <div>
+                <label
+                  htmlFor="contact-name"
+                  className="mb-2 block text-sm font-semibold text-white"
+                >
+                  الاسم
+                </label>
 
-            <p className="mt-7 max-w-lg text-sm leading-8 text-white/40">
-              أخبرنا بما تحتاجه في الصين، وسيتواصل معك فريقنا
-              لمساعدتك واختيار الحل المناسب لك.
-            </p>
+                <input
+                  id="contact-name"
+                  type="text"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                  placeholder="اكتب اسمك"
+                  autoComplete="name"
+                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-[#d99a32]/60 focus:ring-1 focus:ring-[#d99a32]/30"
+                />
+              </div>
 
-            <div className="mt-10 space-y-4">
-              <a
-                href="tel:+966560406506"
-                className="block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-[#d99a32]/30 hover:bg-white/[0.06]"
+              {/* SERVICE */}
+              <div>
+                <label
+                  htmlFor="contact-service"
+                  className="mb-2 block text-sm font-semibold text-white"
+                >
+                  الخدمة المطلوبة
+                </label>
+
+                <select
+                  id="contact-service"
+                  value={service}
+                  onChange={(event) => setService(event.target.value)}
+                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-white outline-none transition focus:border-[#d99a32]/60 focus:ring-1 focus:ring-[#d99a32]/30"
+                >
+                  <option value="" className="bg-[#111111]">
+                    اختر الخدمة
+                  </option>
+
+                  {services.map((item) => (
+                    <option
+                      key={item}
+                      value={item}
+                      className="bg-[#111111]"
+                    >
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* DETAILS */}
+              <div>
+                <label
+                  htmlFor="contact-details"
+                  className="mb-2 block text-sm font-semibold text-white"
+                >
+                  كيف يمكننا مساعدتك؟
+                </label>
+
+                <textarea
+                  id="contact-details"
+                  value={details}
+                  onChange={(event) => setDetails(event.target.value)}
+                  placeholder="اكتب تفاصيل طلبك أو استفسارك..."
+                  rows={5}
+                  className="w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-4 py-3.5 text-sm leading-7 text-white placeholder:text-white/30 outline-none transition focus:border-[#d99a32]/60 focus:ring-1 focus:ring-[#d99a32]/30"
+                />
+              </div>
+
+              {/* WHATSAPP CTA */}
+              <button
+                type="button"
+                onClick={handleWhatsApp}
+                className="rounded-2xl bg-[#d99a32] px-6 py-4 text-sm font-bold text-black transition-all hover:bg-[#f3c76a] hover:shadow-lg hover:shadow-[#d99a32]/20 active:scale-[0.99]"
               >
-                <div className="text-[10px] text-[#d99a32]/60">
-                  الهاتف
-                </div>
+                إرسال الطلب عبر WhatsApp
+              </button>
 
-                <div className="mt-2 text-sm font-medium">
-                  +966 56 040 6506
-                </div>
-              </a>
-
-              <a
-                href="mailto:jimu1989@gmail.com"
-                className="block rounded-2xl border border-white/10 bg-white/[0.03] p-5 transition-all duration-300 hover:border-[#d99a32]/30 hover:bg-white/[0.06]"
-              >
-                <div className="text-[10px] text-[#d99a32]/60">
-                  البريد الإلكتروني
-                </div>
-
-                <div className="mt-2 text-sm font-medium">
-                  jimu1989@gmail.com
-                </div>
-              </a>
+              <p className="text-center text-xs leading-6 text-white/40">
+                سيتم فتح WhatsApp برسالة جاهزة تحتوي على بيانات طلبك.
+              </p>
             </div>
           </div>
 
-          {/* النموذج */}
-          <div className="rounded-[30px] border border-white/10 bg-white/[0.025] p-6 sm:p-9">
-            <h3 className="text-2xl font-bold">
-              ماذا تحتاج من الصين؟
+          {/* DIRECT CONTACT */}
+          <div className="rounded-3xl border border-[#d99a32]/20 bg-[#4d0508]/40 p-6 sm:p-8">
+            <p className="text-sm font-bold text-[#f3c76a]">
+              تواصل مباشر
+            </p>
+
+            <h3 className="mt-3 text-2xl font-bold text-white">
+              نحن هنا لمساعدتك
             </h3>
 
-            <p className="mt-2 text-sm text-white/30">
-              اختر الخدمة وأخبرنا بالتفاصيل.
+            <p className="mt-4 text-sm leading-8 text-white/60">
+              سواء كنت تخطط لرحلة إلى الصين، أو تبحث عن فرصة للدراسة، أو تريد
+              البدء في التجارة والاستيراد، يمكنك التواصل معنا مباشرة.
             </p>
 
-            {/* الاسم */}
-            <div className="mt-8">
-              <label className="mb-2 block text-xs text-white/40">
-                الاسم
-              </label>
+            <div className="mt-8 grid gap-3">
+              {/* PHONE */}
+              <a
+                href={`tel:${siteConfig.contact.phone}`}
+                aria-label={`الاتصال على ${siteConfig.contact.phone}`}
+                className="rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white transition hover:border-[#d99a32]/40 hover:bg-black/30"
+              >
+                <span className="block text-xs text-white/40">
+                  الهاتف
+                </span>
 
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="اكتب اسمك"
-                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white outline-none placeholder:text-white/20 transition-colors focus:border-[#d99a32]/50"
-              />
+                <span className="mt-1 block font-semibold">
+                  {siteConfig.contact.phone}
+                </span>
+              </a>
+
+              {/* EMAIL */}
+              <a
+                href={`mailto:${siteConfig.contact.email}`}
+                aria-label={`إرسال بريد إلى ${siteConfig.contact.email}`}
+                className="rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white transition hover:border-[#d99a32]/40 hover:bg-black/30"
+              >
+                <span className="block text-xs text-white/40">
+                  البريد الإلكتروني
+                </span>
+
+                <span className="mt-1 block break-all font-semibold">
+                  {siteConfig.contact.email}
+                </span>
+              </a>
+
+              {/* WHATSAPP */}
+              <button
+                type="button"
+                onClick={handleWhatsApp}
+                className="rounded-2xl border border-[#d99a32]/30 bg-[#d99a32]/10 px-5 py-4 text-right text-sm text-white transition hover:bg-[#d99a32]/15"
+              >
+                <span className="block text-xs text-white/40">
+                  WhatsApp
+                </span>
+
+                <span className="mt-1 block font-semibold text-[#f3c76a]">
+                  تواصل معنا مباشرة
+                </span>
+              </button>
             </div>
 
-            {/* الخدمات */}
-            <div className="mt-6">
-              <label className="mb-3 block text-xs text-white/40">
-                اختر الخدمة
-              </label>
+            {/* SERVICE AREA */}
+            <div className="mt-8 border-t border-white/10 pt-6">
+              <p className="text-xs text-white/40">
+                نطاق الخدمة
+              </p>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                {services.map((item) => (
-                  <button
-                    key={item}
-                    type="button"
-                    onClick={() => setService(item)}
-                    className={`rounded-2xl border px-4 py-4 text-right text-sm transition-all ${
-                      service === item
-                        ? "border-[#d99a32] bg-[#d99a32] text-black"
-                        : "border-white/10 bg-white/[0.02] text-white/50 hover:border-[#d99a32]/40 hover:text-white"
-                    }`}
-                  >
-                    {item}
-                  </button>
-                ))}
-              </div>
+              <p className="mt-2 text-sm font-semibold text-white">
+                السعودية والصين
+              </p>
+
+              <p className="mt-2 text-xs leading-6 text-white/40">
+                العربية · 中文 · English
+              </p>
             </div>
-
-            {/* التفاصيل */}
-            <div className="mt-6">
-              <label className="mb-2 block text-xs text-white/40">
-                تفاصيل طلبك
-              </label>
-
-              <textarea
-                value={details}
-                onChange={(e) => setDetails(e.target.value)}
-                placeholder="اكتب لنا ما تحتاجه بالتفصيل..."
-                rows={5}
-                className="w-full resize-none rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm text-white outline-none placeholder:text-white/20 transition-colors focus:border-[#d99a32]/50"
-              />
-            </div>
-
-            {/* واتساب */}
-            <button
-              type="button"
-              onClick={sendWhatsApp}
-              className="mt-8 w-full rounded-2xl bg-[#d99a32] px-6 py-4 text-sm font-bold text-black transition-all duration-300 hover:-translate-y-1 hover:bg-[#f3c76a]"
-            >
-              تواصل معنا عبر واتساب
-            </button>
-
-            <p className="mt-4 text-center text-[11px] text-white/20">
-              سيتم فتح واتساب مع تجهيز رسالة الطلب تلقائيًا.
-            </p>
           </div>
         </div>
       </div>
