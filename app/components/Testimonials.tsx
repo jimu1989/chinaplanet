@@ -1,25 +1,63 @@
-"use client";
-
-import { motion } from "framer-motion";
-
 const trustPoints = [
   {
-    number: "01",
     title: "نتواصل معك مباشرة",
     description:
       "نبدأ بفهم هدفك واحتياجك قبل اقتراح الخدمة المناسبة لك.",
+    icon: (
+      <svg
+        viewBox="0 0 64 64"
+        fill="none"
+        className="h-10 w-10"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      >
+        <path
+          d="M10 14H54V42H28L18 50V42H10V14Z"
+          strokeLinejoin="round"
+        />
+        <path d="M20 24H44" strokeLinecap="round" />
+        <path d="M20 32H37" strokeLinecap="round" />
+      </svg>
+    ),
   },
+
   {
-    number: "02",
     title: "حلول حسب احتياجك",
     description:
-      "لا نقدم نفس الحل للجميع. نرتب الخدمة بما يناسب رحلتك أو دراستك أو تجارتك.",
+      "نرتب الخدمة بما يناسب رحلتك أو دراستك أو تجارتك.",
+    icon: (
+      <svg
+        viewBox="0 0 64 64"
+        fill="none"
+        className="h-10 w-10"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      >
+        <circle cx="32" cy="32" r="20" />
+        <path d="M32 20V32L40 38" strokeLinecap="round" />
+        <path d="M20 48L14 54" strokeLinecap="round" />
+        <path d="M44 48L50 54" strokeLinecap="round" />
+      </svg>
+    ),
   },
+
   {
-    number: "03",
     title: "متابعة واضحة",
     description:
       "نبقى معك في الخطوات المهمة ونوضح لك ما تحتاج معرفته قبل اتخاذ القرار.",
+    icon: (
+      <svg
+        viewBox="0 0 64 64"
+        fill="none"
+        className="h-10 w-10"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      >
+        <path d="M12 48L24 36L32 42L50 22" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M42 22H50V30" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M12 54H52" strokeLinecap="round" />
+      </svg>
+    ),
   },
 ];
 
@@ -27,111 +65,94 @@ export default function Testimonials() {
   return (
     <section
       id="trust"
-      className="relative overflow-hidden py-24 sm:py-32"
+      className="cp-section bg-[#f8f6f2]"
     >
-      {/* إضاءة خلفية */}
-      <div className="pointer-events-none absolute right-1/4 top-1/3 h-80 w-80 rounded-full bg-[#8f090d]/10 blur-[120px]" />
+      <div className="cp-container">
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        {/* العنوان */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7 }}
-          className="mx-auto max-w-3xl text-center"
-        >
-          <div className="mb-5 flex items-center justify-center gap-4">
-            <span className="h-px w-14 bg-gradient-to-l from-transparent to-[#d99a32]" />
+        {/* HEADER */}
+        <div className="mx-auto max-w-2xl text-center">
+          <div className="flex items-center justify-center gap-3">
+            <span className="cp-line" />
 
-            <span className="text-xs font-bold tracking-[0.2em] text-[#f3c76a]">
+            <span className="cp-label">
               YOUR JOURNEY WITH US
             </span>
 
-            <span className="h-px w-14 bg-gradient-to-r from-transparent to-[#d99a32]" />
+            <span className="cp-line" />
           </div>
 
-          <h2 className="text-4xl font-black leading-tight text-white sm:text-5xl lg:text-6xl">
-            تجربتك مع
-            <span className="bg-gradient-to-b from-[#ffe59a] via-[#f4b942] to-[#c97816] bg-clip-text text-transparent">
-              {" "}
+          <h2 className="mt-5 text-3xl font-medium leading-[1.35] text-[#40372f] sm:text-4xl lg:text-[42px]">
+            تجربتك مع{" "}
+            <span className="text-[#d8795e]">
               كوكب الصين
             </span>
           </h2>
 
-          <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-white/40 sm:text-base">
-            نؤمن أن أفضل خدمة تبدأ بفهم احتياجك بوضوح، ثم
-            مساعدتك خطوة بخطوة للوصول إلى الحل المناسب.
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#786e65]">
+            نؤمن أن أفضل خدمة تبدأ بفهم احتياجك بوضوح،
+            ثم مساعدتك خطوة بخطوة.
           </p>
-        </motion.div>
+        </div>
 
-        {/* النقاط */}
-        <div className="mt-14 grid gap-5 md:grid-cols-3">
-          {trustPoints.map((point, index) => (
-            <motion.article
-              key={point.number}
-              initial={{ opacity: 0, y: 35 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{
-                duration: 0.6,
-                delay: index * 0.1,
-              }}
-              className="group rounded-[28px] border border-white/10 bg-white/[0.025] p-7 transition-all duration-500 hover:-translate-y-2 hover:border-[#d99a32]/30 hover:bg-white/[0.045] sm:p-9"
+        {/* TRUST POINTS */}
+        <div className="mt-16 grid border-t border-[#e4dcd4] md:grid-cols-3">
+          {trustPoints.map((point) => (
+            <article
+              key={point.title}
+              className="group border-b border-[#e4dcd4] px-7 py-10 text-center transition-colors duration-300 hover:bg-white/40 md:border-b-0 md:border-l md:last:border-l-0"
             >
-              <div className="flex items-center justify-between">
-                <span className="text-xs font-medium tracking-[0.2em] text-[#d99a32]/50">
-                  {point.number}
-                </span>
-
-                <span className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 text-[#d99a32]/60 transition-all duration-300 group-hover:rotate-45 group-hover:border-[#d99a32]/50 group-hover:text-[#d99a32]">
-                  +
-                </span>
+              {/* ICON */}
+              <div className="mx-auto flex h-10 w-10 items-center justify-center text-[#b5966c] transition-all duration-300 group-hover:-translate-y-1 group-hover:text-[#d8795e]">
+                {point.icon}
               </div>
 
-              <h3 className="mt-10 text-xl font-bold text-white sm:text-2xl">
+              {/* ACCENT */}
+              <div className="mx-auto mt-5 h-px w-7 bg-[#d8795e] transition-all duration-300 group-hover:w-11" />
+
+              {/* TITLE */}
+              <h3 className="mt-5 text-lg font-semibold text-[#40372f]">
                 {point.title}
               </h3>
 
-              <p className="mt-4 text-sm leading-8 text-white/40">
+              {/* DESCRIPTION */}
+              <p className="mx-auto mt-3 max-w-[250px] text-xs leading-7 text-[#786e65]">
                 {point.description}
               </p>
-            </motion.article>
+            </article>
           ))}
         </div>
 
-        {/* رسالة الثقة */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 0.7 }}
-          className="mt-5 rounded-[30px] border border-[#d99a32]/20 bg-gradient-to-br from-[#8f090d]/20 via-white/[0.02] to-transparent p-8 sm:p-10"
-        >
-          <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <span className="text-xs font-bold tracking-[0.2em] text-[#d99a32]/70">
+        {/* FINAL CTA */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-6 border-t border-[#e4dcd4] pt-10 text-center sm:flex-row sm:text-right">
+          <div>
+            <div className="flex items-center justify-center gap-3 sm:justify-start">
+              <span className="text-[10px] font-semibold tracking-[0.28em] text-[#c8bab0]">
                 CHINA PLANET
               </span>
 
-              <h3 className="mt-3 text-2xl font-black text-white sm:text-3xl">
-                عندك هدف في الصين؟
-              </h3>
-
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-white/40">
-                أخبرنا بما تحتاجه، ودعنا نبدأ معك من الخطوة
-                الأولى.
-              </p>
+              <span className="h-px w-8 bg-[#d8795e]" />
             </div>
 
-            <a
-              href="#contact"
-              className="w-fit shrink-0 rounded-full bg-[#d99a32] px-7 py-4 text-sm font-bold text-black transition-all duration-300 hover:-translate-y-1 hover:bg-[#f3c76a]"
-            >
-              ابدأ الآن
-            </a>
+            <h3 className="mt-3 text-2xl font-medium text-[#40372f] sm:text-3xl">
+              عندك هدف في الصين؟
+            </h3>
+
+            <p className="mt-2 text-sm text-[#786e65]">
+              أخبرنا بما تحتاجه، ونبدأ معك من الخطوة الأولى.
+            </p>
           </div>
-        </motion.div>
+
+          <a
+            href="#contact"
+            className="cp-button shrink-0"
+          >
+            ابدأ الآن
+            <span className="mr-2 text-[#d8795e]">
+              ←
+            </span>
+          </a>
+        </div>
+
       </div>
     </section>
   );

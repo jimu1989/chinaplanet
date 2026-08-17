@@ -46,33 +46,55 @@ export default function Contact() {
   return (
     <section
       id="contact"
-      className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8"
+      className="cp-section bg-[#f8f6f2]"
     >
-      <div className="mx-auto max-w-6xl">
-        <div className="mb-12 text-center">
-          <p className="text-sm font-bold tracking-wide text-[#f3c76a]">
-            تواصل معنا
-          </p>
+      <div className="cp-container">
 
-          <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl lg:text-5xl">
-            ابدأ رحلتك مع الصين
+        {/* HEADER */}
+        <div className="max-w-3xl">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-10 bg-[#c94a3d]" />
+
+            <span className="text-[10px] font-semibold tracking-[0.28em] text-[#9a9087]">
+              تواصل معنا
+            </span>
+          </div>
+
+          <h2 className="mt-7 max-w-2xl text-4xl font-semibold leading-[1.25] tracking-tight text-[#171717] sm:text-5xl lg:text-[56px]">
+            ابدأ رحلتك
+            <br />
+            <span className="text-[#c94a3d]">مع الصين.</span>
           </h2>
 
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-8 text-white/60 sm:text-base">
-            أخبرنا بما تحتاج إليه، وسنتواصل معك عبر WhatsApp لمساعدتك في اختيار
-            الخدمة المناسبة.
+          <p className="mt-6 max-w-xl text-sm leading-8 text-[#786e65]">
+            أخبرنا بما تبحث عنه، وسنساعدك في الوصول إلى الخيار
+            الأنسب لك في الصين.
           </p>
         </div>
 
-        <div className="grid gap-8 lg:grid-cols-[1fr_0.8fr]">
+        {/* CONTENT */}
+        <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_0.72fr] lg:items-start lg:gap-24">
+
           {/* FORM */}
-          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 backdrop-blur-xl sm:p-8">
-            <div className="grid gap-5">
+          <div className="rounded-[32px] bg-white p-7 shadow-[0_20px_70px_rgba(40,30,20,0.045)] sm:p-10 lg:p-12">
+
+            <div className="mb-10">
+              <p className="text-[10px] font-semibold tracking-[0.25em] text-[#b5966c]">
+                YOUR REQUEST
+              </p>
+
+              <h3 className="mt-3 text-2xl font-semibold text-[#171717]">
+                أخبرنا بما تحتاج إليه
+              </h3>
+            </div>
+
+            <div className="grid gap-8">
+
               {/* NAME */}
               <div>
                 <label
                   htmlFor="contact-name"
-                  className="mb-2 block text-sm font-semibold text-white"
+                  className="mb-3 block text-xs font-semibold text-[#554d46]"
                 >
                   الاسم
                 </label>
@@ -82,9 +104,9 @@ export default function Contact() {
                   type="text"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
-                  placeholder="اكتب اسمك"
+                  placeholder="اسمك الكامل"
                   autoComplete="name"
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-white placeholder:text-white/30 outline-none transition focus:border-[#d99a32]/60 focus:ring-1 focus:ring-[#d99a32]/30"
+                  className="w-full rounded-xl border border-[#e3ddd6] bg-[#faf9f7] px-4 py-4 text-sm text-[#302c28] outline-none transition placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white"
                 />
               </div>
 
@@ -92,27 +114,21 @@ export default function Contact() {
               <div>
                 <label
                   htmlFor="contact-service"
-                  className="mb-2 block text-sm font-semibold text-white"
+                  className="mb-3 block text-xs font-semibold text-[#554d46]"
                 >
-                  الخدمة المطلوبة
+                  ماذا تحتاج؟
                 </label>
 
                 <select
                   id="contact-service"
                   value={service}
                   onChange={(event) => setService(event.target.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-black/30 px-4 py-3.5 text-sm text-white outline-none transition focus:border-[#d99a32]/60 focus:ring-1 focus:ring-[#d99a32]/30"
+                  className="w-full rounded-xl border border-[#e3ddd6] bg-[#faf9f7] px-4 py-4 text-sm text-[#302c28] outline-none transition focus:border-[#c94a3d] focus:bg-white"
                 >
-                  <option value="" className="bg-[#111111]">
-                    اختر الخدمة
-                  </option>
+                  <option value="">اختر الخدمة المناسبة</option>
 
                   {services.map((item) => (
-                    <option
-                      key={item}
-                      value={item}
-                      className="bg-[#111111]"
-                    >
+                    <option key={item} value={item}>
                       {item}
                     </option>
                   ))}
@@ -123,7 +139,7 @@ export default function Contact() {
               <div>
                 <label
                   htmlFor="contact-details"
-                  className="mb-2 block text-sm font-semibold text-white"
+                  className="mb-3 block text-xs font-semibold text-[#554d46]"
                 >
                   كيف يمكننا مساعدتك؟
                 </label>
@@ -132,103 +148,124 @@ export default function Contact() {
                   id="contact-details"
                   value={details}
                   onChange={(event) => setDetails(event.target.value)}
-                  placeholder="اكتب تفاصيل طلبك أو استفسارك..."
+                  placeholder="اكتب لنا ما تريد معرفته أو تفاصيل طلبك..."
                   rows={5}
-                  className="w-full resize-none rounded-2xl border border-white/10 bg-black/30 px-4 py-3.5 text-sm leading-7 text-white placeholder:text-white/30 outline-none transition focus:border-[#d99a32]/60 focus:ring-1 focus:ring-[#d99a32]/30"
+                  className="w-full resize-none rounded-xl border border-[#e3ddd6] bg-[#faf9f7] px-4 py-4 text-sm leading-7 text-[#302c28] outline-none transition placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white"
                 />
               </div>
 
-              {/* WHATSAPP CTA */}
-              <button
-                type="button"
-                onClick={handleWhatsApp}
-                className="rounded-2xl bg-[#d99a32] px-6 py-4 text-sm font-bold text-black transition-all hover:bg-[#f3c76a] hover:shadow-lg hover:shadow-[#d99a32]/20 active:scale-[0.99]"
-              >
-                إرسال الطلب عبر WhatsApp
-              </button>
+              <div className="pt-1">
 
-              <p className="text-center text-xs leading-6 text-white/40">
-                سيتم فتح WhatsApp برسالة جاهزة تحتوي على بيانات طلبك.
-              </p>
+                <button
+                  type="button"
+                  onClick={handleWhatsApp}
+                  className="flex min-h-[54px] w-full items-center justify-center rounded-xl bg-[#171717] px-7 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d]"
+                >
+                  إرسال الطلب عبر WhatsApp
+                </button>
+
+                <p className="mt-4 text-center text-[10px] leading-6 text-[#9a9087]">
+                  سيتم فتح WhatsApp برسالة جاهزة تحتوي على بيانات طلبك.
+                </p>
+
+              </div>
             </div>
           </div>
 
-          {/* DIRECT CONTACT */}
-          <div className="rounded-3xl border border-[#d99a32]/20 bg-[#4d0508]/40 p-6 sm:p-8">
-            <p className="text-sm font-bold text-[#f3c76a]">
-              تواصل مباشر
-            </p>
+          {/* CONTACT INFO */}
+          <div className="lg:pt-10">
 
-            <h3 className="mt-3 text-2xl font-bold text-white">
-              نحن هنا لمساعدتك
+            <div className="flex items-center gap-3">
+              <span className="h-px w-10 bg-[#c94a3d]" />
+
+              <span className="text-[10px] font-semibold tracking-[0.28em] text-[#9a9087]">
+                CHINA PLANET
+              </span>
+            </div>
+
+            <h3 className="mt-7 text-4xl font-semibold leading-[1.25] text-[#171717]">
+              نحن هنا.
+              <br />
+              <span className="text-[#c94a3d]">لنبدأ معك.</span>
             </h3>
 
-            <p className="mt-4 text-sm leading-8 text-white/60">
-              سواء كنت تخطط لرحلة إلى الصين، أو تبحث عن فرصة للدراسة، أو تريد
-              البدء في التجارة والاستيراد، يمكنك التواصل معنا مباشرة.
+            <p className="mt-6 max-w-md text-sm leading-8 text-[#786e65]">
+              سواء كنت تخطط للسفر أو الدراسة، أو تبحث عن فرصة
+              تجارية في الصين، تحدث معنا مباشرة وسنساعدك في
+              الخطوة التالية.
             </p>
 
-            <div className="mt-8 grid gap-3">
-              {/* PHONE */}
+            <div className="mt-10 border-t border-[#ded7d0]">
+
               <a
                 href={`tel:${siteConfig.contact.phone}`}
-                aria-label={`الاتصال على ${siteConfig.contact.phone}`}
-                className="rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white transition hover:border-[#d99a32]/40 hover:bg-black/30"
+                className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
               >
-                <span className="block text-xs text-white/40">
-                  الهاتف
-                </span>
+                <div>
+                  <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
+                    PHONE
+                  </p>
 
-                <span className="mt-1 block font-semibold">
-                  {siteConfig.contact.phone}
+                  <p
+                    dir="ltr"
+                    className="mt-2 text-sm font-semibold text-[#302c28] transition-colors group-hover:text-[#c94a3d]"
+                  >
+                    {siteConfig.contact.phone}
+                  </p>
+                </div>
+
+                <span className="text-lg text-[#b8afa7] transition-transform group-hover:-translate-x-1">
+                  ←
                 </span>
               </a>
 
-              {/* EMAIL */}
               <a
                 href={`mailto:${siteConfig.contact.email}`}
-                aria-label={`إرسال بريد إلى ${siteConfig.contact.email}`}
-                className="rounded-2xl border border-white/10 bg-black/20 px-5 py-4 text-sm text-white transition hover:border-[#d99a32]/40 hover:bg-black/30"
+                className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
               >
-                <span className="block text-xs text-white/40">
-                  البريد الإلكتروني
-                </span>
+                <div>
+                  <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
+                    EMAIL
+                  </p>
 
-                <span className="mt-1 block break-all font-semibold">
-                  {siteConfig.contact.email}
+                  <p className="mt-2 break-all text-sm font-semibold text-[#302c28] transition-colors group-hover:text-[#c94a3d]">
+                    {siteConfig.contact.email}
+                  </p>
+                </div>
+
+                <span className="text-lg text-[#b8afa7] transition-transform group-hover:-translate-x-1">
+                  ←
                 </span>
               </a>
 
-              {/* WHATSAPP */}
-              <button
-                type="button"
-                onClick={handleWhatsApp}
-                className="rounded-2xl border border-[#d99a32]/30 bg-[#d99a32]/10 px-5 py-4 text-right text-sm text-white transition hover:bg-[#d99a32]/15"
+              <a
+                href={`https://wa.me/${siteConfig.contact.whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
               >
-                <span className="block text-xs text-white/40">
-                  WhatsApp
-                </span>
+                <div>
+                  <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
+                    WHATSAPP
+                  </p>
 
-                <span className="mt-1 block font-semibold text-[#f3c76a]">
-                  تواصل معنا مباشرة
+                  <p className="mt-2 text-sm font-semibold text-[#302c28] transition-colors group-hover:text-[#c94a3d]">
+                    تواصل معنا مباشرة
+                  </p>
+                </div>
+
+                <span className="text-lg text-[#b8afa7] transition-transform group-hover:-translate-x-1">
+                  ←
                 </span>
-              </button>
+              </a>
+
             </div>
 
-            {/* SERVICE AREA */}
-            <div className="mt-8 border-t border-white/10 pt-6">
-              <p className="text-xs text-white/40">
-                نطاق الخدمة
-              </p>
-
-              <p className="mt-2 text-sm font-semibold text-white">
-                السعودية والصين
-              </p>
-
-              <p className="mt-2 text-xs leading-6 text-white/40">
-                العربية · 中文 · English
-              </p>
+            <div className="mt-8 flex items-center gap-3 text-[10px] font-medium tracking-[0.15em] text-[#9a9087]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#c94a3d]" />
+              السعودية · الصين
             </div>
+
           </div>
         </div>
       </div>

@@ -24,7 +24,7 @@ export const siteConfig = {
   },
 
   // نضع الدومين الحقيقي هنا قبل النشر على Vercel.
-  url: "",
+  url: process.env.NEXT_PUBLIC_SITE_URL || "",
 
   business: {
     serviceArea: "السعودية والصين",

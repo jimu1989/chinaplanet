@@ -1,9 +1,9 @@
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Goals from "./components/Goals";
 import Services from "./components/Services";
-import Gallery from "./components/Gallery";
 import WhyUs from "./components/WhyUs";
+import Destinations from "./components/Destinations";
+import Goals from "./components/Goals";
 import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
@@ -14,28 +14,29 @@ export default function Home() {
       <Navbar />
 
       <main>
-        {/* الصفحة الرئيسية */}
+        {/* 1 — Hero */}
         <Hero />
 
-        {/* ماذا يريد العميل من الصين؟ */}
-        <Goals />
-
-        {/* الخدمات */}
+        {/* 2 — Services */}
         <Services />
 
-        {/* المدن الصينية */}
-        <Gallery />
-
-        {/* لماذا كوكب الصين؟ */}
+        {/* 3 — Why Us */}
         <WhyUs />
 
-        {/* تجربة العميل */}
+        {/* 4 — Destinations */}
+        <Destinations />
+
+        {/* 5 — Goals */}
+        <Goals />
+
+        {/* 6 — Trust */}
         <Testimonials />
 
-        {/* التواصل */}
+        {/* 7 — Contact */}
         <Contact />
       </main>
 
+      {/* 8 — Footer */}
       <Footer />
     </>
   );

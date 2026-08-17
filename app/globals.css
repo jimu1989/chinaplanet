@@ -1,42 +1,16 @@
 @import "tailwindcss";
 
 :root {
-  /* =========================
-     CHINA PLANET COLORS
-     ========================= */
+  --background: #f8f6f2;
+  --foreground: #3c352f;
 
-  --background: #070707;
-  --foreground: #ffffff;
-
-  --red-dark: #4d0508;
-  --red: #8f090d;
-  --red-bright: #c5161d;
-  --red-light: #e3292f;
-
-  --gold-dark: #9b651c;
-  --gold: #d99a32;
-  --gold-light: #f3c76a;
-  --gold-bright: #ffd98a;
-
-  --cream: #f7f1e6;
-  --white: #ffffff;
-
-  --text-primary: #ffffff;
-  --text-secondary: #d4d4d4;
-  --text-muted: #8f8f8f;
-
-  --surface: #111111;
-  --surface-light: #181818;
-
-  --border: rgba(255, 255, 255, 0.12);
-  --border-gold: rgba(217, 154, 50, 0.45);
-
-  --shadow: rgba(0, 0, 0, 0.45);
+  --cp-brown: #40372f;
+  --cp-muted: #786e65;
+  --cp-gold: #d8795e;
+  --cp-gold-light: #e8997f;
+  --cp-line: #e7e0d8;
+  --cp-white: #fffdf9;
 }
-
-/* =========================
-   RESET
-   ========================= */
 
 * {
   box-sizing: border-box;
@@ -48,25 +22,10 @@ html {
 
 body {
   margin: 0;
-  min-height: 100vh;
-
   background: var(--background);
   color: var(--foreground);
-
-  font-family:
-    Arial,
-    Helvetica,
-    sans-serif;
-
+  font-family: var(--font-arabic), sans-serif;
   overflow-x: hidden;
-}
-
-body,
-button,
-input,
-textarea,
-select {
-  font-family: inherit;
 }
 
 a {
@@ -74,79 +33,75 @@ a {
   text-decoration: none;
 }
 
-button {
-  font: inherit;
-}
-
 button,
 a {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* =========================
-   SELECTION
-   ========================= */
-
 ::selection {
-  background: var(--gold);
-  color: #160b02;
+  background: rgba(216, 121, 94, 0.2);
 }
 
-/* =========================
-   SCROLLBAR
-   ========================= */
-
-::-webkit-scrollbar {
-  width: 8px;
+.cp-container {
+  width: min(1180px, calc(100% - 40px));
+  margin-inline: auto;
 }
 
-::-webkit-scrollbar-track {
-  background: #080808;
+.cp-label {
+  color: var(--cp-gold);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #6f080c;
+.cp-title {
+  color: var(--cp-brown);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+.cp-line {
+  width: 34px;
+  height: 1px;
+  background: var(--cp-gold);
+}
+
+.cp-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding-inline: 26px;
+  border: 1px solid rgba(216, 121, 94, 0.55);
   border-radius: 999px;
+  color: var(--cp-brown);
+  font-size: 13px;
+  font-weight: 600;
+  transition:
+    background 250ms ease,
+    color 250ms ease,
+    transform 250ms ease,
+    border-color 250ms ease;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gold-dark);
+.cp-button:hover {
+  background: var(--cp-gold);
+  color: white;
+  border-color: var(--cp-gold);
+  transform: translateY(-2px);
 }
 
-/* =========================
-   GLOBAL UTILITIES
-   ========================= */
-
-.cp-gold {
-  color: var(--gold-light);
+.cp-section {
+  padding-block: 110px;
 }
 
-.cp-red {
-  color: var(--red-bright);
-}
+@media (max-width: 768px) {
+  .cp-container {
+    width: min(100% - 28px, 1180px);
+  }
 
-.cp-glass {
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(10, 10, 10, 0.55);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-.cp-gold-line {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--gold),
-    transparent
-  );
-}
-
-/* =========================
-   MOBILE
-   ========================= */
-
-@media (max-width: 640px) {
-  body {
-    font-size: 15px;
+  .cp-section {
+    padding-block: 75px;
   }
 }
