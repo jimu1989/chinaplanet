@@ -1,0 +1,2129 @@
+
+===== app/team/layout.tsx =====
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
+
+const supabase = createSupabaseBrowserClient();
+
+type Permission =
+  | "manage_team"
+  | "manage_permissions"
+  | "manage_project";
+
+type Profile = {
+  full_name: string | null;
+  role: string | null;
+};
+
+const roleNames: Record<string, string> = {
+  executive: "المدير التنفيذي",
+  admin: "مدير النظام",
+  developer: "المبرمج",
+  designer: "المصمم",
+  editor: "المحرر",
+  support: "الدعم",
+  member: "عضو الفريق",
+};
+
+const allNavigation = [
+  {
+    href: "/team",
+    label: "الرئيسية",
+    exact: true,
+    permission: null,
+  },
+  {
+    href: "/team/members",
+    label: "إدارة الفريق",
+    permission: "manage_team" as Permission,
+  },
+  {
+    href: "/team/permissions",
+    label: "إدارة الصلاحيات",
+    permission: "manage_permissions" as Permission,
+  },
+];
+
+export default function TeamLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState("");
+  const [role, setRole] = useState("");
+  const [permissions, setPermissions] = useState<
+    Record<Permission, boolean>
+  >({
+    manage_team: false,
+    manage_permissions: false,
+    manage_project: false,
+  });
+
+  const isLoginPage = pathname === "/team/login";
+
+  useEffect(() => {
+    let mounted = true;
+
+    const loadTeamSession = async () => {
+      if (isLoginPage) {
+        if (mounted) setLoading(false);
+        return;
+      }
+
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) {
+        router.replace("/team/login");
+        return;
+      }
+
+      const { data: profile, error: profileError } =
+        await supabase
+          .from("profiles")
+          .select("full_name, role")
+          .eq("id", user.id)
+          .maybeSingle<Profile>();
+
+      if (profileError || !profile) {
+        console.error(
+          "TEAM PROFILE ERROR:",
+          profileError
+        );
+
+        await supabase.auth.signOut();
+        router.replace("/team/login");
+        return;
+      }
+
+      const currentRole = profile.role || "member";
+
+      const nextPermissions: Record<
+        Permission,
+        boolean
+      > = {
+        manage_team: false,
+        manage_permissions: false,
+        manage_project: false,
+      };
+
+      try {
+        const response = await fetch(
+          "/api/team/permissions",
+          {
+            method: "GET",
+            credentials: "include",
+            cache: "no-store",
+          }
+        );
+
+        if (response.ok) {
+          const result = await response.json();
+
+          for (const item of result.permissions || []) {
+            if (
+              item.role === currentRole &&
+              item.permission in nextPermissions
+            ) {
+              nextPermissions[
+                item.permission as Permission
+              ] = item.enabled === true;
+            }
+          }
+        } else {
+          console.error(
+            "TEAM PERMISSIONS API ERROR:",
+            response.status
+          );
+        }
+      } catch (permissionError) {
+        console.error(
+          "TEAM PERMISSIONS FETCH ERROR:",
+          permissionError
+        );
+      }
+
+      if (!mounted) return;
+
+      setUserName(
+        profile.full_name ||
+          user.email?.split("@")[0] ||
+          "عضو الفريق"
+      );
+
+      setRole(currentRole);
+      setPermissions(nextPermissions);
+      setLoading(false);
+    };
+
+    loadTeamSession();
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!session && !isLoginPage) {
+          router.replace("/team/login");
+        }
+      }
+    );
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, [pathname, router, isLoginPage]);
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
+
+  if (loading) {
+    return (
+      <main
+        dir="rtl"
+        className="flex min-h-screen items-center justify-center bg-[#f3f0eb]"
+      >
+        <div className="text-center">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-2 border-[#d8795e] border-t-transparent" />
+
+          <p className="mt-4 text-xs text-[#786e65]">
+            جاري التحقق من الحساب...
+          </p>
+        </div>
+      </main>
+    );
+  }
+
+  const visibleNavigation = allNavigation.filter(
+    (item) =>
+      item.permission === null ||
+      permissions[item.permission]
+  );
+
+  const currentNavigation = visibleNavigation.find(
+    (item) => {
+      if (item.exact) {
+        return pathname === item.href;
+      }
+
+      return pathname.startsWith(item.href);
+    }
+  );
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    router.replace("/team/login");
+    router.refresh();
+  };
+
+  return (
+    <div
+      dir="rtl"
+      className="min-h-screen bg-[#f3f0eb] text-[#40372f]"
+    >
+      {/* HEADER */}
+      <header className="sticky top-0 z-50 border-b border-[#e2d9d1] bg-[#fffdf9]/95 backdrop-blur">
+        <div className="mx-auto flex min-h-[76px] max-w-7xl items-center justify-between gap-6 px-5 sm:px-8 lg:px-12">
+          {/* LOGO */}
+          <Link
+            href="/team"
+            className="flex shrink-0 items-center gap-3"
+          >
+            <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[#e2d9d1] bg-white">
+              <img
+                src="/images/china-planet-logo.png"
+                alt="China Planet"
+                className="h-9 w-auto object-contain"
+              />
+            </div>
+
+            <div className="hidden sm:block">
+              <div className="text-sm font-semibold tracking-wide text-[#40372f]">
+                CHINA PLANET
+              </div>
+
+              <div className="mt-0.5 text-[9px] tracking-[0.2em] text-[#a3978e]">
+                TEAM CONTROL
+              </div>
+            </div>
+          </Link>
+
+          {/* DESKTOP NAV */}
+          <nav className="hidden items-center gap-1 md:flex">
+            {visibleNavigation.map((item) => {
+              const active = item.exact
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`rounded-full px-4 py-2.5 text-xs font-semibold transition ${
+                    active
+                      ? "bg-[#c8102e] text-white"
+                      : "text-[#786e65] hover:bg-[#f3f0eb] hover:text-[#40372f]"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* USER */}
+          <div className="flex items-center gap-3">
+            <div className="hidden text-left sm:block">
+              <div className="text-xs font-semibold text-[#40372f]">
+                {userName}
+              </div>
+
+              <div className="mt-1 text-[9px] text-[#a3978e]">
+                {roleNames[role] || role}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              onClick={handleSignOut}
+              className="rounded-full border border-[#ddd3ca] px-4 py-2 text-[10px] font-semibold text-[#786e65] transition hover:border-[#c8102e] hover:text-[#c8102e]"
+            >
+              خروج
+            </button>
+          </div>
+        </div>
+
+        {/* MOBILE NAV */}
+        <div className="border-t border-[#eee7e1] px-4 py-3 md:hidden">
+          <nav className="flex gap-2 overflow-x-auto pb-1">
+            {visibleNavigation.map((item) => {
+              const active = item.exact
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition ${
+                    active
+                      ? "bg-[#c8102e] text-white"
+                      : "bg-[#f3f0eb] text-[#786e65]"
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+      </header>
+
+      {/* PAGE BAR */}
+      <div className="border-b border-[#e2d9d1] bg-[#fffdf9]">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-12">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-8 bg-[#d8795e]" />
+
+            <span className="text-[10px] font-semibold tracking-[0.18em] text-[#a3978e]">
+              TEAM
+            </span>
+
+            <span className="text-[11px] text-[#b2a69d]">
+              /
+            </span>
+
+            <span className="text-xs font-semibold text-[#786e65]">
+              {currentNavigation?.label ||
+                "لوحة الفريق"}
+            </span>
+          </div>
+
+          <div className="hidden text-[10px] text-[#a3978e] sm:block">
+            السعودية · الصين
+          </div>
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      <div className="min-h-[calc(100vh-125px)]">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+===== app/team/page.tsx =====
+import Image from "next/image";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { createSupabaseServerClient } from "../../lib/supabase-server";
+
+const roleLabels: Record<string, string> = {
+  executive: "المدير التنفيذي",
+  admin: "مدير النظام",
+  developer: "المبرمج",
+  designer: "المصمم",
+  editor: "المحرر",
+  support: "الدعم",
+  member: "عضو الفريق",
+};
+
+const roleDescriptions: Record<string, string> = {
+  executive: "صلاحية كاملة لإدارة المشروع والفريق.",
+  admin: "إدارة النظام وأعضاء الفريق.",
+  developer: "تطوير الموقع والوظائف البرمجية.",
+  designer: "التصميم والهوية البصرية.",
+  editor: "إدارة المحتوى والصفحات.",
+  support: "متابعة العملاء والدعم.",
+  member: "الوصول إلى مساحة الفريق الأساسية.",
+};
+
+export default async function TeamPage() {
+  const supabase = await createSupabaseServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/team/login");
+  }
+
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, phone, role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  const role = profile?.role;
+
+  const allowedRoles = [
+    "executive",
+    "admin",
+    "developer",
+    "designer",
+    "editor",
+    "support",
+    "member",
+  ];
+
+  if (!role || !allowedRoles.includes(role)) {
+    redirect("/account");
+  }
+
+  const name =
+    profile?.full_name?.trim() ||
+    user.email?.split("@")[0] ||
+    "عضو الفريق";
+
+  const roleLabel = roleLabels[role] || "عضو الفريق";
+  const roleDescription =
+    roleDescriptions[role] || "الوصول إلى مساحة الفريق.";
+
+  const isExecutive = role === "executive";
+  const isAdmin = role === "admin" || isExecutive;
+  const isDeveloper = role === "developer" || isExecutive;
+  const isContent =
+    role === "editor" ||
+    role === "designer" ||
+    isExecutive;
+
+  return (
+    <main
+      dir="rtl"
+      className="min-h-screen bg-[#f7f4ee] text-[#171717]"
+    >
+      {/* HERO */}
+      <section className="relative min-h-[470px] overflow-hidden bg-[#171717]">
+        <Image
+          src="/images/hero-china.png"
+          alt=""
+          fill
+          priority
+          className="object-cover opacity-45"
+        />
+
+        <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/70 via-[#171717]/65 to-[#171717]" />
+
+        <div className="relative z-10 mx-auto max-w-[1450px] px-5 py-8">
+          <div className="flex items-center justify-between gap-5">
+            <Image
+              src="/images/china-planet-logo.png"
+              alt="China Planet"
+              width={180}
+              height={65}
+              priority
+              className="h-[65px] w-[180px] object-contain object-right"
+            />
+
+            <Link
+              href="/auth/signout"
+              className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-xs font-semibold text-white backdrop-blur-sm transition hover:border-[#c94a3d] hover:bg-[#c94a3d]"
+            >
+              تسجيل الخروج
+            </Link>
+          </div>
+
+          <div className="mt-24 max-w-3xl text-white">
+            <div className="mb-5 h-[2px] w-10 bg-[#c94a3d]" />
+
+            <p className="text-[11px] font-semibold tracking-[0.35em] text-white/45">
+              CHINA PLANET TEAM
+            </p>
+
+            <h1 className="mt-5 text-4xl font-bold leading-tight sm:text-5xl">
+              أهلًا بك،
+              <br />
+              {name}
+            </h1>
+
+            <p className="mt-6 max-w-2xl text-sm leading-8 text-white/65">
+              هذه مساحتك الخاصة داخل كوكب الصين لإدارة العمل،
+              الفريق، والخدمات.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTENT */}
+      <div className="mx-auto max-w-[1450px] px-5 pb-20">
+
+        {/* PROFILE */}
+        <section className="relative z-20 -mt-16 rounded-[38px] border border-[#e4ddd5] bg-white p-7 shadow-[0_25px_80px_rgba(40,30,20,0.08)] lg:p-10">
+
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
+
+            <div className="flex items-center gap-5">
+              <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#171717] text-2xl font-bold text-white">
+                {name.charAt(0).toUpperCase()}
+              </div>
+
+              <div>
+                <p className="text-[10px] font-semibold tracking-[0.3em] text-[#a69c93]">
+                  PROFILE
+                </p>
+
+                <h2 className="mt-2 text-2xl font-bold">
+                  {name}
+                </h2>
+
+                <p className="mt-2 text-sm text-[#8a8179]">
+                  {roleLabel}
+                </p>
+              </div>
+            </div>
+
+            <div className="rounded-[24px] bg-[#f8f6f2] px-7 py-5">
+              <p className="text-[10px] font-semibold tracking-[0.25em] text-[#a69c93]">
+                ACCESS LEVEL
+              </p>
+
+              <div className="mt-3 flex items-center gap-3">
+                <span className="h-2.5 w-2.5 rounded-full bg-[#4d8060]" />
+
+                <span className="text-sm font-semibold text-[#40372f]">
+                  {roleLabel}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* ACCOUNT INFO */}
+          <div className="mt-8 grid gap-4 border-t border-[#eee8e2] pt-8 md:grid-cols-2">
+
+            <div className="rounded-2xl bg-[#f8f6f2] px-5 py-4">
+              <p className="text-xs font-semibold text-[#8a8179]">
+                البريد الإلكتروني
+              </p>
+
+              <p
+                dir="ltr"
+                className="mt-2 break-all text-sm font-semibold text-[#40372f]"
+              >
+                {user.email || "—"}
+              </p>
+            </div>
+
+            <div className="rounded-2xl bg-[#f8f6f2] px-5 py-4">
+              <p className="text-xs font-semibold text-[#8a8179]">
+                الصلاحية
+              </p>
+
+              <p className="mt-2 text-sm font-semibold text-[#40372f]">
+                {roleDescription}
+              </p>
+            </div>
+
+          </div>
+        </section>
+
+        {/* WORKSPACE */}
+        <section className="mt-10">
+
+          <div className="mb-8">
+            <div className="flex items-center gap-3">
+              <span className="h-[2px] w-8 bg-[#c94a3d]" />
+
+              <span className="text-[10px] font-semibold tracking-[0.3em] text-[#a69c93]">
+                TEAM WORKSPACE
+              </span>
+            </div>
+
+            <h2 className="mt-5 text-3xl font-bold">
+              مساحة العمل
+            </h2>
+
+            <p className="mt-3 max-w-2xl text-sm leading-7 text-[#8a8179]">
+              الأدوات المتاحة لك تعتمد على الدور والصلاحيات المرتبطة بحسابك.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+
+            {isAdmin && (
+              <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+                  01
+                </span>
+
+                <h3 className="mt-6 text-xl font-bold">
+                  إدارة الفريق
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-[#8a8179]">
+                  إدارة أعضاء الفريق وتحديد الأدوار والصلاحيات.
+                </p>
+
+                <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
+                  متاح لك
+                </div>
+              </div>
+            )}
+
+            {isDeveloper && (
+              <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+                  02
+                </span>
+
+                <h3 className="mt-6 text-xl font-bold">
+                  التطوير
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-[#8a8179]">
+                  إدارة وتطوير الموقع والوظائف البرمجية.
+                </p>
+
+                <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
+                  متاح لك
+                </div>
+              </div>
+            )}
+
+            {isContent && (
+              <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
+                  03
+                </span>
+
+                <h3 className="mt-6 text-xl font-bold">
+                  المحتوى والتصميم
+                </h3>
+
+                <p className="mt-3 text-sm leading-7 text-[#8a8179]">
+                  إدارة المحتوى والتصميم والهوية البصرية.
+                </p>
+
+                <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
+                  متاح لك
+                </div>
+              </div>
+            )}
+
+            <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+              <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
+                04
+              </span>
+
+              <h3 className="mt-6 text-xl font-bold">
+                دعم العملاء
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-[#8a8179]">
+                متابعة طلبات العملاء والتواصل والمساعدة.
+              </p>
+
+              <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
+                متاح
+              </div>
+            </div>
+
+            <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+              <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
+                05
+              </span>
+
+              <h3 className="mt-6 text-xl font-bold">
+                حسابي
+              </h3>
+
+              <p className="mt-3 text-sm leading-7 text-[#8a8179]">
+                معلومات حسابك ودورك ومستوى الوصول.
+              </p>
+
+              <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
+                متاح
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        {/* EXECUTIVE */}
+        {isExecutive && (
+          <section className="relative mt-10 overflow-hidden rounded-[38px] bg-[#171717] p-8 text-white lg:p-12">
+
+            <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full border border-[#c94a3d]/30" />
+
+            <div className="absolute -left-10 -top-10 h-44 w-44 rounded-full border border-white/10" />
+
+            <div className="relative z-10 max-w-3xl">
+
+              <p className="text-[10px] font-semibold tracking-[0.3em] text-[#c94a3d]">
+                EXECUTIVE ACCESS
+              </p>
+
+              <h2 className="mt-5 text-3xl font-bold">
+                المدير التنفيذي
+              </h2>
+
+              <p className="mt-5 text-sm leading-8 text-white/60">
+                لديك أعلى مستوى من الصلاحيات في مساحة الفريق.
+                من هنا سنضيف لاحقًا إدارة أعضاء الفريق، التحكم في
+                الأدوار، متابعة النشاط، وإدارة العمليات الداخلية للمشروع.
+              </p>
+
+              <div className="mt-8 flex flex-wrap gap-3">
+                <span className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70">
+                  إدارة الفريق
+                </span>
+
+                <span className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70">
+                  إدارة الصلاحيات
+                </span>
+
+                <span className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70">
+                  إدارة المشروع
+                </span>
+              </div>
+
+            </div>
+          </section>
+        )}
+
+        {/* FOOTER */}
+        <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-[#e4ddd5] pt-7">
+
+          <p className="text-xs text-[#a69c93]">
+            CHINA PLANET · TEAM WORKSPACE
+          </p>
+
+          <div className="flex items-center gap-5">
+            <Link
+              href="/"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+            >
+              الرئيسية
+            </Link>
+
+            <Link
+              href="/account"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+            >
+              حسابي
+            </Link>
+          </div>
+
+        </footer>
+
+      </div>
+    </main>
+  );
+}
+
+===== app/team/members/page.tsx =====
+"use client";
+
+import { useEffect, useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
+type Member = {
+  id: string;
+  email: string | null;
+  full_name: string | null;
+  phone: string | null;
+  role: string | null;
+};
+
+const roleLabels: Record<string, string> = {
+  executive: "المدير التنفيذي",
+  admin: "مدير النظام",
+  developer: "المبرمج",
+  designer: "المصمم",
+  editor: "المحرر",
+  support: "الدعم",
+  member: "عضو الفريق",
+};
+
+export default function TeamMembersPage() {
+  const [members, setMembers] = useState<Member[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [showForm, setShowForm] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [role, setRole] = useState("member");
+  const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    loadMembers();
+  }, []);
+
+  async function loadMembers() {
+    try {
+      const response = await fetch("/api/team/members");
+
+      if (!response.ok) {
+        setMessage("تعذر تحميل أعضاء الفريق.");
+        return;
+      }
+
+      const data = await response.json();
+      setMembers(data.members || []);
+    } catch {
+      setMessage("تعذر الاتصال بالخادم.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    setMessage("");
+
+    if (!fullName.trim() || !email.trim() || !password) {
+      setMessage("أكمل الاسم والبريد الإلكتروني وكلمة المرور.");
+      return;
+    }
+
+    if (password.length < 8) {
+      setMessage("كلمة المرور يجب أن تكون 8 أحرف على الأقل.");
+      return;
+    }
+
+    setSaving(true);
+
+    try {
+      const response = await fetch("/api/team/members", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          full_name: fullName,
+          email,
+          phone,
+          role,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.error || "تعذر إضافة العضو.");
+        return;
+      }
+
+      setMembers((current) => [
+        {
+          id: data.member.id,
+          email: data.member.email,
+          full_name: data.member.full_name,
+          phone: data.member.phone,
+          role: data.member.role,
+        },
+        ...current,
+      ]);
+
+      setFullName("");
+      setEmail("");
+      setPhone("");
+      setRole("member");
+      setPassword("");
+      setShowForm(false);
+      setMessage("تمت إضافة عضو الفريق بنجاح.");
+    } catch {
+      setMessage("حدث خطأ أثناء إضافة العضو.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <main
+      dir="rtl"
+      className="min-h-screen bg-[#f7f4ee] text-[#171717]"
+    >
+      {/* HERO */}
+      <section className="relative overflow-hidden bg-[#171717]">
+        <div className="absolute inset-0">
+          <Image
+            src="/images/hero-china.png"
+            alt=""
+            fill
+            priority
+            className="object-cover opacity-45"
+          />
+        </div>
+
+        <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/65 via-[#171717]/60 to-[#171717]" />
+
+        <div className="relative z-10 mx-auto max-w-[1450px] px-5 pb-20 pt-8">
+
+          <div className="flex items-center justify-between gap-5">
+            <Link href="/team">
+              <Image
+                src="/images/china-planet-logo.png"
+                alt="China Planet"
+                width={180}
+                height={65}
+                priority
+                className="h-[65px] w-[180px] object-contain object-right"
+              />
+            </Link>
+
+            <div className="flex items-center gap-3">
+              <Link
+                href="/team"
+                className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/15"
+              >
+                لوحة الفريق
+              </Link>
+
+              <Link
+                href="/auth/signout"
+                className="rounded-full border border-white/20 bg-white/10 px-5 py-3 text-xs font-semibold text-white backdrop-blur-sm transition hover:border-[#c94a3d] hover:bg-[#c94a3d]"
+              >
+                تسجيل الخروج
+              </Link>
+            </div>
+          </div>
+
+          <div className="mt-20 max-w-3xl text-white">
+            <div className="mb-5 h-[2px] w-10 bg-[#c94a3d]" />
+
+            <p className="text-[11px] font-semibold tracking-[0.35em] text-white/45">
+              CHINA PLANET TEAM
+            </p>
+
+            <h1 className="mt-5 text-4xl font-bold leading-tight sm:text-5xl">
+              إدارة الفريق
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-sm leading-8 text-white/65">
+              إدارة أعضاء فريق كوكب الصين ومتابعة أدوارهم
+              وصلاحياتهم من مكان واحد.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* CONTENT */}
+      <div className="mx-auto max-w-[1450px] px-5 pb-20">
+
+        <section className="mt-10 rounded-[38px] border border-[#e4ddd5] bg-white p-7 shadow-[0_20px_60px_rgba(40,30,20,0.06)] lg:p-10">
+
+          <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="h-[2px] w-8 bg-[#c94a3d]" />
+
+                <span className="text-[10px] font-semibold tracking-[0.3em] text-[#a69c93]">
+                  TEAM MEMBERS
+                </span>
+              </div>
+
+              <h2 className="mt-5 text-3xl font-bold text-[#40372f]">
+                أعضاء الفريق
+              </h2>
+
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#8a8179]">
+                إدارة أعضاء فريق كوكب الصين والأدوار والصلاحيات
+                المرتبطة بحساباتهم.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => {
+                setShowForm((value) => !value);
+                setMessage("");
+              }}
+              className="rounded-full bg-[#c94a3d] px-7 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#aa3b31]"
+            >
+              {showForm ? "إغلاق النموذج" : "+ إضافة عضو"}
+            </button>
+          </div>
+
+          {/* ADD MEMBER */}
+          {showForm && (
+            <div className="mt-10 rounded-[30px] border border-[#e5ded6] bg-[#f8f6f2] p-6 lg:p-8">
+
+              <div className="mb-7">
+                <p className="text-[10px] font-semibold tracking-[0.25em] text-[#c94a3d]">
+                  NEW TEAM MEMBER
+                </p>
+
+                <h3 className="mt-3 text-2xl font-bold text-[#40372f]">
+                  إضافة عضو جديد
+                </h3>
+              </div>
+
+              <form
+                onSubmit={handleSubmit}
+                className="grid gap-5 md:grid-cols-2"
+              >
+
+                <div>
+                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                    الاسم الكامل
+                  </label>
+
+                  <input
+                    value={fullName}
+                    onChange={(event) => setFullName(event.target.value)}
+                    placeholder="مثال: محمد أحمد"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                    البريد الإلكتروني
+                  </label>
+
+                  <input
+                    type="email"
+                    dir="ltr"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="name@example.com"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                    رقم الجوال
+                  </label>
+
+                  <input
+                    type="tel"
+                    dir="ltr"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    placeholder="+966..."
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                    الدور
+                  </label>
+
+                  <select
+                    value={role}
+                    onChange={(event) => setRole(event.target.value)}
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#40372f] outline-none focus:border-[#c94a3d]"
+                  >
+                    <option value="member">عضو الفريق</option>
+                    <option value="developer">المبرمج</option>
+                    <option value="designer">المصمم</option>
+                    <option value="editor">المحرر</option>
+                    <option value="support">الدعم</option>
+                    <option value="admin">مدير النظام</option>
+                    <option value="executive">المدير التنفيذي</option>
+                  </select>
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                    كلمة المرور المؤقتة
+                  </label>
+
+                  <input
+                    type="password"
+                    dir="ltr"
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="8 أحرف على الأقل"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                  />
+
+                  <p className="mt-2 text-[11px] leading-6 text-[#988e85]">
+                    أعطِ العضو كلمة المرور هذه بشكل آمن، ويمكننا لاحقًا
+                    إضافة نظام تغيير كلمة المرور عند أول دخول.
+                  </p>
+                </div>
+
+                <div className="md:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center">
+
+                  <button
+                    type="submit"
+                    disabled={saving}
+                    className="rounded-full bg-[#171717] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
+                  >
+                    {saving ? "جاري إنشاء الحساب..." : "إنشاء عضو الفريق"}
+                  </button>
+
+                  {message && (
+                    <p className="text-sm font-semibold text-[#6f554a]">
+                      {message}
+                    </p>
+                  )}
+
+                </div>
+
+              </form>
+            </div>
+          )}
+
+        </section>
+
+        {/* STATUS */}
+        {message && !showForm && (
+          <div className="mt-6 rounded-2xl border border-[#e4ddd5] bg-white px-6 py-4 text-sm text-[#6f554a]">
+            {message}
+          </div>
+        )}
+
+        {/* MEMBERS */}
+        <section className="mt-10">
+
+          <div className="overflow-hidden rounded-[32px] border border-[#e4ddd5] bg-white shadow-[0_15px_50px_rgba(40,30,20,0.05)]">
+
+            <div className="hidden grid-cols-[1.5fr_1.1fr_1fr_0.8fr] gap-5 border-b border-[#eee8e2] bg-[#f8f6f2] px-8 py-5 text-[10px] font-bold tracking-[0.15em] text-[#91877e] md:grid">
+              <div>العضو</div>
+              <div>رقم الجوال</div>
+              <div>الدور</div>
+              <div>الحالة</div>
+            </div>
+
+            {loading ? (
+              <div className="p-12 text-center text-sm text-[#8a8179]">
+                جاري تحميل أعضاء الفريق...
+              </div>
+            ) : members.length ? (
+              members.map((member) => (
+                <div
+                  key={member.id}
+                  className="grid gap-6 border-b border-[#eee8e2] px-7 py-7 last:border-b-0 md:grid-cols-[1.5fr_1.1fr_1fr_0.8fr] md:items-center md:px-8"
+                >
+                  <div className="flex items-center gap-4">
+
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#171717] text-sm font-bold text-white">
+                      {(member.full_name || member.email || "?")
+                        .charAt(0)
+                        .toUpperCase()}
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="font-bold text-[#40372f]">
+                        {member.full_name || "بدون اسم"}
+                      </p>
+
+                      <p
+                        dir="ltr"
+                        className="mt-1 break-all text-xs text-[#9a9087]"
+                      >
+                        {member.email || "بدون بريد إلكتروني"}
+                      </p>
+                    </div>
+
+                  </div>
+
+                  <div
+                    dir="ltr"
+                    className="text-sm text-[#665d56]"
+                  >
+                    {member.phone || "—"}
+                  </div>
+
+                  <div>
+                    <span className="inline-flex rounded-full bg-[#f8f1ed] px-4 py-2 text-xs font-semibold text-[#6f554a]">
+                      {roleLabels[member.role || ""] ||
+                        member.role ||
+                        "غير محدد"}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="inline-flex items-center gap-2 text-xs font-semibold text-[#4d8060]">
+                      <span className="h-2 w-2 rounded-full bg-[#4d8060]" />
+                      عضو مسجل
+                    </span>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="p-12 text-center">
+                <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#f8f6f2] text-xl">
+                  👥
+                </div>
+
+                <h3 className="mt-5 text-lg font-bold text-[#40372f]">
+                  لا يوجد أعضاء حتى الآن
+                </h3>
+
+                <p className="mt-2 text-sm text-[#8a8179]">
+                  أضف أول عضو من زر «إضافة عضو».
+                </p>
+              </div>
+            )}
+
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-[#e4ddd5] pt-7">
+
+          <p className="text-xs text-[#a69c93]">
+            CHINA PLANET · TEAM WORKSPACE
+          </p>
+
+          <div className="flex items-center gap-5">
+            <Link
+              href="/team"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+            >
+              لوحة الفريق
+            </Link>
+
+            <Link
+              href="/"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+            >
+              الرئيسية
+            </Link>
+          </div>
+
+        </footer>
+      </div>
+    </main>
+  );
+}
+
+===== app/team/permissions/page.tsx =====
+"use client";
+
+import { useEffect, useState } from "react";
+
+type Permission = {
+  id: number;
+  role: string;
+  permission: string;
+  enabled: boolean;
+};
+
+const roleNames: Record<string, string> = {
+  executive: "المدير التنفيذي",
+  admin: "مدير النظام",
+  developer: "المبرمج",
+  designer: "المصمم",
+  editor: "المحرر",
+  support: "الدعم",
+  member: "عضو الفريق",
+};
+
+const permissionNames: Record<string, string> = {
+  manage_team: "إدارة الفريق",
+  manage_permissions: "إدارة الصلاحيات",
+  manage_project: "إدارة المشروع",
+};
+
+export default function PermissionsPage() {
+  const [permissions, setPermissions] = useState<Permission[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState<number | null>(null);
+  const [error, setError] = useState("");
+
+  const loadPermissions = async () => {
+    try {
+      setLoading(true);
+      setError("");
+
+      const response = await fetch("/api/team/permissions", {
+        cache: "no-store",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "تعذر تحميل الصلاحيات."
+        );
+      }
+
+      setPermissions(data.permissions || []);
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "تعذر تحميل الصلاحيات."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPermissions();
+  }, []);
+
+  const togglePermission = async (permission: Permission) => {
+    try {
+      setSaving(permission.id);
+      setError("");
+
+      const response = await fetch(
+        "/api/team/permissions",
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: permission.id,
+            enabled: !permission.enabled,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data.error || "تعذر تحديث الصلاحية."
+        );
+      }
+
+      setPermissions((current) =>
+        current.map((item) =>
+          item.id === permission.id
+            ? { ...item, enabled: !item.enabled }
+            : item
+        )
+      );
+    } catch (err) {
+      setError(
+        err instanceof Error
+          ? err.message
+          : "تعذر تحديث الصلاحية."
+      );
+    } finally {
+      setSaving(null);
+    }
+  };
+
+  const groupedPermissions = Object.keys(roleNames).map(
+    (role) => ({
+      role,
+      name: roleNames[role],
+      permissions: permissions.filter(
+        (item) => item.role === role
+      ),
+    })
+  );
+
+  return (
+    <main
+      dir="rtl"
+      className="min-h-screen bg-[#f3f0eb] px-5 py-8 text-[#40372f] sm:px-8 lg:px-12"
+    >
+      <div className="mx-auto max-w-7xl">
+        {/* HEADER */}
+        <header className="mb-10">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-10 bg-[#d8795e]" />
+
+            <span className="text-[10px] font-semibold tracking-[0.22em] text-[#a3978e]">
+              TEAM PERMISSIONS
+            </span>
+          </div>
+
+          <h1 className="mt-5 text-3xl font-medium tracking-tight sm:text-4xl">
+            إدارة الصلاحيات
+          </h1>
+
+          <p className="mt-4 max-w-2xl text-sm leading-7 text-[#786e65]">
+            تحكم في الصلاحيات الممنوحة لكل دور داخل فريق
+            كوكب الصين من مكان واحد.
+          </p>
+        </header>
+
+        {/* ERROR */}
+        {error && (
+          <div className="mb-6 rounded-2xl border border-[#e8c7bd] bg-[#fff8f5] px-5 py-4 text-sm text-[#a43a27]">
+            {error}
+          </div>
+        )}
+
+        {/* CONTENT */}
+        <section className="overflow-hidden rounded-3xl border border-[#e2d9d1] bg-[#fffdf9] shadow-[0_20px_60px_rgba(64,55,47,0.06)]">
+          <div className="border-b border-[#e7ded6] px-6 py-6 sm:px-8">
+            <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+              <div>
+                <h2 className="text-xl font-medium">
+                  صلاحيات أعضاء الفريق
+                </h2>
+
+                <p className="mt-2 text-xs leading-6 text-[#8b8077]">
+                  فعّل أو عطّل الصلاحيات حسب الدور الوظيفي.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={loadPermissions}
+                className="rounded-full border border-[#ddd3ca] px-5 py-2.5 text-xs font-semibold text-[#40372f] transition hover:border-[#d8795e] hover:text-[#d8795e]"
+              >
+                تحديث
+              </button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="px-6 py-16 text-center text-sm text-[#8b8077]">
+              جاري تحميل الصلاحيات...
+            </div>
+          ) : (
+            <div className="divide-y divide-[#e7ded6]">
+              {groupedPermissions.map((group) => (
+                <div
+                  key={group.role}
+                  className="px-6 py-7 sm:px-8"
+                >
+                  <div className="mb-5">
+                    <h3 className="text-base font-semibold">
+                      {group.name}
+                    </h3>
+
+                    <span className="mt-1 block text-[10px] uppercase tracking-[0.18em] text-[#aaa097]">
+                      {group.role}
+                    </span>
+                  </div>
+
+                  <div className="grid gap-3 md:grid-cols-3">
+                    {Object.entries(permissionNames).map(
+                      ([permissionKey, permissionName]) => {
+                        const item =
+                          group.permissions.find(
+                            (permission) =>
+                              permission.permission ===
+                              permissionKey
+                          );
+
+                        if (!item) {
+                          return (
+                            <div
+                              key={permissionKey}
+                              className="rounded-2xl border border-dashed border-[#e2d9d1] px-4 py-4 opacity-50"
+                            >
+                              <span className="text-sm">
+                                {permissionName}
+                              </span>
+
+                              <span className="mt-1 block text-[10px] text-[#a3978e]">
+                                غير مضافة
+                              </span>
+                            </div>
+                          );
+                        }
+
+                        return (
+                          <button
+                            key={permissionKey}
+                            type="button"
+                            disabled={saving === item.id}
+                            onClick={() =>
+                              togglePermission(item)
+                            }
+                            className={`group flex items-center justify-between rounded-2xl border px-4 py-4 text-right transition-all ${
+                              item.enabled
+                                ? "border-[#e5c8bd] bg-[#fff8f5]"
+                                : "border-[#e2d9d1] bg-transparent hover:border-[#cfc3b9]"
+                            }`}
+                          >
+                            <div>
+                              <span className="block text-sm font-medium">
+                                {permissionName}
+                              </span>
+
+                              <span className="mt-1 block text-[10px] text-[#9a8e85]">
+                                {item.enabled
+                                  ? "مفعلة"
+                                  : "غير مفعلة"}
+                              </span>
+                            </div>
+
+                            <span
+                              className={`relative h-6 w-11 rounded-full transition ${
+                                item.enabled
+                                  ? "bg-[#c8102e]"
+                                  : "bg-[#d8d0c9]"
+                              }`}
+                            >
+                              <span
+                                className={`absolute top-1 h-4 w-4 rounded-full bg-white shadow-sm transition-all ${
+                                  item.enabled
+                                    ? "right-1"
+                                    : "right-6"
+                                }`}
+                              />
+                            </span>
+                          </button>
+                        );
+                      }
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <p className="mt-6 text-center text-[10px] text-[#a3978e]">
+          CHINA PLANET · TEAM CONTROL
+        </p>
+      </div>
+    </main>
+  );
+}
+
+===== app/api/team/members/route.ts =====
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { createSupabaseServerClient } from "../../../lib/supabase-server";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+const allowedRoles = [
+  "executive",
+  "admin",
+  "developer",
+  "designer",
+  "editor",
+  "support",
+  "member",
+];
+
+async function getAuthorizedUser() {
+  const supabase = await createSupabaseServerClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return {
+      supabase,
+      user: null,
+      profile: null,
+      error: NextResponse.json(
+        { error: "يجب تسجيل الدخول أولًا." },
+        { status: 401 }
+      ),
+    };
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, full_name, phone, role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profileError) {
+    console.error("TEAM PROFILE ERROR:", profileError);
+
+    return {
+      supabase,
+      user,
+      profile: null,
+      error: NextResponse.json(
+        { error: "تعذر التحقق من صلاحيات الحساب." },
+        { status: 500 }
+      ),
+    };
+  }
+
+  if (
+    profile?.role !== "executive" &&
+    profile?.role !== "admin"
+  ) {
+    return {
+      supabase,
+      user,
+      profile,
+      error: NextResponse.json(
+        { error: "ليس لديك صلاحية إدارة الفريق." },
+        { status: 403 }
+      ),
+    };
+  }
+
+  return {
+    supabase,
+    user,
+    profile,
+    error: null,
+  };
+}
+
+export async function GET() {
+  try {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        { error: "Supabase server configuration is missing." },
+        { status: 500 }
+      );
+    }
+
+    const auth = await getAuthorizedUser();
+
+    if (auth.error) {
+      return auth.error;
+    }
+
+    const admin = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+
+    const { data: profiles, error: profilesError } = await admin
+      .from("profiles")
+      .select(
+        "id, full_name, phone, role, created_at, updated_at"
+      )
+      .order("created_at", { ascending: false });
+
+    if (profilesError) {
+      console.error(
+        "TEAM MEMBERS PROFILE ERROR:",
+        profilesError
+      );
+
+      return NextResponse.json(
+        { error: "تعذر تحميل أعضاء الفريق." },
+        { status: 500 }
+      );
+    }
+
+    const { data: usersData, error: usersError } =
+      await admin.auth.admin.listUsers({
+        page: 1,
+        perPage: 1000,
+      });
+
+    if (usersError) {
+      console.error(
+        "TEAM MEMBERS AUTH ERROR:",
+        usersError
+      );
+
+      return NextResponse.json(
+        { error: "تعذر تحميل حسابات الفريق." },
+        { status: 500 }
+      );
+    }
+
+    const emailById = new Map(
+      usersData.users.map((authUser) => [
+        authUser.id,
+        authUser.email || null,
+      ])
+    );
+
+    const members = (profiles || []).map((profile) => ({
+      ...profile,
+      email: emailById.get(profile.id) || null,
+    }));
+
+    return NextResponse.json({ members });
+  } catch (error) {
+    console.error("TEAM MEMBERS GET ERROR:", error);
+
+    return NextResponse.json(
+      { error: "حدث خطأ غير متوقع." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function POST(request: Request) {
+  try {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        { error: "Supabase server configuration is missing." },
+        { status: 500 }
+      );
+    }
+
+    const auth = await getAuthorizedUser();
+
+    if (auth.error) {
+      return auth.error;
+    }
+
+    const currentRole = auth.profile?.role;
+
+    const body = await request.json();
+
+    const email = String(body.email || "")
+      .trim()
+      .toLowerCase();
+
+    const password = String(body.password || "");
+    const fullName = String(body.full_name || "").trim();
+    const phone = String(body.phone || "").trim();
+    const role = String(body.role || "member").trim();
+
+    if (!email || !password || !fullName) {
+      return NextResponse.json(
+        {
+          error:
+            "الاسم والبريد الإلكتروني وكلمة المرور مطلوبة.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (password.length < 8) {
+      return NextResponse.json(
+        {
+          error:
+            "كلمة المرور يجب أن تكون 8 أحرف على الأقل.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!allowedRoles.includes(role)) {
+      return NextResponse.json(
+        { error: "الدور غير صالح." },
+        { status: 400 }
+      );
+    }
+
+    if (
+      currentRole === "admin" &&
+      (role === "executive" || role === "admin")
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "لا يمكن لمدير النظام إنشاء مدير نظام أو مدير تنفيذي.",
+        },
+        { status: 403 }
+      );
+    }
+
+    const admin = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+
+    const { data: createdUser, error: authError } =
+      await admin.auth.admin.createUser({
+        email,
+        password,
+        email_confirm: true,
+      });
+
+    if (authError || !createdUser.user) {
+      console.error("AUTH CREATE ERROR:", authError);
+
+      return NextResponse.json(
+        {
+          error:
+            authError?.message ||
+            "تعذر إنشاء حساب المستخدم.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const { error: profileError } = await admin
+      .from("profiles")
+      .upsert({
+        id: createdUser.user.id,
+        full_name: fullName,
+        phone: phone || null,
+        role,
+        updated_at: new Date().toISOString(),
+      });
+
+    if (profileError) {
+      console.error(
+        "PROFILE CREATE ERROR:",
+        profileError
+      );
+
+      await admin.auth.admin.deleteUser(
+        createdUser.user.id
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "تم إنشاء الحساب لكن تعذر إنشاء ملف الفريق: " +
+            profileError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        member: {
+          id: createdUser.user.id,
+          email: createdUser.user.email || email,
+          full_name: fullName,
+          phone,
+          role,
+        },
+      },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error(
+      "TEAM MEMBER CREATE ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      { error: "حدث خطأ غير متوقع." },
+      { status: 500 }
+    );
+  }
+}
+
+===== app/api/team/permissions/route.ts =====
+import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+import { createSupabaseServerClient } from "../../../../lib/supabase-server";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+async function getCurrentUser() {
+  const supabase = await createSupabaseServerClient();
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (error) {
+    console.error("TEAM PERMISSIONS AUTH ERROR:", error);
+  }
+
+  return {
+    supabase,
+    user,
+  };
+}
+
+async function authorize() {
+  const { supabase, user } = await getCurrentUser();
+
+  if (!user) {
+    return {
+      error: NextResponse.json(
+        {
+          error:
+            "لم يتم العثور على جلسة تسجيل الدخول. سجّل الخروج ثم ادخل إلى حساب المدير التنفيذي مرة أخرى.",
+        },
+        { status: 401 }
+      ),
+    };
+  }
+
+  const { data: profile, error: profileError } = await supabase
+    .from("profiles")
+    .select("id, full_name, role")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  if (profileError) {
+    console.error(
+      "TEAM PERMISSIONS PROFILE ERROR:",
+      profileError
+    );
+
+    return {
+      error: NextResponse.json(
+        {
+          error:
+            "تم تسجيل الدخول، لكن تعذر قراءة صلاحيات الحساب.",
+        },
+        { status: 500 }
+      ),
+    };
+  }
+
+  if (!profile) {
+    return {
+      error: NextResponse.json(
+        {
+          error:
+            "الحساب مسجل الدخول، لكن لا يوجد له ملف في profiles.",
+        },
+        { status: 403 }
+      ),
+    };
+  }
+
+  if (
+    profile.role !== "executive" &&
+    profile.role !== "admin"
+  ) {
+    return {
+      error: NextResponse.json(
+        {
+          error:
+            "هذا الحساب لا يملك صلاحية إدارة الصلاحيات.",
+        },
+        { status: 403 }
+      ),
+    };
+  }
+
+  return {
+    error: null,
+    user,
+    profile,
+  };
+}
+
+function createAdminClient() {
+  if (!supabaseUrl || !serviceRoleKey) {
+    return null;
+  }
+
+  return createClient(
+    supabaseUrl,
+    serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+}
+
+export async function GET() {
+  try {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        {
+          error:
+            "Supabase server configuration is missing.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const authorization = await authorize();
+
+    if (authorization.error) {
+      return authorization.error;
+    }
+
+    const admin = createAdminClient();
+
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error:
+            "Supabase server configuration is missing.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const { data, error } = await admin
+      .from("role_permissions")
+      .select(
+        "id, role, permission, enabled"
+      )
+      .order("role")
+      .order("permission");
+
+    if (error) {
+      console.error(
+        "ROLE PERMISSIONS GET ERROR:",
+        error
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "تعذر قراءة جدول role_permissions.",
+          details: error.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      permissions: data ?? [],
+    });
+  } catch (error) {
+    console.error(
+      "TEAM PERMISSIONS GET ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error: "حدث خطأ غير متوقع.",
+      },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        {
+          error:
+            "Supabase server configuration is missing.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const authorization = await authorize();
+
+    if (authorization.error) {
+      return authorization.error;
+    }
+
+    const body = await request.json();
+
+    const id = Number(body.id);
+    const enabled = body.enabled === true;
+
+    if (!Number.isInteger(id)) {
+      return NextResponse.json(
+        {
+          error: "معرف الصلاحية غير صالح.",
+        },
+        { status: 400 }
+      );
+    }
+
+    const admin = createAdminClient();
+
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error:
+            "Supabase server configuration is missing.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const { data, error } = await admin
+      .from("role_permissions")
+      .update({
+        enabled,
+        updated_at: new Date().toISOString(),
+      })
+      .eq("id", id)
+      .select(
+        "id, role, permission, enabled"
+      )
+      .single();
+
+    if (error) {
+      console.error(
+        "ROLE PERMISSIONS UPDATE ERROR:",
+        error
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "تعذر تحديث الصلاحية.",
+          details: error.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      permission: data,
+    });
+  } catch (error) {
+    console.error(
+      "TEAM PERMISSIONS PATCH ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      {
+        error: "حدث خطأ غير متوقع.",
+      },
+      { status: 500 }
+    );
+  }
+}
