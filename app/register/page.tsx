@@ -4,8 +4,16 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
+import { translations, type Language } from "../lib/i18n";
 
 export default function RegisterPage() {
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "/ar";
+  const currentLanguage: Language = pathname.startsWith("/en")
+    ? "en"
+    : pathname.startsWith("/zh")
+      ? "zh"
+      : "ar";
+  const t = translations[currentLanguage].auth;
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
 
@@ -26,22 +34,22 @@ export default function RegisterPage() {
     setMessage("");
 
     if (!name.trim()) {
-      setError("اكتب اسمك أولًا.");
+      setError(t.name);
       return;
     }
 
     if (!email.trim()) {
-      setError("اكتب بريدك الإلكتروني.");
+      setError(t.emailRequired);
       return;
     }
 
     if (password.length < 6) {
-      setError("كلمة المرور يجب أن تكون 6 أحرف على الأقل.");
+      setError(t.passwordShort);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError(t.passwordsMismatch);
       return;
     }
 
@@ -64,7 +72,7 @@ export default function RegisterPage() {
       }
 
       if (!data.user) {
-        setError("تعذر إنشاء الحساب. حاول مرة أخرى.");
+        setError(t.createFailed);
         return;
       }
 
@@ -78,13 +86,13 @@ export default function RegisterPage() {
 
       if (profileError) {
         setError(
-          "تم إنشاء الحساب، لكن تعذر حفظ بيانات الملف الشخصي. حاول تسجيل الدخول ثم المحاولة مرة أخرى."
+          t.profileFailed
         );
         return;
       }
 
       setMessage(
-        "تم إنشاء حسابك بنجاح. تحقق من بريدك الإلكتروني لتأكيد الحساب."
+        t.accountCreated
       );
 
       setName("");
@@ -131,9 +139,9 @@ export default function RegisterPage() {
                 <div className="mb-5 h-[2px] w-10 bg-[#c94a3d]" />
 
                 <h1 className="max-w-[430px] text-4xl font-bold leading-tight">
-                  أهلاً بك في
+                  {t.welcomeBack}
                   <br />
-                  كوكب الصين
+                  {t.toChinaPlanet}
                 </h1>
 
                 <p className="mt-5 max-w-[430px] text-sm leading-7 text-white/70">
@@ -158,11 +166,11 @@ export default function RegisterPage() {
                 <div className="mb-4 h-[2px] w-8 bg-[#c94a3d]" />
 
                 <h2 className="text-3xl font-bold tracking-tight">
-                  إنشاء حساب
+                  {t.registerTitle}
                 </h2>
 
                 <p className="mt-3 text-sm leading-6 text-[#756c64]">
-                  أنشئ حسابك في China Planet واستمتع بتجربة أكثر سهولة.
+                  {t.registerDescription}
                 </p>
               </div>
 
@@ -183,7 +191,7 @@ export default function RegisterPage() {
                     type="text"
                     value={name}
                     onChange={(event) => setName(event.target.value)}
-                    placeholder="اسمك الكامل"
+                    placeholder="{t.fullName}"
                     autoComplete="name"
                     className="w-full rounded-2xl border border-[#ddd4cb] bg-[#faf8f5] px-4 py-3.5 text-sm outline-none transition placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:ring-2 focus:ring-[#c94a3d]/10"
                   />
@@ -288,17 +296,17 @@ export default function RegisterPage() {
                   disabled={loading}
                   className="mt-1 rounded-2xl bg-[#171717] px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? "جاري إنشاء الحساب..." : "إنشاء الحساب"}
+                  {loading ? "{t.creatingAccount}" : "إنشاء الحساب"}
                 </button>
               </form>
 
               <p className="mt-7 text-center text-sm text-[#756c64]">
-                لديك حساب بالفعل؟{" "}
+                {t.hasAccount}{" "}
                 <Link
                   href="/login"
                   className="font-semibold text-[#c94a3d] transition hover:text-[#171717]"
                 >
-                  تسجيل الدخول
+                  {t.login}
                 </Link>
               </p>
             </div>

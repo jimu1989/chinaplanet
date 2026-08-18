@@ -4,8 +4,16 @@ import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
+import { translations, type Language } from "../lib/i18n";
 
 export default function LoginPage() {
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "/ar";
+  const currentLanguage: Language = pathname.startsWith("/en")
+    ? "en"
+    : pathname.startsWith("/zh")
+      ? "zh"
+      : "ar";
+  const t = translations[currentLanguage].auth;
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
 
@@ -19,7 +27,7 @@ export default function LoginPage() {
     setError("");
 
     if (!email.trim()) {
-      setError("اكتب بريدك الإلكتروني أولًا.");
+      setError(t.forgotEmail);
       return;
     }
 
@@ -34,13 +42,13 @@ export default function LoginPage() {
       );
 
       if (error) {
-        setError("تعذر إرسال رابط استعادة كلمة المرور. حاول مرة أخرى.");
+        setError(t.resetFailed);
         return;
       }
 
-      setError("تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.");
+      setError(t.resetSent);
     } catch {
-      setError("حدث خطأ غير متوقع. حاول مرة أخرى.");
+      setError(t.unexpected);
     } finally {
       setLoading(false);
     }
@@ -52,12 +60,12 @@ export default function LoginPage() {
     setError("");
 
     if (!email.trim()) {
-      setError("اكتب بريدك الإلكتروني.");
+      setError(t.emailRequired);
       return;
     }
 
     if (!password) {
-      setError("اكتب كلمة المرور.");
+      setError(t.passwordRequired);
       return;
     }
 
@@ -72,7 +80,7 @@ export default function LoginPage() {
 
       if (loginError) {
         setError(
-          "تعذر تسجيل الدخول. تأكد من البريد وكلمة المرور، وتأكد من تأكيد بريدك الإلكتروني."
+          t.invalidLogin
         );
         return;
       }
@@ -80,7 +88,7 @@ export default function LoginPage() {
       router.push("/account");
       router.refresh();
     } catch {
-      setError("حدث خطأ غير متوقع. حاول مرة أخرى.");
+      setError(t.unexpected);
     } finally {
       setLoading(false);
     }
@@ -115,9 +123,9 @@ export default function LoginPage() {
                 <div className="mb-5 h-[2px] w-10 bg-[#c94a3d]" />
 
                 <h1 className="max-w-[430px] text-4xl font-bold leading-tight">
-                  مرحبًا بعودتك
+                  {t.welcomeBack}
                   <br />
-                  إلى كوكب الصين
+                  {t.toChinaPlanet}
                 </h1>
 
                 <p className="mt-5 max-w-[430px] text-sm leading-7 text-white/70">
@@ -135,18 +143,18 @@ export default function LoginPage() {
                 href="/"
                 className="text-xs text-[#8a8179] transition hover:text-[#c94a3d]"
               >
-                ← العودة إلى الرئيسية
+                {t.backHome}
               </Link>
 
               <div className="mt-10">
                 <div className="mb-4 h-[2px] w-8 bg-[#c94a3d]" />
 
                 <h2 className="text-3xl font-bold tracking-tight">
-                  تسجيل الدخول
+                  {t.loginTitle}
                 </h2>
 
                 <p className="mt-3 text-sm leading-6 text-[#756c64]">
-                  أدخل بيانات حسابك للمتابعة.
+                  {t.loginDescription}
                 </p>
               </div>
 
@@ -160,7 +168,7 @@ export default function LoginPage() {
                     htmlFor="email"
                     className="mb-2 block text-xs font-semibold text-[#554d46]"
                   >
-                    البريد الإلكتروني
+                    {t.email}
                   </label>
 
                   <input
@@ -182,7 +190,7 @@ export default function LoginPage() {
                       htmlFor="password"
                       className="block text-xs font-semibold text-[#554d46]"
                     >
-                      كلمة المرور
+                      {t.password}
                     </label>
 
                     <button
@@ -190,7 +198,7 @@ export default function LoginPage() {
                       className="text-[11px] text-[#8a8179] transition hover:text-[#c94a3d]"
                       onClick={handleForgotPassword}
                     >
-                      نسيت كلمة المرور؟
+                      نسيت {t.password}؟
                     </button>
                   </div>
 
@@ -219,17 +227,17 @@ export default function LoginPage() {
                   disabled={loading}
                   className="mt-1 rounded-2xl bg-[#171717] px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+                  {loading ? "جاري {t.loginTitle}..." : "{t.loginTitle}"}
                 </button>
               </form>
 
               <p className="mt-7 text-center text-sm text-[#756c64]">
-                ليس لديك حساب؟{" "}
+                {t.noAccount}{" "}
                 <Link
                   href="/register"
                   className="font-semibold text-[#c94a3d] transition hover:text-[#171717]"
                 >
-                  إنشاء حساب
+                  {t.createAccount}
                 </Link>
               </p>
             </div>

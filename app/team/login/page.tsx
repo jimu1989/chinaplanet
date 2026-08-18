@@ -4,8 +4,16 @@ import Image from "next/image";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "../../../lib/supabase-browser";
+import { translations, type Language } from "../../lib/i18n";
 
 export default function TeamLoginPage() {
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "/team/login";
+  const currentLanguage: Language = pathname.startsWith("/en")
+    ? "en"
+    : pathname.startsWith("/zh")
+      ? "zh"
+      : "ar";
+  const t = translations[currentLanguage].auth;
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
 
@@ -19,12 +27,12 @@ export default function TeamLoginPage() {
     setError("");
 
     if (!email.trim()) {
-      setError("اكتب بريدك الإلكتروني.");
+      setError(t.emailRequired);
       return;
     }
 
     if (!password) {
-      setError("اكتب كلمة المرور.");
+      setError(t.passwordRequired);
       return;
     }
 
@@ -53,7 +61,7 @@ export default function TeamLoginPage() {
       } = await supabase.auth.getUser();
 
       if (!user) {
-        setError("تعذر التحقق من الحساب.");
+        setError(t.accountCheckFailed);
         return;
       }
 
@@ -75,14 +83,14 @@ export default function TeamLoginPage() {
 
       if (!profile?.role || !teamRoles.includes(profile.role)) {
         await supabase.auth.signOut();
-        setError("هذا الحساب ليس لديه صلاحية دخول الفريق.");
+        setError(t.teamDenied);
         return;
       }
 
       router.push("/team");
       router.refresh();
     } catch {
-      setError("حدث خطأ غير متوقع. حاول مرة أخرى.");
+      setError(t.unexpected);
     } finally {
       setLoading(false);
     }
@@ -133,7 +141,7 @@ export default function TeamLoginPage() {
                 </h1>
 
                 <p className="mt-5 max-w-[430px] text-sm leading-7 text-white/70">
-                  مساحة خاصة لفريق كوكب الصين لإدارة المشروع والعمل على
+                  {t.teamBrandDescription}
                   تطوير الخدمات والمحتوى والتجربة.
                 </p>
               </div>
@@ -226,13 +234,13 @@ export default function TeamLoginPage() {
                   disabled={loading}
                   className="mt-1 rounded-2xl bg-[#171717] px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? "جاري التحقق..." : "دخول الفريق"}
+                  {loading ? "{t.teamLoginLoading}" : "دخول الفريق"}
                 </button>
               </form>
 
               <div className="mt-8 flex items-center justify-center gap-3 text-[10px] text-[#a69c93]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#4d8060]" />
-                مساحة آمنة لأعضاء الفريق
+                {t.teamSecure}
               </div>
 
             </div>

@@ -3,8 +3,16 @@
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
+import { translations, type Language } from "../lib/i18n";
 
 export default function ResetPasswordPage() {
+  const pathname = typeof window !== "undefined" ? window.location.pathname : "/ar";
+  const currentLanguage: Language = pathname.startsWith("/en")
+    ? "en"
+    : pathname.startsWith("/zh")
+      ? "zh"
+      : "ar";
+  const t = translations[currentLanguage].auth;
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
 
@@ -21,12 +29,12 @@ export default function ResetPasswordPage() {
     setMessage("");
 
     if (password.length < 6) {
-      setError("كلمة المرور يجب أن تكون 6 أحرف على الأقل.");
+      setError(t.passwordShort);
       return;
     }
 
     if (password !== confirmPassword) {
-      setError("كلمتا المرور غير متطابقتين.");
+      setError(t.passwordsMismatch);
       return;
     }
 
@@ -38,17 +46,17 @@ export default function ResetPasswordPage() {
       });
 
       if (error) {
-        setError("تعذر تغيير كلمة المرور. قد يكون رابط الاستعادة منتهي الصلاحية.");
+        setError(t.resetFailedExpired);
         return;
       }
 
-      setMessage("تم تغيير كلمة المرور بنجاح. سيتم تحويلك لتسجيل الدخول.");
+      setMessage(t.resetSuccess);
 
       setTimeout(() => {
         router.push("/login");
       }, 2000);
     } catch {
-      setError("حدث خطأ غير متوقع. حاول مرة أخرى.");
+      setError(t.unexpected);
     } finally {
       setLoading(false);
     }
@@ -65,11 +73,11 @@ export default function ResetPasswordPage() {
           <div className="mb-5 h-[2px] w-8 bg-[#c94a3d]" />
 
           <h1 className="text-3xl font-bold">
-            تغيير كلمة المرور
+            {t.resetTitle}
           </h1>
 
           <p className="mt-3 text-sm leading-7 text-[#756c64]">
-            أدخل كلمة المرور الجديدة لحسابك.
+            {t.resetDescription}
           </p>
 
           <form onSubmit={handleResetPassword} className="mt-8 grid gap-5">
@@ -79,7 +87,7 @@ export default function ResetPasswordPage() {
                 htmlFor="password"
                 className="mb-2 block text-xs font-semibold text-[#554d46]"
               >
-                كلمة المرور الجديدة
+                {t.newPassword}
               </label>
 
               <input
@@ -99,7 +107,7 @@ export default function ResetPasswordPage() {
                 htmlFor="confirmPassword"
                 className="mb-2 block text-xs font-semibold text-[#554d46]"
               >
-                تأكيد كلمة المرور
+                {t.confirmPassword}
               </label>
 
               <input
@@ -131,7 +139,7 @@ export default function ResetPasswordPage() {
               disabled={loading}
               className="rounded-2xl bg-[#171717] px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
             >
-              {loading ? "جاري تغيير كلمة المرور..." : "تغيير كلمة المرور"}
+              {loading ? "جاري {t.resetTitle}..." : "{t.resetTitle}"}
             </button>
 
           </form>

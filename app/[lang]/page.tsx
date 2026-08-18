@@ -10,10 +10,16 @@ import Testimonials from "../components/Testimonials";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 
-import { isLanguage, languages, type Language } from "../lib/i18n";
+import {
+  isLanguage,
+  languages,
+  type Language,
+} from "../lib/i18n";
 
 export async function generateStaticParams() {
-  return Object.keys(languages).map((lang) => ({ lang }));
+  return Object.keys(languages).map((lang) => ({
+    lang,
+  }));
 }
 
 export default async function LocalizedHomePage({

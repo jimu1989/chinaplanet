@@ -1,27 +1,32 @@
 import type { Language } from "../lib/i18n";
+import { translations } from "../lib/i18n";
 import { siteConfig } from "../lib/site";
-
-const footerLinks = [
-  { label: "الرئيسية", href: "#home" },
-  { label: "الخدمات", href: "#services" },
-  { label: "الوجهات", href: "#destinations" },
-  { label: "لماذا نحن", href: "#why-us" },
-  { label: "تواصل معنا", href: "#contact" },
-];
 
 export default function Footer({
   language = "ar",
 }: {
   language?: Language;
 }) {
+  const t = translations[language];
+  const isArabic = language === "ar";
+
+  const footerLinks = [
+    { label: t.nav.home, href: "#home" },
+    { label: t.nav.services, href: "#services" },
+    { label: t.nav.destinations, href: "#destinations" },
+    { label: t.nav.whyUs, href: "#why-us" },
+    { label: t.nav.contact, href: "#contact" },
+  ];
+
   const whatsappUrl = `https://wa.me/${siteConfig.contact.whatsapp}`;
 
   return (
-    <footer className="border-t border-[#e7e0d8] bg-[#f7f4ee] text-[#171717]">
+    <footer
+      dir={isArabic ? "rtl" : "ltr"}
+      className="border-t border-[#e7e0d8] bg-[#f7f4ee] text-[#171717]"
+    >
       <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr]">
-
-          {/* BRAND */}
           <div>
             <a
               href="#home"
@@ -37,15 +42,22 @@ export default function Footer({
             </a>
 
             <p className="mt-6 max-w-[380px] text-sm leading-7 text-[#6b625b]">
-              كوكب الصين — بوابتك الموثوقة لاكتشاف الصين،
-              خدماتها، وجهاتها، وفرصها.
+              {language === "ar" &&
+                "كوكب الصين — بوابتك الموثوقة لاكتشاف الصين، خدماتها، وجهاتها، وفرصها."}
+
+              {language === "en" &&
+                "China Planet — your trusted gateway to discovering China, its services, destinations, and opportunities."}
+
+              {language === "zh" &&
+                "中国星球——探索中国、了解其服务、目的地与商机的可靠门户。"}
             </p>
           </div>
 
-          {/* LINKS */}
           <div>
             <h3 className="mb-5 text-sm font-semibold text-[#171717]">
-              روابط سريعة
+              {language === "ar" && "روابط سريعة"}
+              {language === "en" && "Quick Links"}
+              {language === "zh" && "快速链接"}
             </h3>
 
             <nav className="grid gap-3">
@@ -61,10 +73,9 @@ export default function Footer({
             </nav>
           </div>
 
-          {/* CONTACT */}
           <div>
             <h3 className="mb-5 text-sm font-semibold text-[#171717]">
-              تواصل معنا
+              {t.nav.contact}
             </h3>
 
             <div className="grid gap-4">
@@ -74,7 +85,7 @@ export default function Footer({
                 rel="noopener noreferrer"
                 className="text-sm text-[#6b625b] transition-colors duration-300 hover:text-[#c94a3d]"
               >
-                واتساب
+                {t.footer.whatsapp}
               </a>
 
               <a
@@ -87,10 +98,12 @@ export default function Footer({
           </div>
         </div>
 
-        {/* BOTTOM */}
         <div className="mt-14 flex flex-col gap-4 border-t border-[#e2d9cf] pt-6 text-xs text-[#8a8179] md:flex-row md:items-center md:justify-between">
           <p>
-            © {new Date().getFullYear()} China Planet. جميع الحقوق محفوظة.
+            © {new Date().getFullYear()} China Planet.{" "}
+            {language === "ar" && "جميع الحقوق محفوظة."}
+            {language === "en" && "All rights reserved."}
+            {language === "zh" && "版权所有。"}
           </p>
 
           <div className="flex gap-5">
@@ -98,14 +111,18 @@ export default function Footer({
               href="/privacy"
               className="transition-colors duration-300 hover:text-[#c94a3d]"
             >
-              الخصوصية
+              {language === "ar" && "الخصوصية"}
+              {language === "en" && "Privacy"}
+              {language === "zh" && "隐私政策"}
             </a>
 
             <a
               href="/terms"
               className="transition-colors duration-300 hover:text-[#c94a3d]"
             >
-              الشروط والأحكام
+              {language === "ar" && "الشروط والأحكام"}
+              {language === "en" && "Terms & Conditions"}
+              {language === "zh" && "条款与条件"}
             </a>
           </div>
         </div>

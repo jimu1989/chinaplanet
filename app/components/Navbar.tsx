@@ -1,23 +1,18 @@
 "use client";
 
-import { languages, type Language } from "../lib/i18n";
-
-
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  languages,
+  translations,
+  type Language,
+} from "../lib/i18n";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
 
-const links = [
-  { label: "الرئيسية", href: "#home" },
-  { label: "الخدمات", href: "#services" },
-  { label: "الوجهات", href: "#destinations" },
-  { label: "لماذا نحن", href: "#why-us" },
-  { label: "تواصل معنا", href: "#contact" },
-];
-
 const WHATSAPP_NUMBER = "966560406506";
+const LANGUAGE_COOKIE = "china-planet-language";
 
 export default function Navbar({
   language = "ar",
@@ -26,16 +21,34 @@ export default function Navbar({
 }) {
   const router = useRouter();
   const pathname = usePathname();
-  const currentLanguage: Language = pathname.startsWith("/en")
-    ? "en"
-    : pathname.startsWith("/zh")
-      ? "zh"
-      : "ar";
 
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
+
+  const currentLanguage: Language =
+    pathname.startsWith("/en")
+      ? "en"
+      : pathname.startsWith("/zh")
+        ? "zh"
+        : pathname.startsWith("/ar")
+          ? "ar"
+          : language;
+
+  const t = translations[currentLanguage].nav;
+
+  const links = [
+    { label: t.home, href: "#home" },
+    { label: t.services, href: "#services" },
+    { label: t.destinations, href: "#destinations" },
+    { label: t.whyUs, href: "#why-us" },
+    { label: t.contact, href: "#contact" },
+  ];
+
+  useEffect(() => {
+    document.cookie = `${LANGUAGE_COOKIE}=${currentLanguage}; path=/; max-age=31536000; samesite=lax`;
+  }, [currentLanguage]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -77,7 +90,34 @@ export default function Navbar({
     };
   }, []);
 
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}`;
+  function localizedPath(lang: Language) {
+    const cleanPath =
+      pathname.replace(/^\/(ar|en|zh)/, "") || "/";
+
+    if (lang === "ar") {
+      return `/ar${cleanPath === "/" ? "" : cleanPath}`;
+    }
+
+    return `/${lang}${cleanPath === "/" ? "" : cleanPath}`;
+  }
+
+  function saveLanguage(lang: Language) {
+    document.cookie = `${LANGUAGE_COOKIE}=${lang}; path=/; max-age=31536000; samesite=lax`;
+  }
+
+  function handleLanguageChange(lang: Language) {
+    saveLanguage(lang);
+    setOpen(false);
+
+    const target = localizedPath(lang);
+
+    router.push(target);
+    router.refresh();
+  }
+
+  function accountPath() {
+    return `/account?lang=${currentLanguage}`;
+  }
 
   async function handleSignOut() {
     const supabase = createSupabaseBrowserClient();
@@ -87,9 +127,11 @@ export default function Navbar({
     setUserEmail(null);
     setOpen(false);
 
-    router.push("/");
+    router.push(localizedPath(currentLanguage));
     router.refresh();
   }
+
+  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}`;
 
   return (
     <header
@@ -100,10 +142,9 @@ export default function Navbar({
       }`}
     >
       <div className="mx-auto flex h-[76px] max-w-[1250px] items-center justify-between px-5 lg:px-8">
-
         {/* LOGO */}
         <Link
-          href="/"
+          href={localizedPath(currentLanguage)}
           onClick={() => setOpen(false)}
           className="shrink-0"
         >
@@ -130,49 +171,42 @@ export default function Navbar({
           ))}
         </nav>
 
-        {/* LANGUAGE SWITCHER */}
+        {/* LANGUAGES */}
         <div className="hidden items-center gap-1 lg:flex">
-          {(Object.keys(languages) as Language[]).map((language) => {
-            const active = currentLanguage === language;
+          {(Object.keys(languages) as Language[]).map((lang) => {
+            const active = currentLanguage === lang;
 
             return (
               <button
-                key={language}
+                key={lang}
                 type="button"
-                onClick={() => {
-                  const cleanPath = pathname.replace(/^\/(ar|en|zh)/, "") || "/";
-                  router.push(
-                    language === "ar"
-                      ? cleanPath
-                      : `/${language}${cleanPath}`
-                  );
-                }}
+                onClick={() => handleLanguageChange(lang)}
                 className={`rounded-full px-3 py-2 text-[10px] font-semibold transition ${
                   active
                     ? "bg-[#c94a3d] text-white"
                     : "text-[#786e65] hover:bg-[#f3f0eb]"
                 }`}
               >
-                {languages[language].short}
+                {languages[lang].short}
               </button>
             );
           })}
         </div>
 
-        {/* DESKTOP ACTIONS */}
+        {/* DESKTOP ACCOUNT AREA */}
         <div className="hidden items-center gap-3 lg:flex">
           {!loadingUser && userEmail ? (
             <>
               <Link
-                href="/account"
+                href={accountPath()}
                 className="rounded-full border border-[#cdbfb4] px-5 py-2.5 text-[11px] font-semibold text-[#554d46] transition-all hover:border-[#c94a3d] hover:text-[#c94a3d]"
               >
-                حسابي
+                {t.account}
               </Link>
 
               <button
                 type="button"
-                aria-label="فتح القائمة"
+                aria-label={t.menu}
                 aria-expanded={open}
                 onClick={() => setOpen((value) => !value)}
                 className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all ${
@@ -187,28 +221,29 @@ export default function Navbar({
           ) : (
             <>
               <Link
-                href="/login"
+                href={`/login?lang=${currentLanguage}`}
                 className="text-[11px] font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
               >
-                تسجيل الدخول
-              </Link>
-              <Link
-                href="/team/login"
-                className="text-[11px] font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
-              >
-                دخول الفريق
+                {t.login}
               </Link>
 
               <Link
-                href="/register"
-                className="rounded-full bg-[#c94a3d] px-5 py-2.5 text-[11px] font-semibold text-white shadow-sm transition-all duration-300 hover:bg-[#b83e33] hover:shadow-md"
+                href={`/team/login?lang=${currentLanguage}`}
+                className="text-[11px] font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
               >
-                إنشاء حساب
+                {t.team}
+              </Link>
+
+              <Link
+                href={`/register?lang=${currentLanguage}`}
+                className="rounded-full bg-[#c94a3d] px-6 py-3 text-[12px] font-bold text-white shadow-sm transition-all duration-300 hover:bg-[#b83e33] hover:shadow-md"
+              >
+                {t.register}
               </Link>
 
               <button
                 type="button"
-                aria-label="فتح القائمة"
+                aria-label={t.menu}
                 aria-expanded={open}
                 onClick={() => setOpen((value) => !value)}
                 className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all ${
@@ -226,7 +261,7 @@ export default function Navbar({
         {/* MOBILE MENU BUTTON */}
         <button
           type="button"
-          aria-label="فتح القائمة"
+          aria-label={t.menu}
           aria-expanded={open}
           onClick={() => setOpen((value) => !value)}
           className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all lg:hidden ${
@@ -239,133 +274,101 @@ export default function Navbar({
         </button>
       </div>
 
-      {/* MENU PANEL */}
+      {/* MOBILE MENU */}
       {open && (
-        <div className="absolute inset-x-0 top-[76px] border-t border-[#e7e0d8] bg-[#f8f6f2]/98 shadow-[0_20px_50px_rgba(30,20,10,0.08)] backdrop-blur-xl">
-          <div className="mx-auto max-w-[1250px] px-5 py-7 lg:px-8">
+        <div className="border-t border-[#e5ddd5] bg-[#f8f6f2] px-5 py-5 lg:hidden">
+          <nav className="flex flex-col gap-4">
+            {links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="text-sm font-medium text-[#554d46]"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-            <div className="grid gap-8 lg:grid-cols-[1fr_auto]">
+          {/* MOBILE LANGUAGES */}
+          <div className="mt-5 flex gap-2 border-t border-[#e5ddd5] pt-5">
+            {(Object.keys(languages) as Language[]).map((lang) => (
+              <button
+                key={lang}
+                type="button"
+                onClick={() => handleLanguageChange(lang)}
+                className={`rounded-full px-4 py-2 text-xs font-semibold ${
+                  currentLanguage === lang
+                    ? "bg-[#c94a3d] text-white"
+                    : "bg-[#eeeae4] text-[#554d46]"
+                }`}
+              >
+                {languages[lang].short}
+              </button>
+            ))}
+          </div>
 
-              {/* LINKS */}
-              <div>
-                <p className="mb-5 text-[10px] font-semibold tracking-[0.25em] text-[#9a9189]">
-                  CHINA PLANET
-                </p>
+          {/* MOBILE ACCOUNT */}
+          <div className="mt-5 flex flex-col gap-3 border-t border-[#e5ddd5] pt-5">
+            {!loadingUser && userEmail ? (
+              <>
+                <Link
+                  href={accountPath()}
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-semibold text-[#554d46]"
+                >
+                  {t.account}
+                </Link>
 
-                <div className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
-                  {links.map((link) => (
-                    <a
-                      key={link.href}
-                      href={link.href}
-                      onClick={() => setOpen(false)}
-                      className="group flex items-center justify-between border-b border-[#e7e0d8] py-4 text-sm font-medium text-[#554d46] transition hover:text-[#c94a3d]"
-                    >
-                      <span>{link.label}</span>
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="text-start text-sm font-semibold text-[#c94a3d]"
+                >
+                  {currentLanguage === "en"
+                    ? "Logout"
+                    : currentLanguage === "zh"
+                      ? "退出登录"
+                      : "تسجيل الخروج"}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href={`/login?lang=${currentLanguage}`}
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-semibold text-[#554d46]"
+                >
+                  {t.login}
+                </Link>
 
-                      <span className="translate-x-2 opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-100">
-                        →
-                      </span>
-                    </a>
-                  ))}
-                </div>
-              </div>
+                <Link
+                  href={`/team/login?lang=${currentLanguage}`}
+                  onClick={() => setOpen(false)}
+                  className="text-sm font-semibold text-[#554d46]"
+                >
+                  {t.team}
+                </Link>
 
-              {/* ACCOUNT PANEL */}
-              <div className="min-w-[250px] rounded-[24px] bg-[#171717] p-6 text-white">
-
-                {userEmail ? (
-                  <>
-                    <p className="text-[10px] tracking-[0.2em] text-white/40">
-                      MEMBER AREA
-                    </p>
-
-                    <h3 className="mt-3 text-lg font-bold">
-                      حسابك
-                    </h3>
-
-                    <p
-                      dir="ltr"
-                      className="mt-2 truncate text-xs text-white/60"
-                    >
-                      {userEmail}
-                    </p>
-
-                    <div className="mt-6 grid gap-2">
-                      <Link
-                        href="/account"
-                        onClick={() => setOpen(false)}
-                        className="rounded-xl bg-white px-4 py-3 text-center text-xs font-semibold text-[#171717] transition hover:bg-[#c94a3d] hover:text-white"
-                      >
-                        الذهاب إلى حسابي
-                      </Link>
-
-                      <button
-                        type="button"
-                        onClick={handleSignOut}
-                        className="rounded-xl border border-white/15 px-4 py-3 text-xs font-semibold text-white/70 transition hover:border-[#c94a3d] hover:text-white"
-                      >
-                        تسجيل الخروج
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <p className="text-[10px] tracking-[0.2em] text-white/40">
-                      CHINA PLANET MEMBERS
-                    </p>
-
-                    <h3 className="mt-3 text-lg font-bold">
-                      انضم إلى كوكب الصين
-                    </h3>
-
-                    <p className="mt-2 text-xs leading-6 text-white/55">
-                      أنشئ حسابك للوصول إلى تجربة وخدمات أكثر سهولة.
-                    </p>
-
-                    <div className="mt-6 grid gap-2">
-
-                      {/* LOGIN */}
-                      <Link
-                        href="/login"
-                        onClick={() => setOpen(false)}
-                        className="rounded-xl border border-[#cdbfb4] bg-[#f8f6f2] px-4 py-3 text-center text-xs font-semibold !text-[#554d46] transition-all duration-300 hover:border-[#c94a3d] hover:!text-[#c94a3d]"
-                      >
-                        تسجيل الدخول
-                      </Link>
-
-                      {/* REGISTER */}
-                      <Link
-                        href="/register"
-                        onClick={() => setOpen(false)}
-                        className="rounded-xl border border-white/15 px-4 py-3 text-center text-xs font-semibold text-white/80 transition hover:border-[#c94a3d] hover:text-white"
-                      >
-                        إنشاء حساب
-                      </Link>
-
-                    </div>
-                  </>
-                )}
-              </div>
-            </div>
+                <Link
+                  href={`/register?lang=${currentLanguage}`}
+                  onClick={() => setOpen(false)}
+                  className="rounded-full bg-[#c94a3d] px-5 py-3 text-center text-sm font-bold text-white shadow-sm transition hover:bg-[#b83e33]"
+                >
+                  {t.register}
+                </Link>
+              </>
+            )}
 
             {/* WHATSAPP */}
-            <div className="mt-7 flex flex-col gap-4 border-t border-[#e7e0d8] pt-6 sm:flex-row sm:items-center sm:justify-between">
-
-              <p className="text-xs text-[#8a8179]">
-                تحتاج مساعدة؟ تواصل معنا مباشرة.
-              </p>
-
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => setOpen(false)}
-                className="inline-flex items-center justify-center rounded-full border border-[#cdbfb4] px-6 py-3 text-xs font-semibold text-[#554d46] transition hover:border-[#c94a3d] hover:text-[#c94a3d]"
-              >
-                تواصل معنا عبر واتساب
-              </a>
-
-            </div>
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full border border-[#cdbfb4] px-5 py-3 text-center text-sm font-semibold text-[#554d46] transition hover:border-[#c94a3d] hover:text-[#c94a3d]"
+            >
+              {translations[currentLanguage].footer.whatsapp}
+            </a>
           </div>
         </div>
       )}

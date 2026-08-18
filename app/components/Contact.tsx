@@ -1,7 +1,6 @@
 "use client";
 
 import type { Language } from "../lib/i18n";
-
 import { useState } from "react";
 import { siteConfig } from "../lib/site";
 
@@ -23,6 +22,8 @@ export default function Contact({
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");
 
+  const isArabic = language === "ar";
+
   const handleWhatsApp = () => {
     const customerName = name.trim() || "عميل";
     const selectedService = service || "استفسار عام";
@@ -42,17 +43,20 @@ export default function Contact({
       "أرسلت هذا الطلب من موقع كوكب الصين.",
     ].join("\n");
 
-    const whatsappUrl = `https://wa.me/${
-      siteConfig.contact.whatsapp
-    }?text=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent(
+      message
+    )}`;
 
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
   return (
-    <section id="contact" className="cp-section bg-[#f8f6f2]">
+    <section
+      id="contact"
+      dir={isArabic ? "rtl" : "ltr"}
+      className="cp-section bg-[#f8f6f2]"
+    >
       <div className="cp-container">
-        {/* HEADER */}
         <div className="max-w-3xl">
           <div className="flex items-center gap-3">
             <span className="h-px w-10 bg-[#c94a3d]" />
@@ -72,9 +76,7 @@ export default function Contact({
           </p>
         </div>
 
-        {/* CONTENT */}
         <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_0.72fr] lg:items-start lg:gap-24">
-          {/* FORM */}
           <div className="rounded-[32px] bg-white p-7 shadow-[0_20px_70px_rgba(40,30,20,0.045)] sm:p-10 lg:p-12">
             <div className="mb-10">
               <p className="text-[10px] font-semibold tracking-[0.25em] text-[#b5966c]">
@@ -87,7 +89,6 @@ export default function Contact({
             </div>
 
             <div className="grid gap-8">
-              {/* NAME */}
               <div>
                 <label
                   htmlFor="contact-name"
@@ -107,7 +108,6 @@ export default function Contact({
                 />
               </div>
 
-              {/* SERVICE */}
               <div>
                 <div className="mb-4">
                   <p className="text-xs font-semibold text-[#554d46]">
@@ -154,7 +154,6 @@ export default function Contact({
                 </div>
               </div>
 
-              {/* DETAILS */}
               <div>
                 <label
                   htmlFor="contact-details"
@@ -173,7 +172,6 @@ export default function Contact({
                 />
               </div>
 
-              {/* WHATSAPP */}
               <div className="pt-1">
                 <button
                   type="button"
@@ -181,6 +179,7 @@ export default function Contact({
                   className="group flex min-h-[58px] w-full items-center justify-center gap-3 rounded-2xl bg-[#171717] px-7 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] hover:shadow-[0_12px_30px_rgba(201,74,61,0.16)]"
                 >
                   <span>تواصل معنا عبر واتساب</span>
+
                   <span className="text-base transition-transform duration-300 group-hover:-translate-x-1">
                     ←
                   </span>
@@ -193,10 +192,10 @@ export default function Contact({
             </div>
           </div>
 
-          {/* CONTACT INFO */}
           <div className="lg:pt-10">
             <div className="flex items-center gap-3">
               <span className="h-px w-10 bg-[#c94a3d]" />
+
               <span className="text-[10px] font-semibold tracking-[0.28em] text-[#9a9087]">
                 CHINA PLANET
               </span>
@@ -209,14 +208,11 @@ export default function Contact({
             </h3>
 
             <p className="mt-6 max-w-md text-sm leading-8 text-[#786e65]">
-              سواء كنت تخطط للسفر أو الدراسة، أو تبحث عن فرصة
-              تجارية في الصين، تحدث معنا مباشرة وسنساعدك في
-              الخطوة التالية.
+              سواء كنت تخطط للسفر أو الدراسة، أو تبحث عن فرصة تجارية في الصين،
+              تحدث معنا مباشرة وسنساعدك في الخطوة التالية.
             </p>
 
             <div className="mt-10 border-t border-[#ded7d0]">
-
-              {/* PHONE */}
               <a
                 href={`tel:${siteConfig.contact.phone}`}
                 className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
@@ -242,6 +238,7 @@ export default function Contact({
                     <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
                       PHONE
                     </p>
+
                     <p className="mt-1 text-sm font-semibold text-[#302c28] transition-colors duration-300 group-hover:text-[#c94a3d]">
                       اتصل بنا
                     </p>
@@ -253,7 +250,6 @@ export default function Contact({
                 </span>
               </a>
 
-              {/* EMAIL */}
               <a
                 href={`mailto:${siteConfig.contact.email}`}
                 className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
@@ -274,6 +270,7 @@ export default function Contact({
                         height="14"
                         rx="2"
                       />
+
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -286,6 +283,7 @@ export default function Contact({
                     <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
                       EMAIL
                     </p>
+
                     <p className="mt-1 text-sm font-semibold text-[#302c28] transition-colors duration-300 group-hover:text-[#c94a3d]">
                       راسلنا عبر البريد
                     </p>
@@ -297,7 +295,6 @@ export default function Contact({
                 </span>
               </a>
 
-              {/* WHATSAPP */}
               <a
                 href={`https://wa.me/${siteConfig.contact.whatsapp}`}
                 target="_blank"
@@ -318,6 +315,7 @@ export default function Contact({
                         strokeLinejoin="round"
                         d="M20.3 3.7A10.7 10.7 0 0 0 3.2 16.8L2.5 21.5l4.8-1.2A10.7 10.7 0 1 0 20.3 3.7Z"
                       />
+
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -330,6 +328,7 @@ export default function Contact({
                     <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
                       WHATSAPP
                     </p>
+
                     <p className="mt-1 text-sm font-semibold text-[#302c28] transition-colors duration-300 group-hover:text-[#c94a3d]">
                       تواصل معنا مباشرة
                     </p>
@@ -340,7 +339,6 @@ export default function Contact({
                   ←
                 </span>
               </a>
-
             </div>
 
             <div className="mt-8 flex items-center gap-3 text-[10px] font-medium tracking-[0.15em] text-[#9a9087]">
