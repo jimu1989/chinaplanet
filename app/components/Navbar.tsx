@@ -3,8 +3,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
+import { languages, type Language } from "../lib/i18n";
 
 const links = [
   { label: "الرئيسية", href: "#home" },
@@ -18,6 +19,12 @@ const WHATSAPP_NUMBER = "966560406506";
 
 export default function Navbar() {
   const router = useRouter();
+  const pathname = usePathname();
+  const currentLanguage: Language = pathname.startsWith("/en")
+    ? "en"
+    : pathname.startsWith("/zh")
+      ? "zh"
+      : "ar";
 
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -116,6 +123,35 @@ export default function Navbar() {
             </a>
           ))}
         </nav>
+
+        {/* LANGUAGE SWITCHER */}
+        <div className="hidden items-center gap-1 lg:flex">
+          {(Object.keys(languages) as Language[]).map((language) => {
+            const active = currentLanguage === language;
+
+            return (
+              <button
+                key={language}
+                type="button"
+                onClick={() => {
+                  const cleanPath = pathname.replace(/^\/(ar|en|zh)/, "") || "/";
+                  router.push(
+                    language === "ar"
+                      ? cleanPath
+                      : `/${language}${cleanPath}`
+                  );
+                }}
+                className={`rounded-full px-3 py-2 text-[10px] font-semibold transition ${
+                  active
+                    ? "bg-[#c94a3d] text-white"
+                    : "text-[#786e65] hover:bg-[#f3f0eb]"
+                }`}
+              >
+                {languages[language].short}
+              </button>
+            );
+          })}
+        </div>
 
         {/* DESKTOP ACTIONS */}
         <div className="hidden items-center gap-3 lg:flex">
