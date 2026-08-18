@@ -150,6 +150,12 @@ export default function Navbar() {
               >
                 تسجيل الدخول
               </Link>
+              <Link
+                href="/team/login"
+                className="text-[11px] font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
+              >
+                دخول الفريق
+              </Link>
 
               <Link
                 href="/register"
