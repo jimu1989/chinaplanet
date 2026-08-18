@@ -98,12 +98,12 @@ export default async function TeamPage() {
               width={180}
               height={65}
               priority
-              className="h-[65px] w-[180px] object-contain object-right"
+              className="h-auto w-[150px] object-contain sm:w-[180px] lg:w-[220px]"
             />
 
             <Link
               href="/auth/signout"
-              className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-xs font-semibold text-white backdrop-blur-sm transition hover:border-[#c94a3d] hover:bg-[#c94a3d]"
+              className="rounded-full border border-white/20 bg-white/10 px-6 py-3 text-xs font-semibold text-white backdrop-blur-sm transition hover:bg-white/15"
             >
               تسجيل الخروج
             </Link>
@@ -227,7 +227,7 @@ export default async function TeamPage() {
 
             {isAdmin && (
               <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
-                <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                   01
                 </span>
 
@@ -247,7 +247,7 @@ export default async function TeamPage() {
 
             {isDeveloper && (
               <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
-                <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                   02
                 </span>
 
@@ -334,7 +334,7 @@ export default async function TeamPage() {
 
             <div className="relative z-10 max-w-3xl">
 
-              <p className="text-[10px] font-semibold tracking-[0.3em] text-[#c94a3d]">
+              <p className="text-[10px] font-semibold tracking-[0.3em] text-[#b5966c]">
                 EXECUTIVE ACCESS
               </p>
 
@@ -376,14 +376,14 @@ export default async function TeamPage() {
           <div className="flex items-center gap-5">
             <Link
               href="/"
-              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#b5966c]"
             >
               الرئيسية
             </Link>
 
             <Link
               href="/account"
-              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#b5966c]"
             >
               حسابي
             </Link>

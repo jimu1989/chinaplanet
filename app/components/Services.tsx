@@ -109,6 +109,14 @@ export default function Services() {
       <div className="cp-container">
 
         <div className="mx-auto max-w-2xl text-center">
+          <div className="mb-6 flex justify-center">
+            <img
+              src="/images/china-planet-logo.png"
+              alt="China Planet"
+              className="h-auto w-[140px] object-contain"
+            />
+          </div>
+
           <div className="flex items-center justify-center gap-3">
             <span className="cp-line" />
 

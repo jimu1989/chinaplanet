@@ -27,6 +27,7 @@ export default function TeamMembersPage() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [message, setMessage] = useState("");
 
   const [fullName, setFullName] = useState("");
@@ -59,7 +60,6 @@ export default function TeamMembersPage() {
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     setMessage("");
 
     if (!fullName.trim() || !email.trim() || !password) {
@@ -121,12 +121,58 @@ export default function TeamMembersPage() {
     }
   }
 
+  async function handleDelete(member: Member) {
+    const memberName =
+      member.full_name || member.email || "هذا العضو";
+
+    const confirmed = window.confirm(
+      "هل أنت متأكد من حذف " +
+        memberName +
+        "؟\n\nسيتم حذف حسابه نهائيًا ولا يمكن التراجع عن العملية."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeletingId(member.id);
+    setMessage("");
+
+    try {
+      const response = await fetch("/api/team/members", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: member.id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setMessage(data.error || "تعذر حذف العضو.");
+        return;
+      }
+
+      setMembers((current) =>
+        current.filter((item) => item.id !== member.id)
+      );
+
+      setMessage("تم حذف العضو بنجاح.");
+    } catch {
+      setMessage("حدث خطأ أثناء حذف العضو.");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
   return (
     <main
       dir="rtl"
       className="min-h-screen bg-[#f7f4ee] text-[#171717]"
     >
-      {/* HERO */}
       <section className="relative overflow-hidden bg-[#171717]">
         <div className="absolute inset-0">
           <Image
@@ -141,7 +187,6 @@ export default function TeamMembersPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#171717]/65 via-[#171717]/60 to-[#171717]" />
 
         <div className="relative z-10 mx-auto max-w-[1450px] px-5 pb-20 pt-8">
-
           <div className="flex items-center justify-between gap-5">
             <Link href="/team">
               <Image
@@ -190,17 +235,12 @@ export default function TeamMembersPage() {
         </div>
       </section>
 
-      {/* CONTENT */}
       <div className="mx-auto max-w-[1450px] px-5 pb-20">
-
         <section className="mt-10 rounded-[38px] border border-[#e4ddd5] bg-white p-7 shadow-[0_20px_60px_rgba(40,30,20,0.06)] lg:p-10">
-
           <div className="flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
-
             <div>
               <div className="flex items-center gap-3">
                 <span className="h-[2px] w-8 bg-[#c94a3d]" />
-
                 <span className="text-[10px] font-semibold tracking-[0.3em] text-[#a69c93]">
                   TEAM MEMBERS
                 </span>
@@ -228,10 +268,8 @@ export default function TeamMembersPage() {
             </button>
           </div>
 
-          {/* ADD MEMBER */}
           {showForm && (
             <div className="mt-10 rounded-[30px] border border-[#e5ded6] bg-[#f8f6f2] p-6 lg:p-8">
-
               <div className="mb-7">
                 <p className="text-[10px] font-semibold tracking-[0.25em] text-[#c94a3d]">
                   NEW TEAM MEMBER
@@ -246,7 +284,6 @@ export default function TeamMembersPage() {
                 onSubmit={handleSubmit}
                 className="grid gap-5 md:grid-cols-2"
               >
-
                 <div>
                   <label className="mb-2 block text-xs font-semibold text-[#514840]">
                     الاسم الكامل
@@ -254,7 +291,9 @@ export default function TeamMembersPage() {
 
                   <input
                     value={fullName}
-                    onChange={(event) => setFullName(event.target.value)}
+                    onChange={(event) =>
+                      setFullName(event.target.value)
+                    }
                     placeholder="مثال: محمد أحمد"
                     className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
                   />
@@ -269,7 +308,9 @@ export default function TeamMembersPage() {
                     type="email"
                     dir="ltr"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) =>
+                      setEmail(event.target.value)
+                    }
                     placeholder="name@example.com"
                     className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
                   />
@@ -284,7 +325,9 @@ export default function TeamMembersPage() {
                     type="tel"
                     dir="ltr"
                     value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
+                    onChange={(event) =>
+                      setPhone(event.target.value)
+                    }
                     placeholder="+966..."
                     className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
                   />
@@ -297,7 +340,9 @@ export default function TeamMembersPage() {
 
                   <select
                     value={role}
-                    onChange={(event) => setRole(event.target.value)}
+                    onChange={(event) =>
+                      setRole(event.target.value)
+                    }
                     className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#40372f] outline-none focus:border-[#c94a3d]"
                   >
                     <option value="member">عضو الفريق</option>
@@ -319,25 +364,23 @@ export default function TeamMembersPage() {
                     type="password"
                     dir="ltr"
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    onChange={(event) =>
+                      setPassword(event.target.value)
+                    }
                     placeholder="8 أحرف على الأقل"
                     className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
                   />
-
-                  <p className="mt-2 text-[11px] leading-6 text-[#988e85]">
-                    أعطِ العضو كلمة المرور هذه بشكل آمن، ويمكننا لاحقًا
-                    إضافة نظام تغيير كلمة المرور عند أول دخول.
-                  </p>
                 </div>
 
-                <div className="md:col-span-2 flex flex-col gap-4 sm:flex-row sm:items-center">
-
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center md:col-span-2">
                   <button
                     type="submit"
                     disabled={saving}
                     className="rounded-full bg-[#171717] px-8 py-4 text-sm font-semibold text-white transition hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
                   >
-                    {saving ? "جاري إنشاء الحساب..." : "إنشاء عضو الفريق"}
+                    {saving
+                      ? "جاري إنشاء الحساب..."
+                      : "إنشاء عضو الفريق"}
                   </button>
 
                   {message && (
@@ -345,32 +388,26 @@ export default function TeamMembersPage() {
                       {message}
                     </p>
                   )}
-
                 </div>
-
               </form>
             </div>
           )}
-
         </section>
 
-        {/* STATUS */}
         {message && !showForm && (
           <div className="mt-6 rounded-2xl border border-[#e4ddd5] bg-white px-6 py-4 text-sm text-[#6f554a]">
             {message}
           </div>
         )}
 
-        {/* MEMBERS */}
         <section className="mt-10">
-
           <div className="overflow-hidden rounded-[32px] border border-[#e4ddd5] bg-white shadow-[0_15px_50px_rgba(40,30,20,0.05)]">
-
-            <div className="hidden grid-cols-[1.5fr_1.1fr_1fr_0.8fr] gap-5 border-b border-[#eee8e2] bg-[#f8f6f2] px-8 py-5 text-[10px] font-bold tracking-[0.15em] text-[#91877e] md:grid">
+            <div className="hidden grid-cols-[1.5fr_1.1fr_1fr_0.8fr_0.7fr] gap-5 border-b border-[#eee8e2] bg-[#f8f6f2] px-8 py-5 text-[10px] font-bold tracking-[0.15em] text-[#91877e] md:grid">
               <div>العضو</div>
               <div>رقم الجوال</div>
               <div>الدور</div>
               <div>الحالة</div>
+              <div>إجراء</div>
             </div>
 
             {loading ? (
@@ -381,12 +418,13 @@ export default function TeamMembersPage() {
               members.map((member) => (
                 <div
                   key={member.id}
-                  className="grid gap-6 border-b border-[#eee8e2] px-7 py-7 last:border-b-0 md:grid-cols-[1.5fr_1.1fr_1fr_0.8fr] md:items-center md:px-8"
+                  className="grid gap-6 border-b border-[#eee8e2] px-7 py-7 last:border-b-0 md:grid-cols-[1.5fr_1.1fr_1fr_0.8fr_0.7fr] md:items-center md:px-8"
                 >
                   <div className="flex items-center gap-4">
-
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#171717] text-sm font-bold text-white">
-                      {(member.full_name || member.email || "?")
+                      {(member.full_name ||
+                        member.email ||
+                        "?")
                         .charAt(0)
                         .toUpperCase()}
                     </div>
@@ -403,7 +441,6 @@ export default function TeamMembersPage() {
                         {member.email || "بدون بريد إلكتروني"}
                       </p>
                     </div>
-
                   </div>
 
                   <div
@@ -427,6 +464,19 @@ export default function TeamMembersPage() {
                       عضو مسجل
                     </span>
                   </div>
+
+                  <div>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(member)}
+                      disabled={deletingId === member.id}
+                      className="rounded-full border border-[#e6c8c3] bg-[#fff7f5] px-4 py-2 text-xs font-semibold text-[#b33e32] transition hover:bg-[#c94a3d] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {deletingId === member.id
+                        ? "جاري الحذف..."
+                        : "حذف"}
+                    </button>
+                  </div>
                 </div>
               ))
             ) : (
@@ -444,13 +494,10 @@ export default function TeamMembersPage() {
                 </p>
               </div>
             )}
-
           </div>
         </section>
 
-        {/* FOOTER */}
         <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-[#e4ddd5] pt-7">
-
           <p className="text-xs text-[#a69c93]">
             CHINA PLANET · TEAM WORKSPACE
           </p>
@@ -470,7 +517,6 @@ export default function TeamMembersPage() {
               الرئيسية
             </Link>
           </div>
-
         </footer>
       </div>
     </main>

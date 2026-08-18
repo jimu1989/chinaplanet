@@ -317,3 +317,135 @@ export async function POST(request: Request) {
     );
   }
 }
+export async function DELETE(request: Request) {
+  try {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        { error: "Supabase server configuration is missing." },
+        { status: 500 }
+      );
+    }
+
+    const auth = await getAuthorizedUser();
+
+    if (auth.error) {
+      return auth.error;
+    }
+
+    const currentUserId = auth.user?.id;
+    const currentRole = auth.profile?.role;
+
+    const body = await request.json();
+    const memberId = String(body.id || "").trim();
+
+    if (!memberId) {
+      return NextResponse.json(
+        { error: "معرف العضو مطلوب." },
+        { status: 400 }
+      );
+    }
+
+    if (memberId === currentUserId) {
+      return NextResponse.json(
+        { error: "لا يمكنك حذف حسابك من هنا." },
+        { status: 403 }
+      );
+    }
+
+    const admin = createClient(
+      supabaseUrl,
+      serviceRoleKey,
+      {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      }
+    );
+
+    const { data: targetProfile, error: targetError } =
+      await admin
+        .from("profiles")
+        .select("id, full_name, role")
+        .eq("id", memberId)
+        .maybeSingle();
+
+    if (targetError) {
+      console.error(
+        "TEAM MEMBER DELETE PROFILE ERROR:",
+        targetError
+      );
+
+      return NextResponse.json(
+        { error: "تعذر العثور على العضو." },
+        { status: 500 }
+      );
+    }
+
+    if (!targetProfile) {
+      return NextResponse.json(
+        { error: "العضو غير موجود." },
+        { status: 404 }
+      );
+    }
+
+    if (
+      currentRole === "admin" &&
+      (targetProfile.role === "executive" ||
+        targetProfile.role === "admin")
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "لا يمكن لمدير النظام حذف مدير النظام أو المدير التنفيذي.",
+        },
+        { status: 403 }
+      );
+    }
+
+    if (
+      currentRole !== "executive" &&
+      currentRole !== "admin"
+    ) {
+      return NextResponse.json(
+        { error: "ليس لديك صلاحية حذف أعضاء الفريق." },
+        { status: 403 }
+      );
+    }
+
+    const { error: deleteAuthError } =
+      await admin.auth.admin.deleteUser(memberId);
+
+    if (deleteAuthError) {
+      console.error(
+        "TEAM MEMBER DELETE AUTH ERROR:",
+        deleteAuthError
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            deleteAuthError.message ||
+            "تعذر حذف حساب العضو.",
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "تم حذف العضو بنجاح.",
+      member_id: memberId,
+    });
+  } catch (error) {
+    console.error(
+      "TEAM MEMBER DELETE ERROR:",
+      error
+    );
+
+    return NextResponse.json(
+      { error: "حدث خطأ غير متوقع." },
+      { status: 500 }
+    );
+  }
+}

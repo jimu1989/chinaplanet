@@ -7,15 +7,25 @@ export default function WhyUs() {
       className="cp-section bg-[#f3f0eb]"
     >
       <div className="cp-container">
-        <div className="grid items-center gap-16 lg:grid-cols-[0.85fr_1.15fr] lg:gap-24">
+        <div className="mx-auto max-w-4xl text-center">
 
           {/* CONTENT */}
-          <div className="max-w-md">
-            <div className="flex items-center gap-3">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-6 flex justify-center">
+              <Image
+                src="/images/china-planet-logo.png"
+                alt="China Planet"
+                width={150}
+                height={55}
+                className="h-auto w-[150px] object-contain"
+              />
+            </div>
+
+            <div className="flex items-center justify-center gap-3">
               <span className="cp-line" />
 
               <span className="cp-label">
-                لماذا نحن
+                لماذا كوكب الصين؟
               </span>
             </div>
 
@@ -31,7 +41,7 @@ export default function WhyUs() {
               إلى تجربة أوضح، أسهل، وأكثر موثوقية.
             </p>
 
-            <div className="mt-9 flex items-center gap-4">
+            <div className="mt-9 flex items-center justify-center gap-4">
               <a
                 href="#contact"
                 className="cp-button"
@@ -46,7 +56,7 @@ export default function WhyUs() {
           </div>
 
           {/* IMAGE */}
-          <div className="relative aspect-[5/4] overflow-hidden rounded-2xl">
+          <div className="relative mt-16 aspect-[5/4] overflow-hidden rounded-2xl">
             <Image
               src="/cities/chengdu.jpg"
               alt="منظر من الصين"

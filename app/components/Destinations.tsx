@@ -119,8 +119,8 @@ export default function Destinations() {
             <span className="cp-line" />
           </div>
 
-          <h2 className="mt-5 text-3xl font-medium text-[#40372f] sm:text-4xl lg:text-[42px]">
-            الصين كما لم ترها من قبل
+          <h2 className="mt-5 text-3xl font-medium text-[#786e65] sm:text-4xl lg:text-[42px]">
+            <span className="text-[#40372f]">الصين</span> كما لم ترها من قبل
           </h2>
 
           <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#786e65]">

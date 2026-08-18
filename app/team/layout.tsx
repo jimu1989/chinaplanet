@@ -237,13 +237,11 @@ export default function TeamLayout({
             href="/team"
             className="flex shrink-0 items-center gap-3"
           >
-            <div className="flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-[#e2d9d1] bg-white">
-              <img
-                src="/images/china-planet-logo.png"
-                alt="China Planet"
-                className="h-9 w-auto object-contain"
-              />
-            </div>
+            <img
+              src="/images/china-planet-logo.png"
+              alt="China Planet"
+              className="h-auto w-[150px] object-contain sm:w-[180px] lg:w-[200px]"
+            />
 
             <div className="hidden sm:block">
               <div className="text-sm font-semibold tracking-wide text-[#40372f]">
@@ -269,7 +267,7 @@ export default function TeamLayout({
                   href={item.href}
                   className={`rounded-full px-4 py-2.5 text-xs font-semibold transition ${
                     active
-                      ? "bg-[#c8102e] text-white"
+                      ? "bg-[#b5966c] text-white"
                       : "text-[#786e65] hover:bg-[#f3f0eb] hover:text-[#40372f]"
                   }`}
                 >
@@ -315,7 +313,7 @@ export default function TeamLayout({
                   href={item.href}
                   className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition ${
                     active
-                      ? "bg-[#c8102e] text-white"
+                      ? "bg-[#b5966c] text-white"
                       : "bg-[#f3f0eb] text-[#786e65]"
                   }`}
                 >
