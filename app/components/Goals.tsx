@@ -1,3 +1,4 @@
+import type { Language } from "../lib/i18n";
 const goals = [
   {
     title: "أسافر",
@@ -123,7 +124,11 @@ const goals = [
   },
 ];
 
-export default function Goals() {
+export default function Goals({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   return (
     <section
       id="goals"

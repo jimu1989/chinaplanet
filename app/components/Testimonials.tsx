@@ -1,3 +1,4 @@
+import type { Language } from "../lib/i18n";
 const trustPoints = [
   {
     title: "نتواصل معك مباشرة",
@@ -61,7 +62,11 @@ const trustPoints = [
   },
 ];
 
-export default function Testimonials() {
+export default function Testimonials({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   return (
     <section
       id="trust"

@@ -2,22 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLanguage, languages } from "../lib/i18n";
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> {
-  const { lang } = await params;
+export const metadata: Metadata = {
+  title: "كوكب الصين | China Planet",
+  description:
+    "نقرّب لك الصين، من السفر والدراسة واللغة إلى التجارة والأعمال.",
+};
 
-  if (!isLanguage(lang)) {
-    notFound();
-  }
-
-  return {
-    title: "كوكب الصين",
-    description:
-      "نقرّب لك الصين، من السفر والدراسة واللغة إلى التجارة والأعمال.",
-  };
+export async function generateStaticParams() {
+  return Object.keys(languages).map((lang) => ({ lang }));
 }
 
 export default async function LangLayout({
@@ -34,8 +26,8 @@ export default async function LangLayout({
   }
 
   return (
-    <html lang={lang} dir={languages[lang].dir}>
-      <body>{children}</body>
-    </html>
+    <div lang={lang} dir={languages[lang].dir}>
+      {children}
+    </div>
   );
 }

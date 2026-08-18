@@ -1,5 +1,7 @@
 "use client";
 
+import type { Language } from "../lib/i18n";
+
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
@@ -36,7 +38,11 @@ const cities = [
   },
 ];
 
-export default function Destinations() {
+export default function Destinations({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
   const touchStart = useRef<number | null>(null);

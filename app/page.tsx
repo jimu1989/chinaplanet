@@ -7,37 +7,28 @@ import Goals from "./components/Goals";
 import Testimonials from "./components/Testimonials";
 import Contact from "./components/Contact";
 import Footer from "./components/Footer";
+import type { Language } from "./lib/i18n";
 
-export default function Home() {
+export default function Home({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   return (
     <>
-      <Navbar />
+      <Navbar language={language} />
 
       <main>
-        {/* 1 — Hero */}
-        <Hero />
-
-        {/* 2 — Services */}
-        <Services />
-
-        {/* 3 — Why Us */}
-        <WhyUs />
-
-        {/* 4 — Destinations */}
-        <Destinations />
-
-        {/* 5 — Goals */}
-        <Goals />
-
-        {/* 6 — Trust */}
-        <Testimonials />
-
-        {/* 7 — Contact */}
-        <Contact />
+        <Hero language={language} />
+        <Services language={language} />
+        <WhyUs language={language} />
+        <Destinations language={language} />
+        <Goals language={language} />
+        <Testimonials language={language} />
+        <Contact language={language} />
       </main>
 
-      {/* 8 — Footer */}
-      <Footer />
+      <Footer language={language} />
     </>
   );
 }

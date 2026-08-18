@@ -1,6 +1,10 @@
 import { notFound } from "next/navigation";
 import HomePage from "../page";
-import { isLanguage } from "../lib/i18n";
+import { isLanguage, languages } from "../lib/i18n";
+
+export async function generateStaticParams() {
+  return Object.keys(languages).map((lang) => ({ lang }));
+}
 
 export default async function LocalizedHomePage({
   params,
@@ -13,5 +17,5 @@ export default async function LocalizedHomePage({
     notFound();
   }
 
-  return <HomePage />;
+  return <HomePage language={lang} />;
 }

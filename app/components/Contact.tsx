@@ -1,5 +1,7 @@
 "use client";
 
+import type { Language } from "../lib/i18n";
+
 import { useState } from "react";
 import { siteConfig } from "../lib/site";
 
@@ -12,7 +14,11 @@ const services = [
   "خدمات الأفراد",
 ];
 
-export default function Contact() {
+export default function Contact({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   const [service, setService] = useState("");
   const [name, setName] = useState("");
   const [details, setDetails] = useState("");

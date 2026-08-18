@@ -1,3 +1,4 @@
+import type { Language } from "../lib/i18n";
 const services = [
   {
     title: "حلول الأعمال",
@@ -100,7 +101,11 @@ const services = [
   },
 ];
 
-export default function Services() {
+export default function Services({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   return (
     <section
       id="services"

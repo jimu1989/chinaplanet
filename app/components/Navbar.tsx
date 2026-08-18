@@ -1,11 +1,13 @@
 "use client";
 
+import { languages, type Language } from "../lib/i18n";
+
+
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
-import { languages, type Language } from "../lib/i18n";
 
 const links = [
   { label: "الرئيسية", href: "#home" },
@@ -17,7 +19,11 @@ const links = [
 
 const WHATSAPP_NUMBER = "966560406506";
 
-export default function Navbar() {
+export default function Navbar({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const currentLanguage: Language = pathname.startsWith("/en")

@@ -1,6 +1,11 @@
+import type { Language } from "../lib/i18n";
 import Image from "next/image";
 
-export default function WhyUs() {
+export default function WhyUs({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   return (
     <section
       id="why-us"

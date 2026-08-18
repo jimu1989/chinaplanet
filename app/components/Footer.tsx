@@ -1,3 +1,4 @@
+import type { Language } from "../lib/i18n";
 import { siteConfig } from "../lib/site";
 
 const footerLinks = [
@@ -8,7 +9,11 @@ const footerLinks = [
   { label: "تواصل معنا", href: "#contact" },
 ];
 
-export default function Footer() {
+export default function Footer({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   const whatsappUrl = `https://wa.me/${siteConfig.contact.whatsapp}`;
 
   return (

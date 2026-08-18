@@ -1,9 +1,15 @@
 "use client";
 
+import type { Language } from "../lib/i18n";
+
 import Image from "next/image";
 import { siteConfig } from "../lib/site";
 
-export default function Hero() {
+export default function Hero({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   const whatsappUrl = `https://wa.me/${
     siteConfig.contact.whatsapp
   }?text=${encodeURIComponent(
