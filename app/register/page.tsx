@@ -1,19 +1,59 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
 import { translations, type Language } from "../lib/i18n";
 
+const registerTranslations = {
+  ar: {
+    welcome: "أنشئ حسابك وابدأ تجربتك مع China Planet. كل ما تحتاجه للوصول إلى الصين، في مكان واحد.",
+    home: "← العودة إلى الرئيسية",
+    name: "الاسم",
+    email: "البريد الإلكتروني",
+    phone: "رقم الجوال",
+    phonePlaceholder: "05xxxxxxxx",
+    password: "كلمة المرور",
+    confirmPassword: "تأكيد كلمة المرور",
+    createAccount: "إنشاء الحساب",
+    unexpectedError: "حدث خطأ غير متوقع. حاول مرة أخرى.",
+  },
+
+  en: {
+    welcome:
+      "Create your account and start your China Planet experience. Everything you need to reach China, all in one place.",
+    home: "← Back to home",
+    name: "Name",
+    email: "Email address",
+    phone: "Phone number",
+    phonePlaceholder: "05xxxxxxxx",
+    password: "Password",
+    confirmPassword: "Confirm password",
+    createAccount: "Create account",
+    unexpectedError: "An unexpected error occurred. Please try again.",
+  },
+
+  zh: {
+    welcome:
+      "创建您的账户，开启 China Planet 体验。您前往中国所需的一切，都在这里。",
+    home: "← 返回首页",
+    name: "姓名",
+    email: "电子邮箱",
+    phone: "手机号码",
+    phonePlaceholder: "05xxxxxxxx",
+    password: "密码",
+    confirmPassword: "确认密码",
+    createAccount: "创建账户",
+    unexpectedError: "发生意外错误，请重试。",
+  },
+} as const;
+
 export default function RegisterPage() {
-  const pathname = typeof window !== "undefined" ? window.location.pathname : "/ar";
-  const currentLanguage: Language = pathname.startsWith("/en")
-    ? "en"
-    : pathname.startsWith("/zh")
-      ? "zh"
-      : "ar";
-  const t = translations[currentLanguage].auth;
+  const [currentLanguage, setCurrentLanguage] =
+    useState<Language>("ar");
+
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
 
@@ -27,7 +67,26 @@ export default function RegisterPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
-  async function handleRegister(event: FormEvent<HTMLFormElement>) {
+  useEffect(() => {
+    const pathname = window.location.pathname;
+
+    if (pathname.startsWith("/en")) {
+      setCurrentLanguage("en");
+    } else if (pathname.startsWith("/zh")) {
+      setCurrentLanguage("zh");
+    } else {
+      setCurrentLanguage("ar");
+    }
+  }, []);
+
+  const t = translations[currentLanguage].auth;
+  const rt = registerTranslations[currentLanguage];
+
+  const direction = currentLanguage === "ar" ? "rtl" : "ltr";
+
+  async function handleRegister(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
 
     setError("");
@@ -56,15 +115,16 @@ export default function RegisterPage() {
     try {
       setLoading(true);
 
-      const { data, error: signUpError } = await supabase.auth.signUp({
-        email: email.trim(),
-        password,
-        options: {
-          data: {
-            full_name: name.trim(),
+      const { data, error: signUpError } =
+        await supabase.auth.signUp({
+          email: email.trim(),
+          password,
+          options: {
+            data: {
+              full_name: name.trim(),
+            },
           },
-        },
-      });
+        });
 
       if (signUpError) {
         setError(signUpError.message);
@@ -85,15 +145,11 @@ export default function RegisterPage() {
         });
 
       if (profileError) {
-        setError(
-          t.profileFailed
-        );
+        setError(t.profileFailed);
         return;
       }
 
-      setMessage(
-        t.accountCreated
-      );
+      setMessage(t.accountCreated);
 
       setName("");
       setEmail("");
@@ -102,10 +158,16 @@ export default function RegisterPage() {
       setConfirmPassword("");
 
       setTimeout(() => {
-        router.push("/login");
+        router.push(
+          currentLanguage === "en"
+            ? "/en/login"
+            : currentLanguage === "zh"
+              ? "/zh/login"
+              : "/login"
+        );
       }, 2500);
     } catch {
-      setError("حدث خطأ غير متوقع. حاول مرة أخرى.");
+      setError(rt.unexpectedError);
     } finally {
       setLoading(false);
     }
@@ -113,16 +175,17 @@ export default function RegisterPage() {
 
   return (
     <main
-      dir="rtl"
+      dir={direction}
       className="min-h-screen bg-[#f7f4ee] px-5 py-12 text-[#171717]"
     >
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1100px] items-center justify-center">
         <div className="grid w-full overflow-hidden rounded-[32px] border border-[#e4dbd2] bg-white shadow-[0_25px_80px_rgba(40,30,20,0.08)] lg:grid-cols-2">
 
+          {/* الجانب التعريفي */}
           <div className="relative hidden min-h-[650px] overflow-hidden bg-[#171717] lg:block">
             <img
               src="/images/hero-china.png"
-              alt=""
+              alt="China Planet"
               className="absolute inset-0 h-full w-full object-cover opacity-55"
             />
 
@@ -145,21 +208,27 @@ export default function RegisterPage() {
                 </h1>
 
                 <p className="mt-5 max-w-[430px] text-sm leading-7 text-white/70">
-                  أنشئ حسابك وابدأ تجربتك مع China Planet.
-                  كل ما تحتاجه للوصول إلى الصين، في مكان واحد.
+                  {rt.welcome}
                 </p>
               </div>
             </div>
           </div>
 
+          {/* نموذج التسجيل */}
           <div className="flex min-h-[650px] items-center p-7 sm:p-10 lg:p-14">
             <div className="w-full max-w-[430px]">
 
               <Link
-                href="/"
+                href={
+                  currentLanguage === "en"
+                    ? "/en"
+                    : currentLanguage === "zh"
+                      ? "/zh"
+                      : "/"
+                }
                 className="text-xs text-[#8a8179] transition hover:text-[#c94a3d]"
               >
-                ← العودة إلى الرئيسية
+                {rt.home}
               </Link>
 
               <div className="mt-10">
@@ -178,38 +247,45 @@ export default function RegisterPage() {
                 onSubmit={handleRegister}
                 className="mt-8 grid gap-5"
               >
+
+                {/* الاسم */}
                 <div>
                   <label
                     htmlFor="name"
                     className="mb-2 block text-xs font-semibold text-[#554d46]"
                   >
-                    الاسم
+                    {rt.name}
                   </label>
 
                   <input
                     id="name"
                     type="text"
                     value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    placeholder="{t.fullName}"
+                    onChange={(event) =>
+                      setName(event.target.value)
+                    }
+                    placeholder={t.fullName}
                     autoComplete="name"
                     className="w-full rounded-2xl border border-[#ddd4cb] bg-[#faf8f5] px-4 py-3.5 text-sm outline-none transition placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:ring-2 focus:ring-[#c94a3d]/10"
                   />
                 </div>
 
+                {/* البريد */}
                 <div>
                   <label
                     htmlFor="email"
                     className="mb-2 block text-xs font-semibold text-[#554d46]"
                   >
-                    البريد الإلكتروني
+                    {rt.email}
                   </label>
 
                   <input
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) =>
+                      setEmail(event.target.value)
+                    }
                     placeholder="name@example.com"
                     autoComplete="email"
                     dir="ltr"
@@ -217,39 +293,45 @@ export default function RegisterPage() {
                   />
                 </div>
 
+                {/* الجوال */}
                 <div>
                   <label
                     htmlFor="phone"
                     className="mb-2 block text-xs font-semibold text-[#554d46]"
                   >
-                    رقم الجوال
+                    {rt.phone}
                   </label>
 
                   <input
                     id="phone"
                     type="tel"
                     value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
-                    placeholder="05xxxxxxxx"
+                    onChange={(event) =>
+                      setPhone(event.target.value)
+                    }
+                    placeholder={rt.phonePlaceholder}
                     autoComplete="tel"
                     dir="ltr"
                     className="w-full rounded-2xl border border-[#ddd4cb] bg-[#faf8f5] px-4 py-3.5 text-sm outline-none transition placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:ring-2 focus:ring-[#c94a3d]/10"
                   />
                 </div>
 
+                {/* كلمة المرور */}
                 <div>
                   <label
                     htmlFor="password"
                     className="mb-2 block text-xs font-semibold text-[#554d46]"
                   >
-                    كلمة المرور
+                    {rt.password}
                   </label>
 
                   <input
                     id="password"
                     type="password"
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    onChange={(event) =>
+                      setPassword(event.target.value)
+                    }
                     placeholder="••••••••"
                     autoComplete="new-password"
                     dir="ltr"
@@ -257,12 +339,13 @@ export default function RegisterPage() {
                   />
                 </div>
 
+                {/* تأكيد كلمة المرور */}
                 <div>
                   <label
                     htmlFor="confirmPassword"
                     className="mb-2 block text-xs font-semibold text-[#554d46]"
                   >
-                    تأكيد كلمة المرور
+                    {rt.confirmPassword}
                   </label>
 
                   <input
@@ -279,31 +362,43 @@ export default function RegisterPage() {
                   />
                 </div>
 
+                {/* الخطأ */}
                 {error && (
                   <div className="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm leading-6 text-red-700">
                     {error}
                   </div>
                 )}
 
+                {/* النجاح */}
                 {message && (
                   <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm leading-6 text-green-700">
                     {message}
                   </div>
                 )}
 
+                {/* زر التسجيل */}
                 <button
                   type="submit"
                   disabled={loading}
                   className="mt-1 rounded-2xl bg-[#171717] px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? "{t.creatingAccount}" : "إنشاء الحساب"}
+                  {loading
+                    ? t.creatingAccount
+                    : rt.createAccount}
                 </button>
               </form>
 
               <p className="mt-7 text-center text-sm text-[#756c64]">
                 {t.hasAccount}{" "}
+
                 <Link
-                  href="/login"
+                  href={
+                    currentLanguage === "en"
+                      ? "/en/login"
+                      : currentLanguage === "zh"
+                        ? "/zh/login"
+                        : "/login"
+                  }
                   className="font-semibold text-[#c94a3d] transition hover:text-[#171717]"
                 >
                   {t.login}
