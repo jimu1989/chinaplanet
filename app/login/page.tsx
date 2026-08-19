@@ -7,7 +7,10 @@ import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
 import { translations, type Language } from "../lib/i18n";
 
 export default function LoginPage() {
-  const pathname = typeof window !== "undefined" ? window.location.pathname : "/ar";
+  const pathname =
+  typeof window !== "undefined"
+    ? window.location.pathname
+    : "/ar";
   const currentLanguage: Language = pathname.startsWith("/en")
     ? "en"
     : pathname.startsWith("/zh")
@@ -129,7 +132,7 @@ export default function LoginPage() {
                 </h1>
 
                 <p className="mt-5 max-w-[430px] text-sm leading-7 text-white/70">
-                  سجّل دخولك للوصول إلى حسابك وتجربتك الخاصة مع China Planet.
+                  {t.loginBrandDescription}
                 </p>
               </div>
             </div>
@@ -193,13 +196,13 @@ export default function LoginPage() {
                       {t.password}
                     </label>
 
-                    <button
-                      type="button"
-                      className="text-[11px] text-[#8a8179] transition hover:text-[#c94a3d]"
-                      onClick={handleForgotPassword}
-                    >
-                      نسيت {t.password}؟
-                    </button>
+                   <button
+  type="button"
+  className="text-[11px] text-[#8a8179] transition hover:text-[#c94a3d]"
+  onClick={handleForgotPassword}
+>
+  {t.forgotPassword}
+</button>
                   </div>
 
                   <input
@@ -227,7 +230,7 @@ export default function LoginPage() {
                   disabled={loading}
                   className="mt-1 rounded-2xl bg-[#171717] px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? "جاري {t.loginTitle}..." : "{t.loginTitle}"}
+                  {loading ? t.loggingIn : t.loginTitle}
                 </button>
               </form>
 

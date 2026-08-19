@@ -1,4 +1,7 @@
+"use client";
+
 import type { Language } from "../lib/i18n";
+import { useEffect, useState } from "react";
 
 const icons = [
   (
@@ -25,10 +28,7 @@ const icons = [
       stroke="currentColor"
       strokeWidth="1.4"
     >
-      <path
-        d="M8 24L32 12L56 24L32 36L8 24Z"
-        strokeLinejoin="round"
-      />
+      <path d="M8 24L32 12L56 24L32 36L8 24Z" strokeLinejoin="round" />
       <path
         d="M16 29V43C16 43 21 50 32 50C43 50 48 43 48 43V29"
         strokeLinecap="round"
@@ -70,16 +70,8 @@ const icons = [
       <path d="M22 28H42" strokeLinecap="round" />
       <path d="M22 35H42" strokeLinecap="round" />
       <path d="M22 42H42" strokeLinecap="round" />
-      <path
-        d="M8 16L16 10L24 16"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M40 16L48 10L56 16"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
+      <path d="M8 16L16 10L24 16" strokeLinecap="round" strokeLinejoin="round" />
+      <path d="M40 16L48 10L56 16" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   ),
   (
@@ -124,7 +116,6 @@ export default function Goals({
           : language === "zh"
             ? "旅行、预订、接待以及中国境内行程安排。"
             : "رحلات، حجوزات، استقبال وبرامج داخل الصين.",
-      icon: icons[0],
     },
     {
       title:
@@ -139,7 +130,6 @@ export default function Goals({
           : language === "zh"
             ? "大学录取、奖学金、住宿以及教育咨询。"
             : "قبول جامعي، منح، سكن واستشارات تعليمية.",
-      icon: icons[1],
     },
     {
       title:
@@ -154,7 +144,6 @@ export default function Goals({
           : language === "zh"
             ? "中文学习、HSK以及与教师进行中文会话。"
             : "لغة صينية، HSK ومحادثة مع مدرسين.",
-      icon: icons[2],
     },
     {
       title:
@@ -169,12 +158,11 @@ export default function Goals({
           : language === "zh"
             ? "进口、运输、谈判以及供应商跟进。"
             : "استيراد، شحن، تفاوض ومتابعة الموردين.",
-      icon: icons[3],
     },
     {
       title:
         language === "en"
-          ? "I’m Looking for a Factory"
+          ? "I'm Looking for a Factory"
           : language === "zh"
             ? "我要找工厂"
             : "أبحث عن مصنع",
@@ -184,9 +172,20 @@ export default function Goals({
           : language === "zh"
             ? "寻找合适的中国工厂和供应商。"
             : "العثور على مصانع وموردين مناسبين في الصين.",
-      icon: icons[4],
     },
   ];
+
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % goals.length);
+    }, 4500);
+
+    return () => window.clearInterval(timer);
+  }, [goals.length]);
+
+  const activeGoal = goals[activeIndex];
 
   return (
     <section
@@ -198,7 +197,6 @@ export default function Goals({
         <div className="mx-auto max-w-2xl text-center">
           <div className="flex items-center justify-center gap-3">
             <span className="cp-line" />
-
             <span className="cp-label">
               {language === "en"
                 ? "YOUR CHINA JOURNEY"
@@ -206,64 +204,102 @@ export default function Goals({
                   ? "您的中国之旅"
                   : "رحلتك إلى الصين"}
             </span>
-
             <span className="cp-line" />
           </div>
 
-          <h2 className="mt-5 text-3xl font-medium leading-[1.35] text-[#40372f] sm:text-4xl lg:text-[42px]">
-            {language === "en"
-              ? "What's your goal in"
-              : language === "zh"
-                ? "您来中国的目标是"
-                : "وش هدفك من"}
+          <div className="relative mt-5 min-h-[145px]">
+            <div key={activeIndex} className="animate-fade-in">
+              <h2 className="text-3xl font-medium leading-[1.35] text-[#40372f] sm:text-4xl lg:text-[42px]">
+                {language === "en"
+                  ? "What's your goal in"
+                  : language === "zh"
+                    ? "您来中国的目标是"
+                    : "وش هدفك من"}
 
-            <span className="text-[#d8795e]">
-              {language === "en"
-                ? " China?"
-                : language === "zh"
-                  ? "什么？"
-                  : " الصين؟"}
-            </span>
-          </h2>
+                <span className="text-[#d8795e]">
+                  {language === "en"
+                    ? " China?"
+                    : language === "zh"
+                      ? "什么？"
+                      : " الصين؟"}
+                </span>
+              </h2>
 
-          <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#786e65]">
-            {language === "en"
-              ? "Choose the path that suits you, and let us help you from the beginning to the destination."
-              : language === "zh"
-                ? "选择适合您的方向，让我们从开始到抵达一路为您提供帮助。"
-                : "اختر المسار المناسب لك، ودعنا نساعدك من البداية حتى الوصول."}
-          </p>
+              <p className="mx-auto mt-5 max-w-xl text-sm leading-7 text-[#786e65]">
+                {activeGoal.text}
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-16 grid border-t border-[#e4dcd4] sm:grid-cols-2 lg:grid-cols-5">
-          {goals.map((goal) => (
-            <a
+        <div className="mt-10 grid border-t border-[#e4dcd4] sm:grid-cols-2 lg:grid-cols-5">
+          {goals.map((goal, index) => {
+            const active = index === activeIndex;
+
+            return (
+              <button
+                key={goal.title}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                className={`group border-b border-[#e4dcd4] px-6 py-10 text-center transition-all duration-500 lg:border-b-0 lg:border-l lg:last:border-l-0 ${
+                  active ? "bg-white/40" : ""
+                }`}
+              >
+                <div
+                  className={`mx-auto flex h-10 w-10 items-center justify-center transition-all duration-500 ${
+                    active
+                      ? "-translate-y-1 text-[#d8795e]"
+                      : "text-[#b5966c] group-hover:-translate-y-1 group-hover:text-[#d8795e]"
+                  }`}
+                >
+                  {icons[index]}
+                </div>
+
+                <div
+                  className={`mx-auto mt-5 h-px bg-[#d8795e] transition-all duration-500 ${
+                    active ? "w-11" : "w-7 group-hover:w-11"
+                  }`}
+                />
+
+                <h3 className="mt-5 text-lg font-semibold text-[#40372f]">
+                  {goal.title}
+                </h3>
+
+                <p className="mx-auto mt-3 max-w-[210px] text-xs leading-7 text-[#786e65]">
+                  {goal.text}
+                </p>
+
+                <div
+                  className={`mt-7 text-[11px] font-semibold transition-colors duration-300 ${
+                    active
+                      ? "text-[#d8795e]"
+                      : "text-[#554b43] group-hover:text-[#d8795e]"
+                  }`}
+                >
+                  {language === "en"
+                    ? "Start here →"
+                    : language === "zh"
+                      ? "从这里开始 →"
+                      : "ابدأ من هنا ←"}
+                </div>
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="mt-8 flex justify-center gap-2">
+          {goals.map((goal, index) => (
+            <button
               key={goal.title}
-              href="#contact"
-              className="group border-b border-[#e4dcd4] px-6 py-10 text-center transition-colors duration-300 hover:bg-white/40 lg:border-b-0 lg:border-l lg:last:border-l-0"
-            >
-              <div className="mx-auto flex h-10 w-10 items-center justify-center text-[#b5966c] transition-all duration-300 group-hover:-translate-y-1 group-hover:text-[#d8795e]">
-                {goal.icon}
-              </div>
-
-              <div className="mx-auto mt-5 h-px w-7 bg-[#d8795e] transition-all duration-300 group-hover:w-11" />
-
-              <h3 className="mt-5 text-lg font-semibold text-[#40372f]">
-                {goal.title}
-              </h3>
-
-              <p className="mx-auto mt-3 max-w-[210px] text-xs leading-7 text-[#786e65]">
-                {goal.text}
-              </p>
-
-              <div className="mt-7 text-[11px] font-semibold text-[#554b43] transition-colors duration-300 group-hover:text-[#d8795e]">
-                {language === "en"
-                  ? "Start here →"
-                  : language === "zh"
-                    ? "从这里开始 →"
-                    : "ابدأ من هنا ←"}
-              </div>
-            </a>
+              type="button"
+              aria-label={goal.title}
+              onClick={() => setActiveIndex(index)}
+              className={`h-1 rounded-full transition-all duration-500 ${
+                index === activeIndex
+                  ? "w-8 bg-[#d8795e]"
+                  : "w-2 bg-[#cdbfb4]"
+              }`}
+            />
           ))}
         </div>
       </div>

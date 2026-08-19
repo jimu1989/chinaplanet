@@ -38,6 +38,9 @@ export const translations = {
       title: "شريكك الموثوق في الصين",
       description:
         "خدمات واضحة ومدروسة تساعد الأفراد والشركات على الوصول إلى الصين بثقة.",
+
+      logoAlt: "شعار كوكب الصين",
+
       more: "تعرف أكثر",
       explore: "استكشف خدماتنا",
 
@@ -108,7 +111,8 @@ export const translations = {
       lastUpdate: "آخر تحديث",
     },
 
-    auth: {
+    auth: {loginBrandDescription:
+  "سجّل دخولك للوصول إلى حسابك وتجربتك الخاصة مع China Planet.",
       backHome: "← العودة إلى الرئيسية",
       welcomeBack: "مرحبًا بعودتك",
       toChinaPlanet: "إلى كوكب الصين",
@@ -215,6 +219,9 @@ export const translations = {
       title: "Your Trusted Partner in China",
       description:
         "Clear and carefully designed services that help individuals and businesses access China with confidence.",
+
+      logoAlt: "China Planet logo",
+
       more: "Learn More",
       explore: "Explore Our Services",
 
@@ -285,7 +292,8 @@ export const translations = {
       lastUpdate: "Last updated",
     },
 
-    auth: {
+    auth: {loginBrandDescription:
+  "Sign in to access your account and your personalized China Planet experience.",
       backHome: "← Back to home",
       welcomeBack: "Welcome back",
       toChinaPlanet: "to China Planet",
@@ -393,6 +401,9 @@ export const translations = {
       title: "您值得信赖的中国伙伴",
       description:
         "清晰、专业的服务，帮助个人和企业更加自信地进入中国市场。",
+
+      logoAlt: "中国星球标志",
+
       more: "了解更多",
       explore: "探索我们的服务",
 
@@ -463,7 +474,8 @@ export const translations = {
       lastUpdate: "最后更新",
     },
 
-    auth: {
+    auth: {loginBrandDescription:
+  "登录您的账户，享受专属的中国星球体验。",
       backHome: "← 返回首页",
       welcomeBack: "欢迎回来",
       toChinaPlanet: "来到中国星球",

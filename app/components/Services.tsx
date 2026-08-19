@@ -16,6 +16,7 @@ const icons = [
       <path d="M27 31V36H37V31" />
     </svg>
   ),
+
   (
     <svg
       viewBox="0 0 64 64"
@@ -32,6 +33,7 @@ const icons = [
       <path d="M8 34.5L16 35.5" strokeLinecap="round" />
     </svg>
   ),
+
   (
     <svg
       viewBox="0 0 64 64"
@@ -51,6 +53,7 @@ const icons = [
       <path d="M56 24V39" strokeLinecap="round" />
     </svg>
   ),
+
   (
     <svg
       viewBox="0 0 64 64"
@@ -66,11 +69,13 @@ const icons = [
       <path d="M22 28H42" strokeLinecap="round" />
       <path d="M22 35H42" strokeLinecap="round" />
       <path d="M22 42H42" strokeLinecap="round" />
+
       <path
         d="M8 16L16 10L24 16"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
+
       <path
         d="M40 16L48 10L56 16"
         strokeLinecap="round"
@@ -122,14 +127,18 @@ export default function Services({
           <div className="mb-6 flex justify-center">
             <img
               src="/images/china-planet-logo.png"
-              alt="China Planet"
+              alt={t.logoAlt}
               className="h-auto w-[140px] object-contain"
             />
           </div>
 
           <div className="flex items-center justify-center gap-3">
             <span className="cp-line" />
-            <span className="cp-label">{t.label}</span>
+
+            <span className="cp-label">
+              {t.label}
+            </span>
+
             <span className="cp-line" />
           </div>
 
@@ -177,7 +186,10 @@ export default function Services({
         </div>
 
         <div className="mt-12 text-center">
-          <a href="#contact" className="cp-button">
+          <a
+            href="#contact"
+            className="cp-button"
+          >
             {t.explore}
           </a>
         </div>

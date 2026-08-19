@@ -10,17 +10,22 @@ const cairo = Cairo({
   weight: ["400", "500", "600", "700", "800"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
-  ),
+  verification: {
+    google: "GsP5vqFrX_AijENiXUZvUjllC3-fapG6cXx5qUwnDgA",
+  },
+  metadataBase: new URL(siteUrl),
 
   title: {
-    default: `${siteConfig.name} | ${siteConfig.nameEn}`,
-    template: `%s | ${siteConfig.nameEn}`,
+    default: "كوكب الصين | China Planet",
+    template: "%s | China Planet",
   },
 
-  description: siteConfig.description,
+  description:
+    "كوكب الصين | China Planet — شريكك في السفر إلى الصين، الدراسة، التجارة، الاستيراد، التوريد، والمصانع الصينية.",
 
   keywords: [
     "كوكب الصين",
@@ -30,30 +35,36 @@ export const metadata: Metadata = {
     "الدراسة في الصين",
     "التجارة مع الصين",
     "الاستيراد من الصين",
+    "التصدير من الصين",
     "مصانع الصين",
+    "المصانع الصينية",
+    "التوريد من الصين",
+    "موردين من الصين",
+    "شركات الصين",
   ],
 
-  authors: [
-    {
-      name: siteConfig.nameEn,
-    },
-  ],
-
+  authors: [{ name: siteConfig.nameEn }],
   creator: siteConfig.nameEn,
 
   alternates: {
     canonical: "/",
     languages: {
-      "ar-SA": "/",
+      "ar-SA": "/ar",
+      "en": "/en",
+      "zh-CN": "/zh",
+      "x-default": "/ar",
     },
   },
 
   openGraph: {
     type: "website",
     locale: "ar_SA",
-    siteName: siteConfig.nameEn,
-    title: `${siteConfig.name} | ${siteConfig.nameEn}`,
-    description: siteConfig.description,
+    alternateLocale: ["en_US", "zh_CN"],
+    siteName: "China Planet",
+    title: "كوكب الصين | China Planet",
+    description:
+      "شريكك في السفر والدراسة والتجارة والاستيراد والتوريد من الصين.",
+    url: "/ar",
     images: [
       {
         url: "/brand/china-planet-logo.svg",
@@ -64,8 +75,9 @@ export const metadata: Metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} | ${siteConfig.nameEn}`,
-    description: siteConfig.description,
+    title: "كوكب الصين | China Planet",
+    description:
+      "شريكك في السفر والدراسة والتجارة والاستيراد والتوريد من الصين.",
   },
 
   icons: {
@@ -75,6 +87,10 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+    },
   },
 };
 
