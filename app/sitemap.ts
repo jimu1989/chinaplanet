@@ -1,7 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const baseUrl =
-  process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const baseUrl = "https://chinaplanet.vercel.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const routes = [
@@ -17,6 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: "weekly",
-    priority: route === "/ar" || route === "/en" || route === "/zh" ? 1 : 0.5,
+    priority:
+      route === "/ar" || route === "/en" || route === "/zh" ? 1 : 0.5,
   }));
 }
