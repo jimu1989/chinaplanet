@@ -47,7 +47,7 @@ export const metadata: Metadata = {
   creator: siteConfig.nameEn,
 
   alternates: {
-    canonical: "/",
+    canonical: "https://chinaplanet.vercel.app/",
     languages: {
       "ar-SA": "/ar",
       "en": "/en",
