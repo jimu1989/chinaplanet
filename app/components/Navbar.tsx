@@ -101,12 +101,7 @@ export default function Navbar({
     return `/${lang}${cleanPath === "/" ? "" : cleanPath}`;
   }
 
-  function saveLanguage(lang: Language) {
-    document.cookie = `${LANGUAGE_COOKIE}=${lang}; path=/; max-age=31536000; samesite=lax`;
-  }
-
   function handleLanguageChange(lang: Language) {
-    saveLanguage(lang);
     setOpen(false);
 
     const target = localizedPath(lang);

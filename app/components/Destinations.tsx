@@ -3,7 +3,7 @@
 import type { Language } from "../lib/i18n";
 import { translations } from "../lib/i18n";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 const cities = [
   {
@@ -40,7 +40,6 @@ export default function Destinations({
 }) {
   const [active, setActive] = useState(0);
   const [lightbox, setLightbox] = useState(false);
-
   const touchStart = useRef<number | null>(null);
   const touchEnd = useRef<number | null>(null);
 
@@ -80,7 +79,6 @@ export default function Destinations({
           "تجربة مختلفة تجمع الطبيعة والثقافة والحياة العصرية.",
       },
     },
-
     en: {
       beijing: {
         name: "Beijing",
@@ -108,7 +106,6 @@ export default function Destinations({
           "A unique experience blending nature, culture, and modern life.",
       },
     },
-
     zh: {
       beijing: {
         name: "北京",
@@ -139,19 +136,18 @@ export default function Destinations({
     description: cityTranslations[language][city.key].description,
   }));
 
+  const cityCount = localizedCities.length;
   const current = localizedCities[active];
 
-  const next = () => {
-    setActive((index) => (index + 1) % localizedCities.length);
-  };
+  const next = useCallback(() => {
+    setActive((index) => (index + 1) % cityCount);
+  }, [cityCount]);
 
-  const previous = () => {
+  const previous = useCallback(() => {
     setActive(
-      (index) =>
-        (index - 1 + localizedCities.length) %
-        localizedCities.length,
+      (index) => (index - 1 + cityCount) % cityCount,
     );
-  };
+  }, [cityCount]);
 
   const handleTouchStart = (event: React.TouchEvent) => {
     touchStart.current = event.touches[0].clientX;
@@ -202,7 +198,7 @@ export default function Destinations({
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [lightbox]);
+  }, [lightbox, next, previous]);
 
   return (
     <section
@@ -215,11 +211,7 @@ export default function Destinations({
         <div className="mx-auto max-w-2xl text-center">
           <div className="flex items-center justify-center gap-3">
             <span className="cp-line" />
-
-            <span className="cp-label">
-              {t.label}
-            </span>
-
+            <span className="cp-label">{t.label}</span>
             <span className="cp-line" />
           </div>
 
@@ -345,10 +337,7 @@ export default function Destinations({
             {/* COUNTER */}
             <div className="absolute left-7 top-7 rounded-full border border-white/20 bg-black/15 px-4 py-2 text-[10px] font-semibold tracking-[0.2em] text-white backdrop-blur-md sm:left-10 sm:top-10">
               {String(active + 1).padStart(2, "0")} /{" "}
-              {String(localizedCities.length).padStart(
-                2,
-                "0",
-              )}
+              {String(cityCount).padStart(2, "0")}
             </div>
           </div>
 
@@ -434,10 +423,7 @@ export default function Destinations({
             <div className="absolute bottom-5 right-5 rounded-full bg-black/40 px-4 py-2 text-xs text-white backdrop-blur-md">
               {current.name} ·{" "}
               {String(active + 1).padStart(2, "0")} /{" "}
-              {String(localizedCities.length).padStart(
-                2,
-                "0",
-              )}
+              {String(cityCount).padStart(2, "0")}
             </div>
           </div>
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createSupabaseBrowserClient } from "../../../lib/supabase-browser";
@@ -152,12 +153,12 @@ export default function TeamLoginPage() {
           <div className="flex min-h-[620px] items-center p-7 sm:p-10 lg:p-14">
             <div className="w-full max-w-[430px]">
 
-              <a
+              <Link
                 href="/"
                 className="text-xs text-[#8a8179] transition hover:text-[#c94a3d]"
               >
                 ← العودة إلى الرئيسية
-              </a>
+              </Link>
 
               <div className="mt-10">
                 <div className="mb-4 h-[2px] w-8 bg-[#c94a3d]" />

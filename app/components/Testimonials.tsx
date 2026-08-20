@@ -1,9 +1,9 @@
 import type { Language } from "../lib/i18n";
-import { translations } from "../lib/i18n";
 
 const icons = [
   (
     <svg
+      key="testimonial-icon-0"
       viewBox="0 0 64 64"
       fill="none"
       className="h-10 w-10"
@@ -20,6 +20,7 @@ const icons = [
   ),
   (
     <svg
+      key="testimonial-icon-1"
       viewBox="0 0 64 64"
       fill="none"
       className="h-10 w-10"
@@ -34,6 +35,7 @@ const icons = [
   ),
   (
     <svg
+      key="testimonial-icon-2"
       viewBox="0 0 64 64"
       fill="none"
       className="h-10 w-10"
@@ -60,7 +62,6 @@ export default function Testimonials({
 }: {
   language?: Language;
 }) {
-  const t = translations[language].testimonials;
   const isArabic = language === "ar";
 
   const trustPoints = [
@@ -227,10 +228,7 @@ export default function Testimonials({
             </p>
           </div>
 
-          <a
-            href="#contact"
-            className="cp-button shrink-0"
-          >
+          <a href="#contact" className="cp-button shrink-0">
             {language === "ar"
               ? "ابدأ الآن"
               : language === "zh"

@@ -23,6 +23,16 @@ const roleDescriptions: Record<string, string> = {
   member: "الوصول إلى مساحة الفريق الأساسية.",
 };
 
+const allowedRoles = [
+  "executive",
+  "admin",
+  "developer",
+  "designer",
+  "editor",
+  "support",
+  "member",
+];
+
 export default async function TeamPage() {
   const supabase = await createSupabaseServerClient();
 
@@ -42,16 +52,6 @@ export default async function TeamPage() {
 
   const role = profile?.role;
 
-  const allowedRoles = [
-    "executive",
-    "admin",
-    "developer",
-    "designer",
-    "editor",
-    "support",
-    "member",
-  ];
-
   if (!role || !allowedRoles.includes(role)) {
     redirect("/account");
   }
@@ -62,6 +62,7 @@ export default async function TeamPage() {
     "عضو الفريق";
 
   const roleLabel = roleLabels[role] || "عضو الفريق";
+
   const roleDescription =
     roleDescriptions[role] || "الوصول إلى مساحة الفريق.";
 
@@ -78,7 +79,6 @@ export default async function TeamPage() {
       dir="rtl"
       className="min-h-screen bg-[#f7f4ee] text-[#171717]"
     >
-      {/* HERO */}
       <section className="relative min-h-[470px] overflow-hidden bg-[#171717]">
         <Image
           src="/images/hero-china.png"
@@ -130,14 +130,9 @@ export default async function TeamPage() {
         </div>
       </section>
 
-      {/* CONTENT */}
       <div className="mx-auto max-w-[1450px] px-5 pb-20">
-
-        {/* PROFILE */}
         <section className="relative z-20 -mt-16 rounded-[38px] border border-[#e4ddd5] bg-white p-7 shadow-[0_25px_80px_rgba(40,30,20,0.08)] lg:p-10">
-
           <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-
             <div className="flex items-center gap-5">
               <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-[#171717] text-2xl font-bold text-white">
                 {name.charAt(0).toUpperCase()}
@@ -173,9 +168,7 @@ export default async function TeamPage() {
             </div>
           </div>
 
-          {/* ACCOUNT INFO */}
           <div className="mt-8 grid gap-4 border-t border-[#eee8e2] pt-8 md:grid-cols-2">
-
             <div className="rounded-2xl bg-[#f8f6f2] px-5 py-4">
               <p className="text-xs font-semibold text-[#8a8179]">
                 البريد الإلكتروني
@@ -198,13 +191,10 @@ export default async function TeamPage() {
                 {roleDescription}
               </p>
             </div>
-
           </div>
         </section>
 
-        {/* WORKSPACE */}
         <section className="mt-10">
-
           <div className="mb-8">
             <div className="flex items-center gap-3">
               <span className="h-[2px] w-8 bg-[#c94a3d]" />
@@ -224,31 +214,56 @@ export default async function TeamPage() {
           </div>
 
           <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-
             {isAdmin && (
-              <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
-                <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
-                  01
-                </span>
+              <>
+                <Link
+                  href="/team/members"
+                  className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
+                >
+                  <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
+                    01
+                  </span>
 
-                <h3 className="mt-6 text-xl font-bold">
-                  إدارة الفريق
-                </h3>
+                  <h3 className="mt-6 text-xl font-bold">
+                    إدارة الفريق
+                  </h3>
 
-                <p className="mt-3 text-sm leading-7 text-[#8a8179]">
-                  إدارة أعضاء الفريق وتحديد الأدوار والصلاحيات.
-                </p>
+                  <p className="mt-3 text-sm leading-7 text-[#8a8179]">
+                    إدارة أعضاء الفريق وتحديد الأدوار والصلاحيات.
+                  </p>
 
-                <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
-                  متاح لك
-                </div>
-              </div>
+                  <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
+                    فتح إدارة الفريق ←
+                  </div>
+                </Link>
+
+                <Link
+                  href="/team/permissions"
+                  className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
+                >
+                  <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
+                    02
+                  </span>
+
+                  <h3 className="mt-6 text-xl font-bold">
+                    إدارة الصلاحيات
+                  </h3>
+
+                  <p className="mt-3 text-sm leading-7 text-[#8a8179]">
+                    التحكم في الصلاحيات الممنوحة لكل دور داخل الفريق.
+                  </p>
+
+                  <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
+                    فتح الصلاحيات ←
+                  </div>
+                </Link>
+              </>
             )}
 
             {isDeveloper && (
               <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
                 <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
-                  02
+                  03
                 </span>
 
                 <h3 className="mt-6 text-xl font-bold">
@@ -268,7 +283,7 @@ export default async function TeamPage() {
             {isContent && (
               <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
                 <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
-                  03
+                  04
                 </span>
 
                 <h3 className="mt-6 text-xl font-bold">
@@ -287,7 +302,7 @@ export default async function TeamPage() {
 
             <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
               <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
-                04
+                05
               </span>
 
               <h3 className="mt-6 text-xl font-bold">
@@ -303,9 +318,12 @@ export default async function TeamPage() {
               </div>
             </div>
 
-            <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+            <Link
+              href="/account"
+              className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
+            >
               <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
-                05
+                06
               </span>
 
               <h3 className="mt-6 text-xl font-bold">
@@ -317,23 +335,18 @@ export default async function TeamPage() {
               </p>
 
               <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
-                متاح
+                فتح حسابي ←
               </div>
-            </div>
-
+            </Link>
           </div>
         </section>
 
-        {/* EXECUTIVE */}
         {isExecutive && (
           <section className="relative mt-10 overflow-hidden rounded-[38px] bg-[#171717] p-8 text-white lg:p-12">
-
             <div className="absolute -left-20 -top-20 h-64 w-64 rounded-full border border-[#c94a3d]/30" />
-
             <div className="absolute -left-10 -top-10 h-44 w-44 rounded-full border border-white/10" />
 
             <div className="relative z-10 max-w-3xl">
-
               <p className="text-[10px] font-semibold tracking-[0.3em] text-[#b5966c]">
                 EXECUTIVE ACCESS
               </p>
@@ -344,31 +357,29 @@ export default async function TeamPage() {
 
               <p className="mt-5 text-sm leading-8 text-white/60">
                 لديك أعلى مستوى من الصلاحيات في مساحة الفريق.
-                من هنا سنضيف لاحقًا إدارة أعضاء الفريق، التحكم في
-                الأدوار، متابعة النشاط، وإدارة العمليات الداخلية للمشروع.
+                يمكنك إدارة أعضاء الفريق والأدوار والصلاحيات والعمليات الداخلية للمشروع.
               </p>
 
               <div className="mt-8 flex flex-wrap gap-3">
-                <span className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70">
+                <Link
+                  href="/team/members"
+                  className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70 transition hover:bg-white/10"
+                >
                   إدارة الفريق
-                </span>
+                </Link>
 
-                <span className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70">
+                <Link
+                  href="/team/permissions"
+                  className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70 transition hover:bg-white/10"
+                >
                   إدارة الصلاحيات
-                </span>
-
-                <span className="rounded-full border border-white/10 bg-white/5 px-5 py-3 text-xs text-white/70">
-                  إدارة المشروع
-                </span>
+                </Link>
               </div>
-
             </div>
           </section>
         )}
 
-        {/* FOOTER */}
         <footer className="mt-10 flex flex-wrap items-center justify-between gap-4 border-t border-[#e4ddd5] pt-7">
-
           <p className="text-xs text-[#a69c93]">
             CHINA PLANET · TEAM WORKSPACE
           </p>
@@ -388,9 +399,7 @@ export default async function TeamPage() {
               حسابي
             </Link>
           </div>
-
         </footer>
-
       </div>
     </main>
   );

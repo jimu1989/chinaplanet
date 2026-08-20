@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   verification: {
     google: "GsP5vqFrX_AijENiXUZvUjllC3-fapG6cXx5qUwnDgA",
   },
+
   metadataBase: new URL(siteUrl),
 
   title: {
@@ -43,14 +44,19 @@ export const metadata: Metadata = {
     "شركات الصين",
   ],
 
-  authors: [{ name: siteConfig.nameEn }],
+  authors: [
+    {
+      name: siteConfig.nameEn,
+    },
+  ],
+
   creator: siteConfig.nameEn,
 
   alternates: {
     canonical: "https://chinaplanet.vercel.app/",
     languages: {
       "ar-SA": "/ar",
-      "en": "/en",
+      en: "/en",
       "zh-CN": "/zh",
       "x-default": "/ar",
     },

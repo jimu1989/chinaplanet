@@ -1,3 +1,6 @@
+import Image from "next/image";
+import Link from "next/link";
+
 import type { Language } from "../lib/i18n";
 import { translations } from "../lib/i18n";
 import { siteConfig } from "../lib/site";
@@ -33,9 +36,11 @@ export default function Footer({
               className="inline-flex items-center"
               aria-label="China Planet"
             >
-              <img
+              <Image
                 src="/images/china-planet-logo.png"
                 alt="China Planet"
+                width={165}
+                height={58}
                 className="h-[58px] w-[165px] object-contain"
                 draggable={false}
               />
@@ -44,10 +49,8 @@ export default function Footer({
             <p className="mt-6 max-w-[380px] text-sm leading-7 text-[#6b625b]">
               {language === "ar" &&
                 "كوكب الصين — بوابتك الموثوقة لاكتشاف الصين، خدماتها، وجهاتها، وفرصها."}
-
               {language === "en" &&
                 "China Planet — your trusted gateway to discovering China, its services, destinations, and opportunities."}
-
               {language === "zh" &&
                 "中国星球——探索中国、了解其服务、目的地与商机的可靠门户。"}
             </p>
@@ -107,23 +110,23 @@ export default function Footer({
           </p>
 
           <div className="flex gap-5">
-            <a
+            <Link
               href="/privacy"
               className="transition-colors duration-300 hover:text-[#c94a3d]"
             >
               {language === "ar" && "الخصوصية"}
               {language === "en" && "Privacy"}
               {language === "zh" && "隐私政策"}
-            </a>
+            </Link>
 
-            <a
+            <Link
               href="/terms"
               className="transition-colors duration-300 hover:text-[#c94a3d]"
             >
               {language === "ar" && "الشروط والأحكام"}
               {language === "en" && "Terms & Conditions"}
               {language === "zh" && "条款与条件"}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

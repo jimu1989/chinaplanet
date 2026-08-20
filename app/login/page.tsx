@@ -1,28 +1,31 @@
 "use client";
 
+import Image from "next/image";
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
 import { translations, type Language } from "../lib/i18n";
 
 export default function LoginPage() {
   const pathname =
-  typeof window !== "undefined"
-    ? window.location.pathname
-    : "/ar";
+    typeof window !== "undefined"
+      ? window.location.pathname
+      : "/ar";
+
   const currentLanguage: Language = pathname.startsWith("/en")
     ? "en"
     : pathname.startsWith("/zh")
       ? "zh"
       : "ar";
+
   const t = translations[currentLanguage].auth;
   const router = useRouter();
   const supabase = createSupabaseBrowserClient();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -37,12 +40,13 @@ export default function LoginPage() {
     try {
       setLoading(true);
 
-      const { error } = await supabase.auth.resetPasswordForEmail(
-        email.trim(),
-        {
-          redirectTo: `${window.location.origin}/reset-password`,
-        }
-      );
+      const { error } =
+        await supabase.auth.resetPasswordForEmail(
+          email.trim(),
+          {
+            redirectTo: `${window.location.origin}/reset-password`,
+          }
+        );
 
       if (error) {
         setError(t.resetFailed);
@@ -57,9 +61,10 @@ export default function LoginPage() {
     }
   }
 
-  async function handleLogin(event: FormEvent<HTMLFormElement>) {
+  async function handleLogin(
+    event: FormEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
-
     setError("");
 
     if (!email.trim()) {
@@ -82,9 +87,7 @@ export default function LoginPage() {
         });
 
       if (loginError) {
-        setError(
-          t.invalidLogin
-        );
+        setError(t.invalidLogin);
         return;
       }
 
@@ -104,21 +107,24 @@ export default function LoginPage() {
     >
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1100px] items-center justify-center">
         <div className="grid w-full overflow-hidden rounded-[32px] border border-[#e4dbd2] bg-white shadow-[0_25px_80px_rgba(40,30,20,0.08)] lg:grid-cols-2">
-
           {/* BRAND */}
           <div className="relative hidden min-h-[600px] overflow-hidden bg-[#171717] lg:block">
-            <img
+            <Image
               src="/images/hero-china.png"
               alt=""
-              className="absolute inset-0 h-full w-full object-cover opacity-55"
+              fill
+              sizes="(min-width: 1024px) 50vw, 0px"
+              className="object-cover opacity-55"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-[#171717]/50 to-transparent" />
 
             <div className="relative flex h-full flex-col justify-between p-10 text-white">
-              <img
+              <Image
                 src="/images/china-planet-logo.png"
                 alt="China Planet"
+                width={180}
+                height={62}
                 className="h-[62px] w-[180px] object-contain object-right"
               />
 
@@ -141,7 +147,6 @@ export default function LoginPage() {
           {/* LOGIN FORM */}
           <div className="flex min-h-[600px] items-center p-7 sm:p-10 lg:p-14">
             <div className="w-full max-w-[430px]">
-
               <Link
                 href="/"
                 className="text-xs text-[#8a8179] transition hover:text-[#c94a3d]"
@@ -178,7 +183,9 @@ export default function LoginPage() {
                     id="email"
                     type="email"
                     value={email}
-                    onChange={(event) => setEmail(event.target.value)}
+                    onChange={(event) =>
+                      setEmail(event.target.value)
+                    }
                     placeholder="name@example.com"
                     autoComplete="email"
                     dir="ltr"
@@ -196,20 +203,22 @@ export default function LoginPage() {
                       {t.password}
                     </label>
 
-                   <button
-  type="button"
-  className="text-[11px] text-[#8a8179] transition hover:text-[#c94a3d]"
-  onClick={handleForgotPassword}
->
-  {t.forgotPassword}
-</button>
+                    <button
+                      type="button"
+                      className="text-[11px] text-[#8a8179] transition hover:text-[#c94a3d]"
+                      onClick={handleForgotPassword}
+                    >
+                      {t.forgotPassword}
+                    </button>
                   </div>
 
                   <input
                     id="password"
                     type="password"
                     value={password}
-                    onChange={(event) => setPassword(event.target.value)}
+                    onChange={(event) =>
+                      setPassword(event.target.value)
+                    }
                     placeholder="••••••••"
                     autoComplete="current-password"
                     dir="ltr"

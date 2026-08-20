@@ -1,5 +1,8 @@
 "use client";
 
+/* eslint-disable react-hooks/set-state-in-effect */
+
+import Image from "next/image";
 import { FormEvent, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,7 +12,8 @@ import { translations, type Language } from "../lib/i18n";
 
 const registerTranslations = {
   ar: {
-    welcome: "أنشئ حسابك وابدأ تجربتك مع China Planet. كل ما تحتاجه للوصول إلى الصين، في مكان واحد.",
+    welcome:
+      "أنشئ حسابك وابدأ تجربتك مع China Planet. كل ما تحتاجه للوصول إلى الصين، في مكان واحد.",
     home: "← العودة إلى الرئيسية",
     name: "الاسم",
     email: "البريد الإلكتروني",
@@ -20,7 +24,6 @@ const registerTranslations = {
     createAccount: "إنشاء الحساب",
     unexpectedError: "حدث خطأ غير متوقع. حاول مرة أخرى.",
   },
-
   en: {
     welcome:
       "Create your account and start your China Planet experience. Everything you need to reach China, all in one place.",
@@ -32,9 +35,9 @@ const registerTranslations = {
     password: "Password",
     confirmPassword: "Confirm password",
     createAccount: "Create account",
-    unexpectedError: "An unexpected error occurred. Please try again.",
+    unexpectedError:
+      "An unexpected error occurred. Please try again.",
   },
-
   zh: {
     welcome:
       "创建您的账户，开启 China Planet 体验。您前往中国所需的一切，都在这里。",
@@ -61,7 +64,8 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] =
+    useState("");
 
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -81,7 +85,6 @@ export default function RegisterPage() {
 
   const t = translations[currentLanguage].auth;
   const rt = registerTranslations[currentLanguage];
-
   const direction = currentLanguage === "ar" ? "rtl" : "ltr";
 
   async function handleRegister(
@@ -180,21 +183,24 @@ export default function RegisterPage() {
     >
       <div className="mx-auto flex min-h-[calc(100vh-6rem)] max-w-[1100px] items-center justify-center">
         <div className="grid w-full overflow-hidden rounded-[32px] border border-[#e4dbd2] bg-white shadow-[0_25px_80px_rgba(40,30,20,0.08)] lg:grid-cols-2">
-
           {/* الجانب التعريفي */}
           <div className="relative hidden min-h-[650px] overflow-hidden bg-[#171717] lg:block">
-            <img
+            <Image
               src="/images/hero-china.png"
               alt="China Planet"
-              className="absolute inset-0 h-full w-full object-cover opacity-55"
+              fill
+              sizes="(min-width: 1024px) 50vw, 0px"
+              className="object-cover opacity-55"
             />
 
             <div className="absolute inset-0 bg-gradient-to-t from-[#171717] via-[#171717]/50 to-transparent" />
 
             <div className="relative flex h-full flex-col justify-between p-10 text-white">
-              <img
+              <Image
                 src="/images/china-planet-logo.png"
                 alt="China Planet"
+                width={180}
+                height={62}
                 className="h-[62px] w-[180px] object-contain object-right"
               />
 
@@ -217,7 +223,6 @@ export default function RegisterPage() {
           {/* نموذج التسجيل */}
           <div className="flex min-h-[650px] items-center p-7 sm:p-10 lg:p-14">
             <div className="w-full max-w-[430px]">
-
               <Link
                 href={
                   currentLanguage === "en"
@@ -247,7 +252,6 @@ export default function RegisterPage() {
                 onSubmit={handleRegister}
                 className="mt-8 grid gap-5"
               >
-
                 {/* الاسم */}
                 <div>
                   <label
@@ -390,7 +394,6 @@ export default function RegisterPage() {
 
               <p className="mt-7 text-center text-sm text-[#756c64]">
                 {t.hasAccount}{" "}
-
                 <Link
                   href={
                     currentLanguage === "en"

@@ -1,8 +1,10 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
 
 const supabase = createSupabaseBrowserClient();
@@ -57,6 +59,7 @@ export default function TeamLayout({
   const [loading, setLoading] = useState(true);
   const [userName, setUserName] = useState("");
   const [role, setRole] = useState("");
+
   const [permissions, setPermissions] = useState<
     Record<Permission, boolean>
   >({
@@ -72,7 +75,10 @@ export default function TeamLayout({
 
     const loadTeamSession = async () => {
       if (isLoginPage) {
-        if (mounted) setLoading(false);
+        if (mounted) {
+          setLoading(false);
+        }
+
         return;
       }
 
@@ -150,7 +156,9 @@ export default function TeamLayout({
         );
       }
 
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       setUserName(
         profile.full_name ||
@@ -237,9 +245,11 @@ export default function TeamLayout({
             href="/team"
             className="flex shrink-0 items-center gap-3"
           >
-            <img
+            <Image
               src="/images/china-planet-logo.png"
               alt="China Planet"
+              width={200}
+              height={70}
               className="h-auto w-[150px] object-contain sm:w-[180px] lg:w-[200px]"
             />
 

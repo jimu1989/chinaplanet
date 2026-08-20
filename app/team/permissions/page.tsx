@@ -61,7 +61,11 @@ export default function PermissionsPage() {
   };
 
   useEffect(() => {
-    loadPermissions();
+    const load = async () => {
+      await loadPermissions();
+    };
+
+    void load();
   }, []);
 
   const togglePermission = async (permission: Permission) => {

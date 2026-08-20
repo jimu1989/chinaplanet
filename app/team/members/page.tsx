@@ -37,26 +37,41 @@ export default function TeamMembersPage() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    loadMembers();
-  }, []);
+    let cancelled = false;
 
-  async function loadMembers() {
-    try {
-      const response = await fetch("/api/team/members");
+    async function loadMembers() {
+      try {
+        const response = await fetch("/api/team/members");
 
-      if (!response.ok) {
-        setMessage("تعذر تحميل أعضاء الفريق.");
-        return;
+        if (!response.ok) {
+          if (!cancelled) {
+            setMessage("تعذر تحميل أعضاء الفريق.");
+          }
+          return;
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setMembers(data.members || []);
+        }
+      } catch {
+        if (!cancelled) {
+          setMessage("تعذر الاتصال بالخادم.");
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
-
-      const data = await response.json();
-      setMembers(data.members || []);
-    } catch {
-      setMessage("تعذر الاتصال بالخادم.");
-    } finally {
-      setLoading(false);
     }
-  }
+
+    void loadMembers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();

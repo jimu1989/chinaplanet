@@ -23,7 +23,7 @@ export const siteConfig = {
     tiktok: "",
   },
 
-  // نضع الدومين الحقيقي هنا قبل النشر على Vercel.
+  // ضع الدومين الحقيقي في NEXT_PUBLIC_SITE_URL قبل النشر.
   url: process.env.NEXT_PUBLIC_SITE_URL || "",
 
   business: {
