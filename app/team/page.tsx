@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import TeamRequests from "../components/TeamRequests";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "../../lib/supabase-server";
 
@@ -200,6 +201,8 @@ export default async function TeamPage() {
             </div>
           </div>
         </section>
+
+        <TeamRequests isAdmin={isAdmin} />
 
         {/* WORKSPACE */}
         <section className="mt-10">
