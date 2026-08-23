@@ -154,6 +154,8 @@ export default function Contact({
 }) {
   const [service, setService] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [details, setDetails] = useState("");
 
   const t = contactTranslations[language];
@@ -163,6 +165,8 @@ export default function Contact({
 
   const handleWhatsApp = () => {
     const customerName = name.trim();
+    const customerEmail = email.trim();
+    const customerPhone = phone.trim();
     const selectedService = service;
     const customerDetails = details.trim();
 
@@ -174,6 +178,9 @@ export default function Contact({
       t.whatsappGreeting,
       "",
       t.whatsappName + " " + customerName + ".",
+      "",
+      "البريد الإلكتروني: " + (customerEmail || "غير مذكور"),
+      "رقم الجوال: " + (customerPhone || "غير مذكور"),
       "",
       t.whatsappService + " " + selectedService,
       "",
@@ -198,6 +205,8 @@ export default function Contact({
       },
       body: JSON.stringify({
         name: customerName,
+        email: customerEmail,
+        phone: customerPhone,
         service: selectedService,
         details: customerDetails,
         language,
@@ -267,6 +276,48 @@ export default function Contact({
                   autoComplete="name"
                   className="w-full rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm text-[#302c28] outline-none transition-all duration-300 placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white focus:shadow-[0_8px_30px_rgba(201,74,61,0.06)]"
                 />
+              </div>
+
+              <div className="grid gap-6 sm:grid-cols-2">
+                <div>
+                  <label
+                    htmlFor="contact-phone"
+                    className="mb-3 block text-xs font-semibold text-[#554d46]"
+                  >
+                    رقم الجوال
+                  </label>
+
+                  <input
+                    id="contact-phone"
+                    type="tel"
+                    value={phone}
+                    onChange={(event) => setPhone(event.target.value)}
+                    placeholder="+966 5X XXX XXXX"
+                    autoComplete="tel"
+                    dir="ltr"
+                    className="w-full rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm text-[#302c28] outline-none transition-all duration-300 placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white focus:shadow-[0_8px_30px_rgba(201,74,61,0.06)]"
+                  />
+                </div>
+
+                <div>
+                  <label
+                    htmlFor="contact-email"
+                    className="mb-3 block text-xs font-semibold text-[#554d46]"
+                  >
+                    البريد الإلكتروني
+                  </label>
+
+                  <input
+                    id="contact-email"
+                    type="email"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="name@example.com"
+                    autoComplete="email"
+                    dir="ltr"
+                    className="w-full rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm text-[#302c28] outline-none transition-all duration-300 placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white focus:shadow-[0_8px_30px_rgba(201,74,61,0.06)]"
+                  />
+                </div>
               </div>
 
               <div>
