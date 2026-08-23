@@ -235,7 +235,7 @@ export default function TeamLoginPage() {
                   disabled={loading}
                   className="mt-1 rounded-2xl bg-[#171717] px-5 py-4 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  {loading ? "{t.teamLoginLoading}" : "دخول الفريق"}
+                  {loading ? t.teamLoginLoading : "دخول الفريق"}
                 </button>
               </form>
 

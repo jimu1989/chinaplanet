@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { createSupabaseServerClient } from "../../../lib/supabase-server";
+import {
+  getCurrentTeamUser,
+  hasTeamPermission,
+} from "../../../../lib/team-permissions";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -15,65 +18,61 @@ const allowedRoles = [
   "member",
 ];
 
-async function getAuthorizedUser() {
-  const supabase = await createSupabaseServerClient();
+function createAdminClient() {
+  if (!supabaseUrl || !serviceRoleKey) {
+    return null;
+  }
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
+
+async function requireManageTeamPermission() {
+  const { user, profile } = await getCurrentTeamUser();
 
   if (!user) {
     return {
-      supabase,
-      user: null,
-      profile: null,
       error: NextResponse.json(
         { error: "يجب تسجيل الدخول أولًا." },
         { status: 401 }
       ),
-    };
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .from("profiles")
-    .select("id, full_name, phone, role")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  if (profileError) {
-    console.error("TEAM PROFILE ERROR:", profileError);
-
-    return {
-      supabase,
-      user,
+      user: null,
       profile: null,
-      error: NextResponse.json(
-        { error: "تعذر التحقق من صلاحيات الحساب." },
-        { status: 500 }
-      ),
     };
   }
 
-  if (
-    profile?.role !== "executive" &&
-    profile?.role !== "admin"
-  ) {
+  if (!profile?.role) {
     return {
-      supabase,
+      error: NextResponse.json(
+        { error: "لا يوجد دور مرتبط بحسابك." },
+        { status: 403 }
+      ),
       user,
       profile,
+    };
+  }
+
+  const allowed = await hasTeamPermission("manage_team");
+
+  if (!allowed) {
+    return {
       error: NextResponse.json(
         { error: "ليس لديك صلاحية إدارة الفريق." },
         { status: 403 }
       ),
+      user,
+      profile,
     };
   }
 
   return {
-    supabase,
+    error: null,
     user,
     profile,
-    error: null,
   };
 }
 
@@ -81,34 +80,37 @@ export async function GET() {
   try {
     if (!supabaseUrl || !serviceRoleKey) {
       return NextResponse.json(
-        { error: "Supabase server configuration is missing." },
+        {
+          error: "Supabase server configuration is missing.",
+        },
         { status: 500 }
       );
     }
 
-    const auth = await getAuthorizedUser();
+    const authorization = await requireManageTeamPermission();
 
-    if (auth.error) {
-      return auth.error;
+    if (authorization.error) {
+      return authorization.error;
     }
 
-    const admin = createClient(
-      supabaseUrl,
-      serviceRoleKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      }
-    );
+    const admin = createAdminClient();
 
-    const { data: profiles, error: profilesError } = await admin
-      .from("profiles")
-      .select(
-        "id, full_name, phone, role, created_at, updated_at"
-      )
-      .order("created_at", { ascending: false });
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error: "Supabase server configuration is missing.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const { data: profiles, error: profilesError } =
+      await admin
+        .from("profiles")
+        .select(
+          "id, full_name, phone, role, created_at, updated_at"
+        )
+        .order("created_at", { ascending: false });
 
     if (profilesError) {
       console.error(
@@ -167,18 +169,20 @@ export async function POST(request: Request) {
   try {
     if (!supabaseUrl || !serviceRoleKey) {
       return NextResponse.json(
-        { error: "Supabase server configuration is missing." },
+        {
+          error: "Supabase server configuration is missing.",
+        },
         { status: 500 }
       );
     }
 
-    const auth = await getAuthorizedUser();
+    const authorization = await requireManageTeamPermission();
 
-    if (auth.error) {
-      return auth.error;
+    if (authorization.error) {
+      return authorization.error;
     }
 
-    const currentRole = auth.profile?.role;
+    const currentRole = authorization.profile?.role;
 
     const body = await request.json();
 
@@ -187,8 +191,11 @@ export async function POST(request: Request) {
       .toLowerCase();
 
     const password = String(body.password || "");
+
     const fullName = String(body.full_name || "").trim();
+
     const phone = String(body.phone || "").trim();
+
     const role = String(body.role || "member").trim();
 
     if (!email || !password || !fullName) {
@@ -218,6 +225,12 @@ export async function POST(request: Request) {
       );
     }
 
+    /*
+     * مدير النظام لا يستطيع إنشاء مدير نظام آخر
+     * ولا يستطيع إنشاء مدير تنفيذي.
+     *
+     * المدير التنفيذي يستطيع إنشاء أي دور.
+     */
     if (
       currentRole === "admin" &&
       (role === "executive" || role === "admin")
@@ -231,16 +244,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const admin = createClient(
-      supabaseUrl,
-      serviceRoleKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
+    const admin = createAdminClient();
+
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error: "Supabase server configuration is missing.",
         },
-      }
-    );
+        { status: 500 }
+      );
+    }
 
     const { data: createdUser, error: authError } =
       await admin.auth.admin.createUser({
@@ -317,25 +330,30 @@ export async function POST(request: Request) {
     );
   }
 }
+
 export async function DELETE(request: Request) {
   try {
     if (!supabaseUrl || !serviceRoleKey) {
       return NextResponse.json(
-        { error: "Supabase server configuration is missing." },
+        {
+          error: "Supabase server configuration is missing.",
+        },
         { status: 500 }
       );
     }
 
-    const auth = await getAuthorizedUser();
+    const authorization = await requireManageTeamPermission();
 
-    if (auth.error) {
-      return auth.error;
+    if (authorization.error) {
+      return authorization.error;
     }
 
-    const currentUserId = auth.user?.id;
-    const currentRole = auth.profile?.role;
+    const currentUserId = authorization.user?.id;
+
+    const currentRole = authorization.profile?.role;
 
     const body = await request.json();
+
     const memberId = String(body.id || "").trim();
 
     if (!memberId) {
@@ -347,21 +365,23 @@ export async function DELETE(request: Request) {
 
     if (memberId === currentUserId) {
       return NextResponse.json(
-        { error: "لا يمكنك حذف حسابك من هنا." },
+        {
+          error: "لا يمكنك حذف حسابك من هنا.",
+        },
         { status: 403 }
       );
     }
 
-    const admin = createClient(
-      supabaseUrl,
-      serviceRoleKey,
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
+    const admin = createAdminClient();
+
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error: "Supabase server configuration is missing.",
         },
-      }
-    );
+        { status: 500 }
+      );
+    }
 
     const { data: targetProfile, error: targetError } =
       await admin
@@ -389,6 +409,10 @@ export async function DELETE(request: Request) {
       );
     }
 
+    /*
+     * مدير النظام لا يستطيع حذف مدير النظام
+     * أو المدير التنفيذي.
+     */
     if (
       currentRole === "admin" &&
       (targetProfile.role === "executive" ||
@@ -399,16 +423,6 @@ export async function DELETE(request: Request) {
           error:
             "لا يمكن لمدير النظام حذف مدير النظام أو المدير التنفيذي.",
         },
-        { status: 403 }
-      );
-    }
-
-    if (
-      currentRole !== "executive" &&
-      currentRole !== "admin"
-    ) {
-      return NextResponse.json(
-        { error: "ليس لديك صلاحية حذف أعضاء الفريق." },
         { status: 403 }
       );
     }
