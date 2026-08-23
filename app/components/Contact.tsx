@@ -161,7 +161,7 @@ export default function Contact({
   const isArabic = language === "ar";
   const direction = language === "ar" ? "rtl" : "ltr";
 
-  const handleWhatsApp = async () => {
+  const handleWhatsApp = () => {
     const customerName = name.trim();
     const selectedService = service;
     const customerDetails = details.trim();
@@ -170,47 +170,41 @@ export default function Contact({
       return;
     }
 
-    try {
-      const response = await fetch("/api/service-requests", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: customerName,
-          service: selectedService,
-          details: customerDetails,
-          language,
-        }),
-      });
+    const message = [
+      t.whatsappGreeting,
+      "",
+      t.whatsappName + " " + customerName + ".",
+      "",
+      t.whatsappService + " " + selectedService,
+      "",
+      t.whatsappDetails,
+      customerDetails,
+      "",
+      t.whatsappSource,
+    ].join(String.fromCharCode(10));
 
-      if (!response.ok) {
-        throw new Error("Failed to save service request");
-      }
+    const whatsappUrl =
+      "https://api.whatsapp.com/send?phone=" +
+      siteConfig.contact.whatsapp +
+      "&text=" +
+      encodeURIComponent(message);
 
-      const message = [
-        t.whatsappGreeting,
-        "",
-        t.whatsappName + " " + customerName + ".",
-        "",
-        t.whatsappService + " " + selectedService,
-        "",
-        t.whatsappDetails,
-        customerDetails,
-        "",
-        t.whatsappSource,
-      ].join(String.fromCharCode(10));
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 
-      const whatsappUrl =
-        "https://" + "wa.me/" +
-        siteConfig.contact.whatsapp +
-        "?text=" +
-        encodeURIComponent(message);
-
-      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-    } catch (error) {
+    void fetch("/api/service-requests", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: customerName,
+        service: selectedService,
+        details: customerDetails,
+        language,
+      }),
+    }).catch((error) => {
       console.error("SERVICE REQUEST SUBMIT ERROR:", error);
-    }
+    });
   };
 
   return (
