@@ -161,29 +161,56 @@ export default function Contact({
   const isArabic = language === "ar";
   const direction = language === "ar" ? "rtl" : "ltr";
 
-  const handleWhatsApp = () => {
-    const customerName = name.trim() || t.defaultName;
-    const selectedService = service || t.defaultService;
-    const customerDetails = details.trim() || t.defaultDetails;
+  const handleWhatsApp = async () => {
+    const customerName = name.trim();
+    const selectedService = service;
+    const customerDetails = details.trim();
 
-    const message = [
-      t.whatsappGreeting,
-      "",
-      `${t.whatsappName} ${customerName}.`,
-      "",
-      `${t.whatsappService} ${selectedService}`,
-      "",
-      t.whatsappDetails,
-      customerDetails,
-      "",
-      t.whatsappSource,
-    ].join("\n");
+    if (!customerName || !selectedService) {
+      return;
+    }
 
-    const whatsappUrl = `https://wa.me/${siteConfig.contact.whatsapp}?text=${encodeURIComponent(
-      message
-    )}`;
+    try {
+      const response = await fetch("/api/service-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: customerName,
+          service: selectedService,
+          details: customerDetails,
+          language,
+        }),
+      });
 
-    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+      if (!response.ok) {
+        throw new Error("Failed to save service request");
+      }
+
+      const message = [
+        t.whatsappGreeting,
+        "",
+        t.whatsappName + " " + customerName + ".",
+        "",
+        t.whatsappService + " " + selectedService,
+        "",
+        t.whatsappDetails,
+        customerDetails,
+        "",
+        t.whatsappSource,
+      ].join(String.fromCharCode(10));
+
+      const whatsappUrl =
+        "https://" + "wa.me/" +
+        siteConfig.contact.whatsapp +
+        "?text=" +
+        encodeURIComponent(message);
+
+      window.open(whatsappUrl, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error("SERVICE REQUEST SUBMIT ERROR:", error);
+    }
   };
 
   return (
