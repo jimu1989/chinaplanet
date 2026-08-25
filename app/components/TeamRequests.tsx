@@ -90,7 +90,7 @@ export default function TeamRequests({
       setError("");
     } catch (error) {
       console.error("TEAM REQUESTS LOAD ERROR:", error);
-      setError("تعذر تحميل طلبات العملاء.");
+      setError("انتهت جلسة الفريق. أعد تسجيل الدخول.");
     } finally {
       setLoading(false);
     }
