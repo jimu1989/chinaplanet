@@ -24,6 +24,12 @@ async function getTeamUser() {
 export async function GET() {
   const { supabase, user, role } = await getTeamUser();
 
+  console.log("TEAM REQUESTS AUTH:", {
+    userId: user?.id ?? null,
+    email: user?.email ?? null,
+    role,
+  });
+
   if (!user) {
     return NextResponse.json({ error: "غير مصرح." }, { status: 401 });
   }
