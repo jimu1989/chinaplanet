@@ -14,6 +14,25 @@ type ServiceRequest = {
   created_at: string;
 };
 
+const statusSelectStyles = `
+  .status-select[data-status="new"] {
+    background: #fff3e0;
+    color: #c46a00;
+  }
+  .status-select[data-status="contacted"] {
+    background: #e8f1ff;
+    color: #2563eb;
+  }
+  .status-select[data-status="completed"] {
+    background: #e8f7ee;
+    color: #16834b;
+  }
+  .status-select[data-status="cancelled"] {
+    background: #fdeaea;
+    color: #c0392b;
+  }
+`;
+
 export default function TeamRequests({
   isAdmin,
 }: {
@@ -107,6 +126,7 @@ export default function TeamRequests({
 
   return (
     <>
+      <style>{statusSelectStyles}</style>
       {notification && (
         <div className="fixed inset-x-4 top-5 z-[100] mx-auto max-w-xl">
           <div className="rounded-[24px] border border-[#e4ddd5] bg-white p-5 shadow-[0_20px_70px_rgba(40,30,20,0.16)]">
@@ -213,8 +233,14 @@ export default function TeamRequests({
                       <span
                         className={`rounded-full px-3 py-1 text-[10px] font-semibold ${
                           request.status === "new"
-                            ? "bg-[#c94a3d] text-white"
-                            : "bg-[#f8f6f2] text-[#756c64]"
+                            ? "bg-[#fff3e0] text-[#c46a00]"
+                            : request.status === "contacted"
+                              ? "bg-[#e8f1ff] text-[#2563eb]"
+                              : request.status === "completed"
+                                ? "bg-[#e8f7ee] text-[#16834b]"
+                                : request.status === "cancelled"
+                                  ? "bg-[#fdeaea] text-[#c0392b]"
+                                  : "bg-[#f8f6f2] text-[#756c64]"
                         }`}
                       >
                         {request.status === "new"
@@ -235,13 +261,111 @@ export default function TeamRequests({
                   </div>
 
                   <div className="shrink-0 rounded-2xl bg-[#f8f6f2] px-5 py-4 text-xs text-[#756c64]">
-                    {new Date(
-                      request.created_at
-                    ).toLocaleString("ar-SA")}
+                    {new Date(request.created_at).toLocaleString("ar-SA", {
+                      calendar: "gregory",
+                      numberingSystem: "latn",
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
                   </div>
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-3 border-t border-[#eee8e2] pt-5">
+                  <select
+                    data-status={request.status}
+                    value={request.status}
+                    onChange={async (event) => {
+                      const status = event.target.value;
+
+                      const response = await fetch(
+                        "/api/team/service-requests",
+                        {
+                          method: "PATCH",
+                          headers: {
+                            "Content-Type": "application/json",
+                          },
+                          body: JSON.stringify({
+                            id: request.id,
+                            status,
+                          }),
+                        }
+                      );
+
+                      if (response.ok) {
+                        setRequests((current) =>
+                          current.map((item) =>
+                            item.id === request.id
+                              ? { ...item, status }
+                              : item
+                          )
+                        );
+                      } else if (response.status === 404) {
+                        setRequests((current) =>
+                          current.filter((item) => item.id !== request.id)
+                        );
+                        setError("هذا الطلب لم يعد موجودًا.");
+                      } else {
+                        setError("تعذر تحديث حالة الطلب.");
+                      }
+                    }}
+                    className="rounded-full px-4 py-2 text-xs font-semibold transition"
+                    style={{
+                      color:
+                        request.status === "contacted"
+                          ? "#2563eb"
+                          : request.status === "completed"
+                            ? "#16834b"
+                            : request.status === "cancelled"
+                              ? "#c0392b"
+                              : "#c46a00",
+                    }}
+                  >
+                    <option value="new" className="bg-[#fff3e0] text-[#c46a00]">
+                      جديد
+                    </option>
+                    <option value="contacted" className="bg-[#e8f1ff] text-[#2563eb]">
+                      تم التواصل
+                    </option>
+                    <option value="completed" className="bg-[#e8f7ee] text-[#16834b]">
+                      مكتمل
+                    </option>
+                    <option value="cancelled" className="bg-[#fdeaea] text-[#c0392b]">
+                      ملغي
+                    </option>
+                  </select>
+
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (!confirm("هل تريد حذف هذا الطلب؟")) return;
+
+                        const response = await fetch(
+                          "/api/team/service-requests",
+                          {
+                            method: "DELETE",
+                            headers: {
+                              "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify({ id: request.id }),
+                          }
+                        );
+
+                        if (response.ok) {
+                          setRequests((current) =>
+                            current.filter((item) => item.id !== request.id)
+                          );
+                        }
+                      }}
+                      className="rounded-full bg-[#c94a3d] px-4 py-2 text-xs font-semibold text-white"
+                    >
+                      حذف
+                    </button>
+                  )}
                   {request.phone && (
                     <a
                       href={`tel:${request.phone}`}
