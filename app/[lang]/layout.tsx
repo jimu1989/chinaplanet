@@ -1,6 +1,8 @@
+import AIChat from "../components/AIChat";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { isLanguage, languages } from "../lib/i18n";
+import BackToTop from "../components/BackToTop";
 
 export const metadata: Metadata = {
   title: "كوكب الصين | China Planet",
@@ -28,6 +30,8 @@ export default async function LangLayout({
   return (
     <div lang={lang} dir={languages[lang].dir}>
       {children}
+      <AIChat language={lang} />
+      <BackToTop />
     </div>
   );
 }

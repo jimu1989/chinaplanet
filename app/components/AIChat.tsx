@@ -106,6 +106,7 @@ export default function AIChat({
 
   const [loading, setLoading] =
     useState(false);
+  const [open, setOpen] = useState(false);
 
   const sendMessage = async (
     message?: string
@@ -229,186 +230,134 @@ export default function AIChat({
   };
 
   return (
-    <section
-      id="ai-assistant"
-      dir={direction}
-      className="cp-section bg-[#f3f0eb]"
-    >
-      <div className="cp-container">
-        <div className="mx-auto max-w-4xl">
+    <>
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-label={isArabic ? "فتح مساعد China Planet" : "Open China Planet AI"}
+        className="fixed bottom-6 right-6 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-[#171717] text-white shadow-[0_12px_35px_rgba(0,0,0,0.20)] transition hover:scale-105 hover:bg-[#c94a3d] focus:outline-none focus:ring-2 focus:ring-[#c94a3d] focus:ring-offset-2"
+      >
+        <span className="text-lg font-bold">AI</span>
+      </button>
 
-          <div className="text-center">
+      {open && (
+        <div
+          className="fixed inset-0 z-[70] flex items-end justify-center bg-black/25 p-4 sm:items-center"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setOpen(false);
+            }
+          }}
+        >
+          <section
+            id="ai-assistant"
+            dir={direction}
+            className="relative max-h-[85vh] w-full max-w-2xl overflow-hidden rounded-[30px] border border-[#e3ddd6] bg-[#f3f0eb] shadow-[0_25px_80px_rgba(40,30,20,0.20)]"
+          >
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label={isArabic ? "إغلاق المساعد" : "Close assistant"}
+              className="absolute left-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#554d46] shadow-sm transition hover:bg-[#c94a3d] hover:text-white"
+            >
+              ×
+            </button>
 
-            <div className="flex items-center justify-center gap-3">
-              <span className="cp-line" />
+            <div className="max-h-[85vh] overflow-y-auto p-5 sm:p-8">
+              <div className="text-center">
+                <div className="flex items-center justify-center gap-3">
+                  <span className="cp-line" />
+                  <span className="cp-label">{t.eyebrow}</span>
+                  <span className="cp-line" />
+                </div>
 
-              <span className="cp-label">
-                {t.eyebrow}
-              </span>
+                <h2 className="mt-5 text-2xl font-medium leading-[1.35] tracking-tight text-[#40372f] sm:text-3xl">
+                  {t.title}
+                  <br />
+                  <span className="text-[#c94a3d]">{t.accent}</span>
+                </h2>
 
-              <span className="cp-line" />
-            </div>
+                <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#756b62]">
+                  {t.description}
+                </p>
+              </div>
 
-            <h2 className="mt-6 text-3xl font-medium leading-[1.35] tracking-tight text-[#40372f] sm:text-4xl lg:text-[46px]">
-              {t.title}
-
-              <br />
-
-              <span className="text-[#c94a3d]">
-                {t.accent}
-              </span>
-            </h2>
-
-            <p className="mx-auto mt-6 max-w-2xl text-sm leading-8 text-[#756b62] sm:text-base">
-              {t.description}
-            </p>
-
-          </div>
-
-          <div className="mt-12 overflow-hidden rounded-[30px] border border-[#e3ddd6] bg-white shadow-[0_20px_70px_rgba(40,30,20,0.06)]">
-
-            <div className="max-h-[430px] min-h-[280px] space-y-4 overflow-y-auto p-5 sm:p-8">
-
-              {messages.map(
-                (message, index) => (
-                  <div
-                    key={`${message.role}-${index}`}
-                    className={`flex ${
-                      message.role ===
-                      "user"
-                        ? "justify-end"
-                        : "justify-start"
-                    }`}
-                  >
-
+              <div className="mt-7 overflow-hidden rounded-[24px] border border-[#e3ddd6] bg-white">
+                <div className="max-h-[330px] min-h-[220px] space-y-4 overflow-y-auto p-4 sm:p-6">
+                  {messages.map((message, index) => (
                     <div
-                      className={`max-w-[85%] rounded-2xl px-5 py-4 text-sm leading-7 ${
-                        message.role ===
-                        "user"
-                          ? "bg-[#171717] text-white"
-                          : "bg-[#f8f6f2] text-[#40372f]"
+                      key={`${message.role}-${index}`}
+                      className={`flex ${
+                        message.role === "user"
+                          ? "justify-end"
+                          : "justify-start"
                       }`}
                     >
-
-                      <div>
+                      <div
+                        className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-7 ${
+                          message.role === "user"
+                            ? "bg-[#171717] text-white"
+                            : "bg-[#f3f0eb] text-[#40372f]"
+                        }`}
+                      >
                         {message.content}
                       </div>
-
-                      {message.actions &&
-                        message.actions.length >
-                          0 && (
-                          <div className="mt-4 flex flex-wrap gap-2">
-
-                            {message.actions.map(
-                              (action) => (
-                                <a
-                                  key={`${action.href}-${action.label}`}
-                                  href={
-                                    action.href
-                                  }
-                                  className="inline-flex items-center rounded-full border border-[#d8d0c8] bg-white px-4 py-2 text-[11px] font-medium text-[#40372f] transition hover:border-[#c94a3d] hover:text-[#c94a3d]"
-                                >
-                                  {
-                                    action.label
-                                  }
-                                </a>
-                              )
-                            )}
-
-                          </div>
-                        )}
-
                     </div>
-                  </div>
-                )
-              )}
+                  ))}
 
-              {loading && (
-                <div className="flex justify-start">
-
-                  <div className="rounded-2xl bg-[#f8f6f2] px-5 py-4 text-sm text-[#9a9087]">
-                    {t.thinking}
-                  </div>
-
+                  {loading && (
+                    <div className="flex justify-start">
+                      <div className="rounded-2xl bg-[#f3f0eb] px-4 py-3 text-sm text-[#756b62]">
+                        {t.thinking}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
 
-            </div>
+                <div className="border-t border-[#eee8e1] p-4 sm:p-5">
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    {t.suggestions.map((suggestion) => (
+                      <button
+                        key={suggestion}
+                        type="button"
+                        onClick={() => void sendMessage(suggestion)}
+                        disabled={loading}
+                        className="rounded-full border border-[#e3ddd6] bg-[#faf9f7] px-3 py-2 text-[11px] text-[#756b62] transition hover:border-[#c94a3d] hover:text-[#c94a3d] disabled:opacity-50"
+                      >
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
 
-            <div className="border-t border-[#eee8e1] p-4 sm:p-6">
+                  <div className="flex items-end gap-3">
+                    <textarea
+                      value={input}
+                      onChange={(event) => setInput(event.target.value)}
+                      onKeyDown={(event) => {
+                        if (event.key === "Enter" && !event.shiftKey) {
+                          event.preventDefault();
+                          void sendMessage();
+                        }
+                      }}
+                      placeholder={t.placeholder}
+                      rows={2}
+                      className="min-h-[58px] flex-1 resize-none rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-4 py-3 text-sm leading-7 text-[#302c28] outline-none transition focus:border-[#c94a3d] focus:bg-white"
+                    />
 
-              <div className="mb-4 flex flex-wrap gap-2">
-
-                {t.suggestions.map(
-                  (suggestion) => (
                     <button
-                      key={suggestion}
                       type="button"
-                      onClick={() =>
-                        void sendMessage(
-                          suggestion
-                        )
-                      }
-                      disabled={loading}
-                      className="rounded-full border border-[#e3ddd6] bg-[#faf9f7] px-4 py-2 text-[11px] text-[#756b62] transition hover:border-[#c94a3d] hover:text-[#c94a3d] disabled:opacity-50"
+                      onClick={() => void sendMessage()}
+                      disabled={loading || !input.trim()}
+                      className="flex h-[58px] shrink-0 items-center justify-center rounded-2xl bg-[#171717] px-5 text-sm font-semibold text-white transition hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-40"
                     >
-                      {suggestion}
+                      {loading ? "..." : t.send}
                     </button>
-                  )
-                )}
-
+                  </div>
+                </div>
               </div>
-
-              <div className="flex items-end gap-3">
-
-                <textarea
-                  value={input}
-                  onChange={(event) =>
-                    setInput(
-                      event.target.value
-                    )
-                  }
-                  onKeyDown={(event) => {
-                    if (
-                      event.key ===
-                        "Enter" &&
-                      !event.shiftKey
-                    ) {
-                      event.preventDefault();
-
-                      void sendMessage();
-                    }
-                  }}
-                  placeholder={
-                    t.placeholder
-                  }
-                  rows={2}
-                  className="min-h-[58px] flex-1 resize-none rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm leading-7 text-[#302c28] outline-none transition focus:border-[#c94a3d] focus:bg-white"
-                />
-
-                <button
-                  type="button"
-                  onClick={() =>
-                    void sendMessage()
-                  }
-                  disabled={
-                    loading ||
-                    !input.trim()
-                  }
-                  className="flex h-[58px] shrink-0 items-center justify-center rounded-2xl bg-[#171717] px-6 text-sm font-semibold text-white transition hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-40"
-                >
-                  {loading
-                    ? "..."
-                    : t.send}
-                </button>
-
-              </div>
-
             </div>
-          </div>
-
+          </section>
         </div>
-      </div>
-    </section>
+      )}
+    </>
   );
-}
