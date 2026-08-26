@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 
 import { createSupabaseServerClient } from "../../../../lib/supabase-server";
-
 import { runAI } from "../../../../lib/ai/core";
 
 import type {
@@ -26,6 +25,62 @@ function detectUserType(
   }
 
   return "customer";
+}
+
+type AIAction = {
+  label: string;
+  href: string;
+};
+
+function buildActions(
+  intent: string,
+  locale: "ar" | "en" | "zh"
+): AIAction[] {
+  const labels = {
+    ar: {
+      study: "🎓 الدراسة في الصين",
+      contact: "📩 إرسال طلب",
+      whatsapp: "💬 تواصل معنا",
+      services: "خدمات China Planet",
+    },
+    en: {
+      study: "🎓 Study in China",
+      contact: "📩 Send a Request",
+      whatsapp: "💬 Contact Us",
+      services: "China Planet Services",
+    },
+    zh: {
+      study: "🎓 中国留学",
+      contact: "📩 提交需求",
+      whatsapp: "💬 联系我们",
+      services: "China Planet 服务",
+    },
+  };
+
+  const t = labels[locale];
+
+  const actions: AIAction[] = [];
+
+  if (
+    intent === "china_information"
+  ) {
+    actions.push({
+      label: t.study,
+      href: `/${locale}#services`,
+    });
+  }
+
+  actions.push({
+    label: t.contact,
+    href: `/${locale}#contact`,
+  });
+
+  actions.push({
+    label: t.whatsapp,
+    href: `/${locale}#contact`,
+  });
+
+  return actions;
 }
 
 export async function POST(
@@ -109,7 +164,17 @@ export async function POST(
       history
     );
 
-    return NextResponse.json(result);
+    const actions = result.success
+      ? buildActions(
+          result.intent,
+          locale
+        )
+      : [];
+
+    return NextResponse.json({
+      ...result,
+      actions,
+    });
   } catch (error) {
     console.error(
       "AI CHAT API ERROR:",
@@ -119,7 +184,9 @@ export async function POST(
     return NextResponse.json(
       {
         success: false,
-        error: "حدث خطأ أثناء معالجة طلب الذكاء الاصطناعي.",
+        error:
+          "حدث خطأ أثناء معالجة طلب الذكاء الاصطناعي.",
+        actions: [],
       },
       { status: 500 }
     );

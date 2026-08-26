@@ -1,3 +1,4 @@
+import AIChat from "../components/AIChat";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -117,7 +118,8 @@ export default async function LocalizedHomePage({
         <Goals language={language} />
         <Testimonials language={language} />
         <Contact language={language} />
-      </main>
+            <AIChat language={lang} />
+    </main>
 
       <Footer language={language} />
     </>
