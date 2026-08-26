@@ -22,10 +22,7 @@ const OPENROUTER_API_KEY =
 const FALLBACK_MODELS = [
   "openai/gpt-oss-120b:free",
   "openai/gpt-oss-20b:free",
-].filter(
-  (model, index, array) =>
-    array.indexOf(model) === index
-);
+];
 
 type OpenRouterMessage = {
   role: "system" | "user" | "assistant";
