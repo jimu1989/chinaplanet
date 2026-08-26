@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import type { Language } from "../lib/i18n";
 
@@ -106,7 +106,16 @@ export default function AIChat({
 
   const [loading, setLoading] =
     useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "end",
+    });
+  }, [messages, loading]);
 
   const sendMessage = async (
     message?: string
@@ -234,10 +243,14 @@ export default function AIChat({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        aria-label={isArabic ? "فتح مساعد China Planet" : "Open China Planet AI"}
-        className="fixed bottom-6 right-6 z-[60] flex h-14 w-14 items-center justify-center rounded-full bg-[#171717] text-white shadow-[0_12px_35px_rgba(0,0,0,0.20)] transition hover:scale-105 hover:bg-[#c94a3d] focus:outline-none focus:ring-2 focus:ring-[#c94a3d] focus:ring-offset-2"
+        aria-label={
+          isArabic
+            ? "فتح مساعد China Planet"
+            : "Open China Planet AI"
+        }
+        className="fixed bottom-6 right-6 z-[60] flex h-14 min-w-[150px] items-center justify-center rounded-full bg-[#171717] text-white shadow-[0_12px_35px_rgba(0,0,0,0.20)] transition hover:scale-105 hover:bg-[#c94a3d] focus:outline-none focus:ring-2 focus:ring-[#c94a3d] focus:ring-offset-2"
       >
-        <span className="text-lg font-bold">AI</span>
+        <span className="whitespace-nowrap text-xs font-bold">مساعد كوكب الصين</span>
       </button>
 
       {open && (
@@ -252,29 +265,37 @@ export default function AIChat({
           <section
             id="ai-assistant"
             dir={direction}
-            className="relative max-h-[85vh] w-full max-w-2xl overflow-hidden rounded-[30px] border border-[#e3ddd6] bg-[#f3f0eb] shadow-[0_25px_80px_rgba(40,30,20,0.20)]"
+            className="relative w-full max-w-2xl overflow-hidden rounded-[30px] border border-[#e3ddd6] bg-[#f3f0eb] shadow-[0_25px_80px_rgba(40,30,20,0.20)]"
           >
             <button
               type="button"
               onClick={() => setOpen(false)}
-              aria-label={isArabic ? "إغلاق المساعد" : "Close assistant"}
-              className="absolute left-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#554d46] shadow-sm transition hover:bg-[#c94a3d] hover:text-white"
+              aria-label={
+                isArabic
+                  ? "إغلاق المساعد"
+                  : "Close assistant"
+              }
+              className="absolute left-4 top-4 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-white text-xl text-[#554d46] shadow-sm transition hover:bg-[#c94a3d] hover:text-white"
             >
               ×
             </button>
 
-            <div className="max-h-[85vh] overflow-y-auto p-5 sm:p-8">
+            <div className="max-h-[85vh] overflow-y-auto p-5 pt-14 sm:p-8 sm:pt-14">
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3">
                   <span className="cp-line" />
-                  <span className="cp-label">{t.eyebrow}</span>
+                  <span className="cp-label">
+                    {t.eyebrow}
+                  </span>
                   <span className="cp-line" />
                 </div>
 
                 <h2 className="mt-5 text-2xl font-medium leading-[1.35] tracking-tight text-[#40372f] sm:text-3xl">
                   {t.title}
                   <br />
-                  <span className="text-[#c94a3d]">{t.accent}</span>
+                  <span className="text-[#c94a3d]">
+                    {t.accent}
+                  </span>
                 </h2>
 
                 <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#756b62]">
@@ -312,6 +333,9 @@ export default function AIChat({
                       </div>
                     </div>
                   )}
+
+                  <div ref={messagesEndRef} />
+
                 </div>
 
                 <div className="border-t border-[#eee8e1] p-4 sm:p-5">
@@ -320,7 +344,9 @@ export default function AIChat({
                       <button
                         key={suggestion}
                         type="button"
-                        onClick={() => void sendMessage(suggestion)}
+                        onClick={() =>
+                          void sendMessage(suggestion)
+                        }
                         disabled={loading}
                         className="rounded-full border border-[#e3ddd6] bg-[#faf9f7] px-3 py-2 text-[11px] text-[#756b62] transition hover:border-[#c94a3d] hover:text-[#c94a3d] disabled:opacity-50"
                       >
@@ -332,9 +358,14 @@ export default function AIChat({
                   <div className="flex items-end gap-3">
                     <textarea
                       value={input}
-                      onChange={(event) => setInput(event.target.value)}
+                      onChange={(event) =>
+                        setInput(event.target.value)
+                      }
                       onKeyDown={(event) => {
-                        if (event.key === "Enter" && !event.shiftKey) {
+                        if (
+                          event.key === "Enter" &&
+                          !event.shiftKey
+                        ) {
                           event.preventDefault();
                           void sendMessage();
                         }
@@ -346,8 +377,12 @@ export default function AIChat({
 
                     <button
                       type="button"
-                      onClick={() => void sendMessage()}
-                      disabled={loading || !input.trim()}
+                      onClick={() =>
+                        void sendMessage()
+                      }
+                      disabled={
+                        loading || !input.trim()
+                      }
                       className="flex h-[58px] shrink-0 items-center justify-center rounded-2xl bg-[#171717] px-5 text-sm font-semibold text-white transition hover:bg-[#c94a3d] disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       {loading ? "..." : t.send}
@@ -361,3 +396,4 @@ export default function AIChat({
       )}
     </>
   );
+}
