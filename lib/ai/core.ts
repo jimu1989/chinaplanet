@@ -20,9 +20,8 @@ const OPENROUTER_API_KEY =
   process.env.OPENROUTER_API_KEY;
 
 const FALLBACK_MODELS = [
+  "openai/gpt-oss-120b:free",
   "openai/gpt-oss-20b:free",
-  "nvidia/nemotron-3-super-120b-a12b:free",
-  "openrouter/free",
 ].filter(
   (model, index, array) =>
     array.indexOf(model) === index
