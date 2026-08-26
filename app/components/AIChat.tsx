@@ -148,17 +148,13 @@ export default function AIChat({
         "/api/ai/chat",
         {
           method: "POST",
-
           headers: {
             "Content-Type":
               "application/json",
           },
-
           body: JSON.stringify({
             message: value,
-
             history: nextHistory,
-
             context: {
               locale: language,
               pathname:
@@ -168,21 +164,25 @@ export default function AIChat({
         }
       );
 
+      if (!response.ok) {
+        throw new Error(
+          `AI request failed: ${response.status}`
+        );
+      }
+
       const data =
         await response.json();
 
-      if (
-        !response.ok ||
-        data.success === false
-      ) {
+      if (data.success === false) {
         throw new Error(
-          "AI request failed"
+          data.message ||
+            "AI request failed"
         );
       }
 
       const answer =
-        data.answer ||
         data.message ||
+        data.answer ||
         data.response ||
         data.content;
 
@@ -211,7 +211,6 @@ export default function AIChat({
       setMessages(
         (current) => [
           ...current,
-
           {
             role: "assistant",
             content: String(answer),
@@ -228,7 +227,6 @@ export default function AIChat({
       setMessages(
         (current) => [
           ...current,
-
           {
             role: "assistant",
             content: t.error,
