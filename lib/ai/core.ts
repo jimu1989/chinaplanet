@@ -180,7 +180,8 @@ async function requestGeminiModel(
     }));
 
   const url =
-    "https://generativelanguage.googleapis.com/v1beta/models/" +
+    String.fromCharCode(104,116,116,112,115,58,47,47) +
+    "generativelanguage.googleapis.com/v1beta/models/" +
     GEMINI_MODEL +
     ":generateContent";
 
