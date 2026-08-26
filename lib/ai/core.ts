@@ -19,6 +19,13 @@ const OPENROUTER_URL =
 const OPENROUTER_API_KEY =
   process.env.OPENROUTER_API_KEY;
 
+const GEMINI_API_KEY =
+  process.env.GEMINI_API_KEY;
+
+const GEMINI_MODEL =
+  "gemini-3.6-flash";
+
+
 const FALLBACK_MODELS = [
   "google/gemma-4-31b-it:free",
   "google/gemma-4-26b-a4b-it:free",
@@ -141,6 +148,76 @@ ${
 اسأله عن المدينة والتاريخ وعدد الحضور ونوع الفعالية.
 `,
   ].join("\n");
+}
+
+
+async function requestGeminiModel(
+  messages: OpenRouterMessage[]
+) {
+  if (!GEMINI_API_KEY) {
+    return {
+      response: null,
+      data: null,
+    };
+  }
+
+  const systemMessage = messages.find(
+    (message) => message.role === "system"
+  );
+
+  const contents = messages
+    .filter((message) => message.role !== "system")
+    .map((message) => ({
+      role:
+        message.role === "assistant"
+          ? "model"
+          : "user",
+      parts: [
+        {
+          text: message.content,
+        },
+      ],
+    }));
+
+  const url =
+    "https://generativelanguage.googleapis.com/v1beta/models/" +
+    GEMINI_MODEL +
+    ":generateContent";
+
+  const response = await fetch(
+    url,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_API_KEY,
+      },
+      body: JSON.stringify({
+        ...(systemMessage
+          ? {
+              systemInstruction: {
+                parts: [
+                  {
+                    text: systemMessage.content,
+                  },
+                ],
+              },
+            }
+          : {}),
+        contents,
+        generationConfig: {
+          maxOutputTokens: 220,
+        },
+      }),
+    }
+  );
+
+  const data = await response.json();
+
+  return {
+    response,
+    data,
+  };
 }
 
 async function requestModel(
@@ -359,6 +436,56 @@ export async function runAI(
     "ALL OPENROUTER MODELS FAILED:",
     lastError
   );
+
+  // Gemini fallback
+  if (GEMINI_API_KEY) {
+    try {
+      console.log(
+        `China Planet AI → trying Gemini: ${GEMINI_MODEL}`
+      );
+
+      const { response, data } =
+        await requestGeminiModel(messages);
+
+      if (response?.ok) {
+        const rawAnswer =
+          data?.candidates?.[0]?.content?.parts
+            ?.map(
+              (part: { text?: string }) =>
+                part.text || ""
+            )
+            .join("")
+            .trim();
+
+        const answer =
+          cleanAIAnswer(rawAnswer || "");
+
+        if (answer) {
+          console.log(
+            "Gemini fallback succeeded"
+          );
+
+          return {
+            success: true,
+            message: answer,
+            intent: routing.intent,
+            toolsUsed: routing.tools,
+          };
+        }
+      }
+
+      console.error(
+        "Gemini ERROR:",
+        response?.status,
+        JSON.stringify(data)
+      );
+    } catch (error) {
+      console.error(
+        "Gemini request failed:",
+        error
+      );
+    }
+  }
 
   return {
     success: false,
