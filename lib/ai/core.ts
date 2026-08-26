@@ -151,35 +151,22 @@ async function requestModel(
     OPENROUTER_URL,
     {
       method: "POST",
-
       headers: {
         Authorization:
           `Bearer ${OPENROUTER_API_KEY}`,
-
         "Content-Type":
           "application/json",
-
         "HTTP-Referer":
           "https://chinaplanet.sa",
-
         "X-Title":
           "China Planet AI",
       },
-
       body: JSON.stringify({
         model,
         messages,
-
         temperature: 0.2,
-
         max_tokens: 220,
-
         stream: false,
-
-        reasoning: {
-          enabled: false,
-        },
-
         provider: {
           allow_fallbacks: true,
           sort: "throughput",
@@ -196,50 +183,14 @@ async function requestModel(
   };
 }
 
-function cleanAIAnswer(
-  answer: string
-): string | null {
-  if (!answer) {
+function cleanAIAnswer(text: string): string | null {
+  const trimmed = text.trim();
+
+  if (!trimmed) {
     return null;
   }
 
-  let text = answer.trim();
-
-  if (!text) {
-    return null;
-  }
-
-  // منع المساعد من اختراع أو عرض أي روابط داخل نص الإجابة.
-  // روابط التواصل الرسمية تظهر فقط من أزرار الإجراءات في route.ts.
-  text = text
-    .replace(/https?:\/\/[^\s)]+/gi, "")
-    .replace(/www\.[^\s)]+/gi, "")
-    .replace(/\[([^\]]+)\]\((?:https?:\/\/|www\.)[^)]+\)/gi, "$1")
-    .replace(/\s{2,}/g, " ")
-    .trim();
-
-  const lower = text.toLowerCase();
-
-  // منع اختلاق بيانات التواصل أو الروابط داخل إجابات المساعد.
-  const contactPatterns = [
-    "chinaplanet.com",
-    "chinaplanet.com.sa",
-    "chinaplant.com",
-    "info@",
-    "mailto:",
-    "wa.me",
-    "whatsapp.com",
-    "+966",
-    "واتساب على الرقم",
-    "البريد الإلكتروني",
-    "رقم الواتساب",
-    "زيارة موقعنا",
-    "نموذج التواصل",
-  ];
-
-  if (contactPatterns.some((pattern) => lower.includes(pattern.toLowerCase()))) {
-    return "أكيد، تقدر تتواصل مباشرة مع فريق كوكب الصين عبر زر «تواصل معنا».";
-  }
+  const lower = trimmed.toLowerCase();
 
   const blockedPatterns = [
     "user safety:",
@@ -264,29 +215,17 @@ function cleanAIAnswer(
   }
 
   if (
-    lower.includes(
-      "أولاً، يجب أن أفكر"
-    ) ||
-    lower.includes(
-      "دعني أفكر"
-    ) ||
-    lower.includes(
-      "المستخدم قال"
-    ) ||
-    lower.includes(
-      "المستخدم يريد"
-    ) ||
-    lower.includes(
-      "حسب التعليمات"
-    ) ||
-    lower.includes(
-      "وفقًا للتعليمات"
-    )
+    trimmed.includes("أولاً، يجب أن أفكر") ||
+    trimmed.includes("دعني أفكر") ||
+    trimmed.includes("المستخدم قال") ||
+    trimmed.includes("المستخدم يريد") ||
+    trimmed.includes("حسب التعليمات") ||
+    trimmed.includes("وفقًا للتعليمات")
   ) {
     return null;
   }
 
-  return text;
+  return trimmed;
 }
 
 export async function runAI(
