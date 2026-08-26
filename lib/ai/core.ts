@@ -459,10 +459,7 @@ export async function runAIStream(
     };
   }
 
-  const routing = buildRoutingResult(
-    cleanMessage,
-    context
-  );
+  const routing = buildRoutingResult(cleanMessage, context);
 
   const systemPrompt = buildSystemPrompt(
     context,
@@ -482,19 +479,66 @@ export async function runAIStream(
     },
   ];
 
+  const systemMessage = messages.find(
+    (message) => message.role === "system"
+  );
+
+  const contents = messages
+    .filter((message) => message.role !== "system")
+    .map((message) => ({
+      role:
+        message.role === "assistant"
+          ? "model"
+          : "user",
+      parts: [
+        {
+          text: message.content,
+        },
+      ],
+    }));
+
   try {
     console.log(
       `China Planet AI STREAM → Gemini only: ${GEMINI_MODEL}`
     );
 
-    const { response, data } =
-      await requestGeminiModel(messages);
+    const url =
+      "https://generativelanguage.googleapis.com/v1beta/models/" +
+      GEMINI_MODEL +
+      ":streamGenerateContent?alt=sse";
 
-    if (!response?.ok) {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-goog-api-key": GEMINI_API_KEY,
+      },
+      body: JSON.stringify({
+        ...(systemMessage
+          ? {
+              systemInstruction: {
+                parts: [
+                  {
+                    text: systemMessage.content,
+                  },
+                ],
+              },
+            }
+          : {}),
+        contents,
+        generationConfig: {
+          maxOutputTokens: 1000,
+        },
+      }),
+    });
+
+    if (!response.ok || !response.body) {
+      const data = await response.text();
+
       console.error(
         "Gemini STREAM ERROR:",
-        response?.status,
-        JSON.stringify(data)
+        response.status,
+        data
       );
 
       return {
@@ -506,41 +550,9 @@ export async function runAIStream(
       };
     }
 
-    const rawAnswer =
-      data?.candidates?.[0]?.content?.parts
-        ?.map(
-          (part: { text?: string }) =>
-            part.text || ""
-        )
-        .join("")
-        .trim();
-
-    const answer = cleanAIAnswer(
-      rawAnswer || ""
-    );
-
-    if (!answer) {
-      return {
-        success: false,
-        intent: routing.intent,
-        toolsUsed: routing.tools,
-        error:
-          "لم أتمكن من إعداد إجابة الآن. حاول مرة أخرى.",
-      };
-    }
-
-    const stream = new ReadableStream<Uint8Array>({
-      start(controller) {
-        controller.enqueue(
-          new TextEncoder().encode(answer)
-        );
-        controller.close();
-      },
-    });
-
     return {
       success: true,
-      stream,
+      stream: response.body,
       intent: routing.intent,
       toolsUsed: routing.tools,
     };
