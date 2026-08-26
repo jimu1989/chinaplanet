@@ -68,7 +68,7 @@ export default async function TeamPage() {
     roleDescriptions[role] || "الوصول إلى مساحة الفريق.";
 
   const isExecutive = role === "executive";
-  const isAdmin = role === "admin" || isExecutive;
+  const isAdmin = role === "admin" || role === "support" || isExecutive;
   const isDeveloper = role === "developer" || isExecutive;
   const isContent =
     role === "editor" ||

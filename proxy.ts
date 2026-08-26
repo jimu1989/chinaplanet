@@ -16,15 +16,8 @@ export async function proxy(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) => {
-            request.cookies.set(name, value);
-          });
-
-          response = NextResponse.next({
-            request,
-          });
-
           cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value);
             response.cookies.set(name, value, options);
           });
         },
@@ -32,11 +25,7 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
-
-  if (user) {
-    return response;
-  }
+  await supabase.auth.getUser();
 
   return response;
 }

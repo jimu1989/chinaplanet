@@ -211,7 +211,37 @@ function cleanAIAnswer(
     return null;
   }
 
+  // منع المساعد من اختراع أو عرض أي روابط داخل نص الإجابة.
+  // روابط التواصل الرسمية تظهر فقط من أزرار الإجراءات في route.ts.
+  text = text
+    .replace(/https?:\/\/[^\s)]+/gi, "")
+    .replace(/www\.[^\s)]+/gi, "")
+    .replace(/\[([^\]]+)\]\((?:https?:\/\/|www\.)[^)]+\)/gi, "$1")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
   const lower = text.toLowerCase();
+
+  // منع اختلاق بيانات التواصل أو الروابط داخل إجابات المساعد.
+  const contactPatterns = [
+    "chinaplanet.com",
+    "chinaplanet.com.sa",
+    "chinaplant.com",
+    "info@",
+    "mailto:",
+    "wa.me",
+    "whatsapp.com",
+    "+966",
+    "واتساب على الرقم",
+    "البريد الإلكتروني",
+    "رقم الواتساب",
+    "زيارة موقعنا",
+    "نموذج التواصل",
+  ];
+
+  if (contactPatterns.some((pattern) => lower.includes(pattern.toLowerCase()))) {
+    return "أكيد، تقدر تتواصل مباشرة مع فريق كوكب الصين عبر زر «تواصل معنا».";
+  }
 
   const blockedPatterns = [
     "user safety:",
@@ -406,3 +436,116 @@ export async function runAI(
 export {
   AI_SYSTEM_PROMPT,
 };
+
+
+export async function runAIStream(
+  message: string,
+  context: AIContext,
+  history: AIMessage[] = []
+): Promise<{
+  success: boolean;
+  stream?: ReadableStream<Uint8Array>;
+  intent: string;
+  toolsUsed: string[];
+  error?: string;
+}> {
+  const cleanMessage = message.trim();
+
+  if (!cleanMessage) {
+    return {
+      success: false,
+      intent: "unknown",
+      toolsUsed: [],
+      error: "اكتب لي ما الذي تريد مساعدتك فيه.",
+    };
+  }
+
+  if (!OPENROUTER_API_KEY) {
+    return {
+      success: false,
+      intent: "unknown",
+      toolsUsed: [],
+      error: "المساعد غير مهيأ حاليًا.",
+    };
+  }
+
+  const routing = buildRoutingResult(cleanMessage, context);
+
+  const systemPrompt = buildSystemPrompt(
+    context,
+    routing.intent,
+    routing.tools
+  );
+
+  const messages: OpenRouterMessage[] = [
+    {
+      role: "system",
+      content: systemPrompt,
+    },
+    ...historyToMessages(history),
+    {
+      role: "user",
+      content: cleanMessage,
+    },
+  ];
+
+  for (const model of FALLBACK_MODELS) {
+    try {
+      console.log(`China Planet AI STREAM → trying model: ${model}`);
+
+      const response = await fetch(
+        OPENROUTER_URL,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://chinaplanetsa.vercel.app",
+            "X-Title": "China Planet Assistant",
+          },
+          body: JSON.stringify({
+            model,
+            messages,
+            temperature: 0.2,
+            max_tokens: 220,
+            stream: true,
+            reasoning: {
+              enabled: false,
+            },
+            provider: {
+              allow_fallbacks: true,
+              sort: "throughput",
+            },
+          }),
+        }
+      );
+
+      if (!response.ok || !response.body) {
+        console.error(
+          `OpenRouter STREAM ${model}:`,
+          response.status
+        );
+        continue;
+      }
+
+      return {
+        success: true,
+        stream: response.body,
+        intent: routing.intent,
+        toolsUsed: routing.tools,
+      };
+    } catch (error) {
+      console.error(
+        `China Planet AI STREAM error: ${model}`,
+        error
+      );
+    }
+  }
+
+  return {
+    success: false,
+    intent: routing.intent,
+    toolsUsed: routing.tools,
+    error: "المساعد مشغول حاليًا. حاول مرة أخرى بعد قليل.",
+  };
+}

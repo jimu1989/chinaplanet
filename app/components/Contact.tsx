@@ -9,6 +9,8 @@ const services = {
     "السياحة في الصين",
     "الدراسة في الصين",
     "تعلم اللغة الصينية",
+    "الترجمة",
+    "تنظيم الفعاليات الصينية",
     "التجارة والاستيراد",
     "خدمات الشركات",
     "خدمات الأفراد",
@@ -17,6 +19,8 @@ const services = {
     "China Tourism",
     "Study in China",
     "Learn Chinese",
+    "Translation",
+    "Chinese Events & Celebrations",
     "Trade & Import",
     "Corporate Services",
     "Individual Services",
@@ -25,6 +29,8 @@ const services = {
     "中国旅游",
     "中国留学",
     "学习中文",
+    "翻译服务",
+    "中国主题活动与庆典策划",
     "贸易与进口",
     "企业服务",
     "个人服务",
@@ -163,7 +169,7 @@ export default function Contact({
   const isArabic = language === "ar";
   const direction = language === "ar" ? "rtl" : "ltr";
 
-  const handleWhatsApp = () => {
+  const handleWhatsApp = async () => {
     const customerName = name.trim();
     const customerEmail = email.trim();
     const customerPhone = phone.trim();
@@ -185,7 +191,7 @@ export default function Contact({
       t.whatsappService + " " + selectedService,
       "",
       t.whatsappDetails,
-      customerDetails,
+      customerDetails || t.defaultDetails,
       "",
       t.whatsappSource,
     ].join(String.fromCharCode(10));
@@ -198,22 +204,33 @@ export default function Contact({
 
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 
-    void fetch("/api/service-requests", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: customerName,
-        email: customerEmail,
-        phone: customerPhone,
-        service: selectedService,
-        details: customerDetails,
-        language,
-      }),
-    }).catch((error) => {
+    try {
+      const response = await fetch("/api/service-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: customerName,
+          email: customerEmail,
+          phone: customerPhone,
+          service: selectedService,
+          details: customerDetails,
+          language,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error(
+          "SERVICE REQUEST API ERROR:",
+          await response.text()
+        );
+      } else {
+        console.log("SERVICE REQUEST SAVED SUCCESSFULLY");
+      }
+    } catch (error) {
       console.error("SERVICE REQUEST SUBMIT ERROR:", error);
-    });
+    }
   };
 
   return (
