@@ -207,7 +207,7 @@ async function requestGeminiModel(
           : {}),
         contents,
         generationConfig: {
-          maxOutputTokens: 220,
+          maxOutputTokens: 1000,
         },
       }),
     }
@@ -311,24 +311,19 @@ export async function runAI(
   context: AIContext,
   history: AIMessage[] = []
 ): Promise<AIResponse> {
-  const cleanMessage =
-    message.trim();
+  const cleanMessage = message.trim();
 
   if (!cleanMessage) {
     return {
       success: false,
-      message:
-        "اكتب لي ما الذي تريد مساعدتك فيه.",
+      message: "اكتب لي ما الذي تريد مساعدتك فيه.",
       intent: "unknown",
       toolsUsed: [],
     };
   }
 
-  if (!OPENROUTER_API_KEY) {
-    console.error(
-      "OPENROUTER_API_KEY is missing."
-    );
-
+  if (!GEMINI_API_KEY) {
+    console.error("GEMINI_API_KEY is missing.");
     return {
       success: false,
       message:
@@ -338,163 +333,94 @@ export async function runAI(
     };
   }
 
-  const routing =
-    buildRoutingResult(
-      cleanMessage,
-      context
-    );
+  const routing = buildRoutingResult(cleanMessage, context);
 
-  const systemPrompt =
-    buildSystemPrompt(
-      context,
-      routing.intent,
-      routing.tools
-    );
+  const systemPrompt = buildSystemPrompt(
+    context,
+    routing.intent,
+    routing.tools
+  );
 
   const messages: OpenRouterMessage[] = [
     {
       role: "system",
       content: systemPrompt,
     },
-
     ...historyToMessages(history),
-
     {
       role: "user",
       content: cleanMessage,
     },
   ];
 
-  let lastError: unknown = null;
+  try {
+    console.log(
+      `China Planet AI → Gemini only: ${GEMINI_MODEL}`
+    );
 
-  for (
-    const model of FALLBACK_MODELS
-  ) {
-    try {
-      console.log(
-        `China Planet AI → trying model: ${model}`
-      );
+    const { response, data } =
+      await requestGeminiModel(messages);
 
-      const {
-        response,
-        data,
-      } = await requestModel(
-        model,
-        messages
-      );
-
-      if (!response.ok) {
-        console.error(
-          `OpenRouter ERROR ${model} → HTTP ${response.status}:`,
-          JSON.stringify(data)
-        );
-
-        lastError = data;
-
-        continue;
-      }
-
-      const rawAnswer =
-        data?.choices?.[0]?.message?.content?.trim();
-
-      const answer =
-        cleanAIAnswer(
-          rawAnswer || ""
-        );
-
-      if (!answer) {
-        console.error(
-          `Rejected invalid AI response from ${model}:`,
-          rawAnswer
-        );
-
-        lastError = {
-          reason:
-            "AI returned reasoning or invalid content",
-          model,
-        };
-
-        continue;
-      }
-
-      return {
-        success: true,
-        message: answer,
-        intent: routing.intent,
-        toolsUsed: routing.tools,
-      };
-    } catch (error) {
-      console.error(
-        `China Planet AI model error: ${model}`,
-        error
-      );
-
-      lastError = error;
-    }
-  }
-
-  console.error(
-    "ALL OPENROUTER MODELS FAILED:",
-    lastError
-  );
-
-  // Gemini fallback
-  if (GEMINI_API_KEY) {
-    try {
-      console.log(
-        `China Planet AI → trying Gemini: ${GEMINI_MODEL}`
-      );
-
-      const { response, data } =
-        await requestGeminiModel(messages);
-
-      if (response?.ok) {
-        const rawAnswer =
-          data?.candidates?.[0]?.content?.parts
-            ?.map(
-              (part: { text?: string }) =>
-                part.text || ""
-            )
-            .join("")
-            .trim();
-
-        const answer =
-          cleanAIAnswer(rawAnswer || "");
-
-        if (answer) {
-          console.log(
-            "Gemini fallback succeeded"
-          );
-
-          return {
-            success: true,
-            message: answer,
-            intent: routing.intent,
-            toolsUsed: routing.tools,
-          };
-        }
-      }
-
+    if (!response?.ok) {
       console.error(
         "Gemini ERROR:",
         response?.status,
         JSON.stringify(data)
       );
-    } catch (error) {
-      console.error(
-        "Gemini request failed:",
-        error
-      );
-    }
-  }
 
-  return {
-    success: false,
-    message:
-      "المساعد مشغول حاليًا. حاول مرة أخرى بعد قليل.",
-    intent: routing.intent,
-    toolsUsed: routing.tools,
-  };
+      return {
+        success: false,
+        message:
+          "تعذر الاتصال بالمساعد حاليًا. حاول مرة أخرى بعد قليل.",
+        intent: routing.intent,
+        toolsUsed: routing.tools,
+      };
+    }
+
+    const rawAnswer =
+      data?.candidates?.[0]?.content?.parts
+        ?.map(
+          (part: { text?: string }) =>
+            part.text || ""
+        )
+        .join("")
+        .trim();
+
+    const answer = cleanAIAnswer(
+      rawAnswer || ""
+    );
+
+    if (!answer) {
+      console.error(
+        "Gemini returned an empty or invalid answer"
+      );
+
+      return {
+        success: false,
+        message:
+          "لم أتمكن من إعداد إجابة الآن. حاول مرة أخرى.",
+        intent: routing.intent,
+        toolsUsed: routing.tools,
+      };
+    }
+
+    return {
+      success: true,
+      message: answer,
+      intent: routing.intent,
+      toolsUsed: routing.tools,
+    };
+  } catch (error) {
+    console.error("Gemini request failed:", error);
+
+    return {
+      success: false,
+      message:
+        "تعذر الاتصال بالمساعد حاليًا. حاول مرة أخرى بعد قليل.",
+      intent: routing.intent,
+      toolsUsed: routing.tools,
+    };
+  }
 }
 
 export {
@@ -524,7 +450,7 @@ export async function runAIStream(
     };
   }
 
-  if (!OPENROUTER_API_KEY) {
+  if (!GEMINI_API_KEY) {
     return {
       success: false,
       intent: "unknown",
@@ -533,7 +459,10 @@ export async function runAIStream(
     };
   }
 
-  const routing = buildRoutingResult(cleanMessage, context);
+  const routing = buildRoutingResult(
+    cleanMessage,
+    context
+  );
 
   const systemPrompt = buildSystemPrompt(
     context,
@@ -553,63 +482,80 @@ export async function runAIStream(
     },
   ];
 
-  for (const model of FALLBACK_MODELS) {
-    try {
-      console.log(`China Planet AI STREAM → trying model: ${model}`);
+  try {
+    console.log(
+      `China Planet AI STREAM → Gemini only: ${GEMINI_MODEL}`
+    );
 
-      const response = await fetch(
-        OPENROUTER_URL,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${OPENROUTER_API_KEY}`,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://chinaplanetsa.vercel.app",
-            "X-Title": "China Planet Assistant",
-          },
-          body: JSON.stringify({
-            model,
-            messages,
-            temperature: 0.2,
-            max_tokens: 220,
-            stream: true,
-            reasoning: {
-              enabled: false,
-            },
-            provider: {
-              allow_fallbacks: true,
-              sort: "throughput",
-            },
-          }),
-        }
+    const { response, data } =
+      await requestGeminiModel(messages);
+
+    if (!response?.ok) {
+      console.error(
+        "Gemini STREAM ERROR:",
+        response?.status,
+        JSON.stringify(data)
       );
-
-      if (!response.ok || !response.body) {
-        console.error(
-          `OpenRouter STREAM ${model}:`,
-          response.status
-        );
-        continue;
-      }
 
       return {
-        success: true,
-        stream: response.body,
+        success: false,
         intent: routing.intent,
         toolsUsed: routing.tools,
+        error:
+          "تعذر الاتصال بالمساعد حاليًا. حاول مرة أخرى بعد قليل.",
       };
-    } catch (error) {
-      console.error(
-        `China Planet AI STREAM error: ${model}`,
-        error
-      );
     }
-  }
 
-  return {
-    success: false,
-    intent: routing.intent,
-    toolsUsed: routing.tools,
-    error: "المساعد مشغول حاليًا. حاول مرة أخرى بعد قليل.",
-  };
+    const rawAnswer =
+      data?.candidates?.[0]?.content?.parts
+        ?.map(
+          (part: { text?: string }) =>
+            part.text || ""
+        )
+        .join("")
+        .trim();
+
+    const answer = cleanAIAnswer(
+      rawAnswer || ""
+    );
+
+    if (!answer) {
+      return {
+        success: false,
+        intent: routing.intent,
+        toolsUsed: routing.tools,
+        error:
+          "لم أتمكن من إعداد إجابة الآن. حاول مرة أخرى.",
+      };
+    }
+
+    const stream = new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(
+          new TextEncoder().encode(answer)
+        );
+        controller.close();
+      },
+    });
+
+    return {
+      success: true,
+      stream,
+      intent: routing.intent,
+      toolsUsed: routing.tools,
+    };
+  } catch (error) {
+    console.error(
+      "Gemini STREAM request failed:",
+      error
+    );
+
+    return {
+      success: false,
+      intent: routing.intent,
+      toolsUsed: routing.tools,
+      error:
+        "تعذر الاتصال بالمساعد حاليًا. حاول مرة أخرى بعد قليل.",
+    };
+  }
 }
