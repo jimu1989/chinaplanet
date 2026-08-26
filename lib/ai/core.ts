@@ -307,8 +307,7 @@ export async function runAI(
 
       if (!response.ok) {
         console.error(
-          `OpenRouter ${model}:`,
-          response.status,
+          `OpenRouter ERROR ${model} → HTTP ${response.status}:`,
           JSON.stringify(data)
         );
 
