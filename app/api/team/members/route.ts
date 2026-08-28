@@ -4,6 +4,7 @@ import {
   getCurrentTeamUser,
   hasTeamPermission,
 } from "../../../../lib/team-permissions";
+import { logError } from "../../../../lib/team-logs/store";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -113,9 +114,17 @@ export async function GET() {
         .order("created_at", { ascending: false });
 
     if (profilesError) {
-      console.error(
-        "TEAM MEMBERS PROFILE ERROR:",
-        profilesError
+      logError(
+        "Team members profile lookup failed",
+        "/api/team/members",
+        {
+          method: "GET",
+          operation: "profile_lookup",
+          error:
+            profilesError instanceof Error
+              ? profilesError.message
+              : "unknown error",
+        },
       );
 
       return NextResponse.json(
@@ -131,9 +140,17 @@ export async function GET() {
       });
 
     if (usersError) {
-      console.error(
-        "TEAM MEMBERS AUTH ERROR:",
-        usersError
+      logError(
+        "Team members auth lookup failed",
+        "/api/team/members",
+        {
+          method: "GET",
+          operation: "auth_lookup",
+          error:
+            usersError instanceof Error
+              ? usersError.message
+              : "unknown error",
+        },
       );
 
       return NextResponse.json(
@@ -156,7 +173,15 @@ export async function GET() {
 
     return NextResponse.json({ members });
   } catch (error) {
-    console.error("TEAM MEMBERS GET ERROR:", error);
+    logError(
+      "Team members GET failed",
+      "/api/team/members",
+      {
+        method: "GET",
+        operation: "get_members",
+        error: error instanceof Error ? error.message : "unknown error",
+      },
+    );
 
     return NextResponse.json(
       { error: "حدث خطأ غير متوقع." },
@@ -263,7 +288,18 @@ export async function POST(request: Request) {
       });
 
     if (authError || !createdUser.user) {
-      console.error("AUTH CREATE ERROR:", authError);
+      logError(
+        "Team member auth creation failed",
+        "/api/team/members",
+        {
+          method: "POST",
+          operation: "auth_create",
+          error:
+            authError instanceof Error
+              ? authError.message
+              : "unknown error",
+        },
+      );
 
       return NextResponse.json(
         {
@@ -286,9 +322,17 @@ export async function POST(request: Request) {
       });
 
     if (profileError) {
-      console.error(
-        "PROFILE CREATE ERROR:",
-        profileError
+      logError(
+        "Team member profile creation failed",
+        "/api/team/members",
+        {
+          method: "POST",
+          operation: "profile_create",
+          error:
+            profileError instanceof Error
+              ? profileError.message
+              : "unknown error",
+        },
       );
 
       await admin.auth.admin.deleteUser(
@@ -319,9 +363,251 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error(
-      "TEAM MEMBER CREATE ERROR:",
-      error
+    logError(
+      "Team member POST failed",
+      "/api/team/members",
+      {
+        method: "POST",
+        operation: "create_member",
+        error: error instanceof Error ? error.message : "unknown error",
+      },
+    );
+
+    return NextResponse.json(
+      { error: "حدث خطأ غير متوقع." },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    if (!supabaseUrl || !serviceRoleKey) {
+      return NextResponse.json(
+        {
+          error: "Supabase server configuration is missing.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const authorization = await requireManageTeamPermission();
+
+    if (authorization.error) {
+      return authorization.error;
+    }
+
+    const currentUserId = authorization.user?.id;
+    const currentRole = authorization.profile?.role;
+
+    const body = await request.json();
+
+    const memberId = String(body.id || "").trim();
+    const fullName =
+      body.full_name !== undefined
+        ? String(body.full_name || "").trim()
+        : undefined;
+    const phone =
+      body.phone !== undefined
+        ? String(body.phone || "").trim()
+        : undefined;
+    const role =
+      body.role !== undefined
+        ? String(body.role || "").trim()
+        : undefined;
+
+    if (!memberId) {
+      return NextResponse.json(
+        { error: "معرف العضو مطلوب." },
+        { status: 400 }
+      );
+    }
+
+    if (memberId === currentUserId) {
+      return NextResponse.json(
+        {
+          error: "لا يمكنك تعديل حسابك من هنا.",
+        },
+        { status: 403 }
+      );
+    }
+
+    if (
+      fullName === undefined &&
+      phone === undefined &&
+      role === undefined
+    ) {
+      return NextResponse.json(
+        {
+          error: "يجب إرسال حقل واحد على الأقل للتعديل.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (fullName !== undefined && !fullName) {
+      return NextResponse.json(
+        {
+          error: "اسم العضو لا يمكن أن يكون فارغًا.",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (role !== undefined && !allowedRoles.includes(role)) {
+      return NextResponse.json(
+        { error: "الدور غير صالح." },
+        { status: 400 }
+      );
+    }
+
+    /*
+     * مدير النظام لا يستطيع ترقية عضو إلى مدير نظام
+     * أو مدير تنفيذي.
+     *
+     * المدير التنفيذي يستطيع تعديل أي دور.
+     */
+    if (
+      currentRole === "admin" &&
+      role !== undefined &&
+      (role === "executive" || role === "admin")
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "لا يمكن لمدير النظام تعيين مدير نظام أو مدير تنفيذي.",
+        },
+        { status: 403 }
+      );
+    }
+
+    const admin = createAdminClient();
+
+    if (!admin) {
+      return NextResponse.json(
+        {
+          error: "Supabase server configuration is missing.",
+        },
+        { status: 500 }
+      );
+    }
+
+    const { data: targetProfile, error: targetError } =
+      await admin
+        .from("profiles")
+        .select("id, full_name, phone, role")
+        .eq("id", memberId)
+        .maybeSingle();
+
+    if (targetError) {
+      logError(
+        "Team member PATCH target lookup failed",
+        "/api/team/members",
+        {
+          method: "PATCH",
+          operation: "target_lookup",
+          error:
+            targetError instanceof Error
+              ? targetError.message
+              : "unknown error",
+        },
+      );
+
+      return NextResponse.json(
+        { error: "تعذر العثور على العضو." },
+        { status: 500 }
+      );
+    }
+
+    if (!targetProfile) {
+      return NextResponse.json(
+        { error: "العضو غير موجود." },
+        { status: 404 }
+      );
+    }
+
+    /*
+     * مدير النظام لا يستطيع تعديل مدير النظام
+     * أو المدير التنفيذي.
+     */
+    if (
+      currentRole === "admin" &&
+      (targetProfile.role === "executive" ||
+        targetProfile.role === "admin")
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "لا يملك مدير النظام صلاحية تعديل هذا العضو.",
+        },
+        { status: 403 }
+      );
+    }
+
+    const updates: Record<string, string | null> = {
+      updated_at: new Date().toISOString(),
+    };
+
+    if (fullName !== undefined) {
+      updates.full_name = fullName;
+    }
+
+    if (phone !== undefined) {
+      updates.phone = phone || null;
+    }
+
+    if (role !== undefined) {
+      updates.role = role;
+    }
+
+    const { data: updatedProfile, error: updateError } =
+      await admin
+        .from("profiles")
+        .update(updates)
+        .eq("id", memberId)
+        .select("id, full_name, phone, role, created_at, updated_at")
+        .single();
+
+    if (updateError) {
+      logError(
+        "Team member PATCH update failed",
+        "/api/team/members",
+        {
+          method: "PATCH",
+          operation: "profile_update",
+          error:
+            updateError instanceof Error
+              ? updateError.message
+              : "unknown error",
+        },
+      );
+
+      return NextResponse.json(
+        {
+          error:
+            "تعذر تحديث بيانات العضو: " +
+            updateError.message,
+        },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json(
+      {
+        success: true,
+        member: updatedProfile,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    logError(
+      "Team member PATCH failed",
+      "/api/team/members",
+      {
+        method: "PATCH",
+        operation: "update_member",
+        error: error instanceof Error ? error.message : "unknown error",
+      },
     );
 
     return NextResponse.json(
@@ -391,9 +677,17 @@ export async function DELETE(request: Request) {
         .maybeSingle();
 
     if (targetError) {
-      console.error(
-        "TEAM MEMBER DELETE PROFILE ERROR:",
-        targetError
+      logError(
+        "Team member DELETE target lookup failed",
+        "/api/team/members",
+        {
+          method: "DELETE",
+          operation: "target_lookup",
+          error:
+            targetError instanceof Error
+              ? targetError.message
+              : "unknown error",
+        },
       );
 
       return NextResponse.json(
@@ -431,9 +725,17 @@ export async function DELETE(request: Request) {
       await admin.auth.admin.deleteUser(memberId);
 
     if (deleteAuthError) {
-      console.error(
-        "TEAM MEMBER DELETE AUTH ERROR:",
-        deleteAuthError
+      logError(
+        "Team member auth deletion failed",
+        "/api/team/members",
+        {
+          method: "DELETE",
+          operation: "auth_delete",
+          error:
+            deleteAuthError instanceof Error
+              ? deleteAuthError.message
+              : "unknown error",
+        },
       );
 
       return NextResponse.json(
@@ -452,9 +754,14 @@ export async function DELETE(request: Request) {
       member_id: memberId,
     });
   } catch (error) {
-    console.error(
-      "TEAM MEMBER DELETE ERROR:",
-      error
+    logError(
+      "Team member DELETE failed",
+      "/api/team/members",
+      {
+        method: "DELETE",
+        operation: "delete_member",
+        error: error instanceof Error ? error.message : "unknown error",
+      },
     );
 
     return NextResponse.json(

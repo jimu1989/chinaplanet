@@ -1,9 +1,24 @@
 import { createSupabaseServerClient } from "./supabase-server";
 
-export type TeamPermission =
-  | "manage_team"
-  | "manage_permissions"
-  | "manage_project";
+export const TEAM_ROLES = [
+  "executive",
+  "developer",
+  "admin",
+  "designer",
+  "editor",
+  "support",
+  "member",
+] as const;
+
+export type TeamRole = (typeof TEAM_ROLES)[number];
+
+export const TEAM_PERMISSIONS = [
+  "manage_team",
+  "manage_permissions",
+  "manage_project",
+] as const;
+
+export type TeamPermission = (typeof TEAM_PERMISSIONS)[number];
 
 type Profile = {
   id: string;
@@ -61,6 +76,11 @@ export async function hasTeamPermission(
     return false;
   }
 
+  // المدير التنفيذي هو أعلى مستوى.
+  if (profile.role === "executive") {
+    return true;
+  }
+
   const { data, error } = await supabase
     .from("role_permissions")
     .select("enabled")
@@ -80,4 +100,51 @@ export async function hasTeamPermission(
   const permissionRow = data as PermissionRow | null;
 
   return permissionRow?.enabled === true;
+}
+
+export async function requireTeamPermission(
+  permission: TeamPermission
+) {
+  const { user, profile } =
+    await getCurrentTeamUser();
+
+  if (!user) {
+    return {
+      allowed: false,
+      status: 401,
+      error: "يجب تسجيل الدخول أولًا.",
+      user: null,
+      profile: null,
+    };
+  }
+
+  if (!profile?.role) {
+    return {
+      allowed: false,
+      status: 403,
+      error: "لا يوجد دور مرتبط بحسابك.",
+      user,
+      profile,
+    };
+  }
+
+  const allowed = await hasTeamPermission(permission);
+
+  if (!allowed) {
+    return {
+      allowed: false,
+      status: 403,
+      error: "ليس لديك الصلاحية المطلوبة.",
+      user,
+      profile,
+    };
+  }
+
+  return {
+    allowed: true,
+    status: 200,
+    error: null,
+    user,
+    profile,
+  };
 }

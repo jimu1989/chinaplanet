@@ -95,7 +95,12 @@ export async function POST(
   request: Request
 ) {
   try {
+    const t0 = performance.now();
+    const mark = (name: string) =>
+      console.log(`AI TIMING → ${name}: ${(performance.now() - t0).toFixed(0)}ms`);
+
     const body = await request.json();
+    mark("body");
 
     const message = String(
       body.message || ""
@@ -113,10 +118,12 @@ export async function POST(
 
     const supabase =
       await createSupabaseServerClient();
+    mark("supabase client");
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
+    mark("auth");
 
     let userType: AIUserType = "guest";
     let userId: string | undefined;
@@ -190,10 +197,9 @@ export async function POST(
         );
       }
 
-      const encoder = new TextEncoder();
-      const decoder = new TextDecoder();
-
       const reader = streamed.stream.getReader();
+      const decoder = new TextDecoder();
+      const encoder = new TextEncoder();
 
       const output = new ReadableStream<Uint8Array>({
         async start(controller) {
@@ -203,39 +209,50 @@ export async function POST(
             while (true) {
               const { done, value } = await reader.read();
 
-              if (done) break;
+              if (done) {
+                break;
+              }
 
               buffer += decoder.decode(value, {
                 stream: true,
               });
 
-              const lines = buffer.split("\n");
-              buffer = lines.pop() || "";
+              const events = buffer.split("\n\n");
+              buffer = events.pop() || "";
 
-              for (const line of lines) {
-                if (!line.startsWith("data:")) {
-                  continue;
-                }
+              for (const event of events) {
+                const lines = event.split("\n");
 
-                const payload = line.slice(5).trim();
-
-                if (!payload || payload === "[DONE]") {
-                  continue;
-                }
-
-                try {
-                  const json = JSON.parse(payload);
-
-                  const delta =
-                    json?.choices?.[0]?.delta?.content;
-
-                  if (typeof delta === "string" && delta) {
-                    controller.enqueue(
-                      encoder.encode(delta)
-                    );
+                for (const line of lines) {
+                  if (!line.startsWith("data:")) {
+                    continue;
                   }
-                } catch {
-                  // تجاهل أي SSE غير صالح
+
+                  const payload = line.slice(5).trim();
+
+                  if (!payload || payload === "[DONE]") {
+                    continue;
+                  }
+
+                  try {
+                    const json = JSON.parse(payload);
+
+                    const text =
+                      json?.candidates?.[0]?.content?.parts
+                        ?.map(
+                          (part: { text?: string }) =>
+                            part.text || ""
+                        )
+                        .join("") || "";
+
+                    if (text) {
+                      controller.enqueue(
+                        encoder.encode(text)
+                      );
+                    }
+                  } catch {
+                    // تجاهل أي SSE غير صالح
+                  }
                 }
               }
             }
@@ -258,10 +275,12 @@ export async function POST(
           "Content-Type": "text/plain; charset=utf-8",
           "Cache-Control": "no-cache, no-transform",
           "X-Accel-Buffering": "no",
+          "Connection": "keep-alive",
         },
       });
     }
 
+    mark("before runAI");
     const result = await runAI(
       message,
       context,

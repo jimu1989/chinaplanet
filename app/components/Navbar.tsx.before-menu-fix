@@ -191,27 +191,66 @@ export default function Navbar({
         {/* DESKTOP ACCOUNT AREA */}
         <div className="hidden items-center gap-3 lg:flex">
           {!loadingUser && userEmail ? (
-            <Link
-              href={accountPath()}
-              className="rounded-full border border-[#cdbfb4] px-5 py-2.5 text-[11px] font-semibold text-[#554d46] transition-all hover:border-[#c94a3d] hover:text-[#c94a3d]"
-            >
-              {t.account}
-            </Link>
-          ) : null}
+            <>
+              <Link
+                href={accountPath()}
+                className="rounded-full border border-[#cdbfb4] px-5 py-2.5 text-[11px] font-semibold text-[#554d46] transition-all hover:border-[#c94a3d] hover:text-[#c94a3d]"
+              >
+                {t.account}
+              </Link>
 
-          <button
-            type="button"
-            aria-label={t.menu}
-            aria-expanded={open}
-            onClick={() => setOpen((value) => !value)}
-            className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all ${
-              open
-                ? "border-[#c94a3d] bg-[#c94a3d] text-white"
-                : "border-[#cdbfb4] text-[#554d46] hover:border-[#c94a3d] hover:text-[#c94a3d]"
-            }`}
-          >
-            {open ? "×" : "☰"}
-          </button>
+              <button
+                type="button"
+                aria-label={t.menu}
+                aria-expanded={open}
+                onClick={() => setOpen((value) => !value)}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all ${
+                  open
+                    ? "border-[#c94a3d] bg-[#c94a3d] text-white"
+                    : "border-[#cdbfb4] text-[#554d46] hover:border-[#c94a3d] hover:text-[#c94a3d]"
+                }`}
+              >
+                {open ? "×" : "☰"}
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href={`/login?lang=${currentLanguage}`}
+                className="text-[11px] font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
+              >
+                {t.login}
+              </Link>
+
+              <Link
+                href={`/team/login?lang=${currentLanguage}`}
+                className="text-[11px] font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
+              >
+                {t.team}
+              </Link>
+
+              <Link
+                href={`/register?lang=${currentLanguage}`}
+                className="rounded-full bg-[#c94a3d] px-6 py-3 text-[12px] font-bold text-white shadow-sm transition-all duration-300 hover:bg-[#b83e33] hover:shadow-md"
+              >
+                {t.register}
+              </Link>
+
+              <button
+                type="button"
+                aria-label={t.menu}
+                aria-expanded={open}
+                onClick={() => setOpen((value) => !value)}
+                className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all ${
+                  open
+                    ? "border-[#c94a3d] bg-[#c94a3d] text-white"
+                    : "border-[#cdbfb4] text-[#554d46] hover:border-[#c94a3d] hover:text-[#c94a3d]"
+                }`}
+              >
+                {open ? "×" : "☰"}
+              </button>
+            </>
+          )}
         </div>
 
         {/* MOBILE MENU BUTTON */}
@@ -232,7 +271,7 @@ export default function Navbar({
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="border-t border-[#e5ddd5] bg-[#f8f6f2] px-5 py-5">
+        <div className="border-t border-[#e5ddd5] bg-[#f8f6f2] px-5 py-5 lg:hidden">
           <nav className="flex flex-col gap-4">
             {links.map((link) => (
               <a
@@ -264,14 +303,14 @@ export default function Navbar({
             ))}
           </div>
 
-          {/* AUTH LINKS */}
+          {/* MOBILE ACCOUNT */}
           <div className="mt-5 flex flex-col gap-3 border-t border-[#e5ddd5] pt-5">
             {!loadingUser && userEmail ? (
               <>
                 <Link
                   href={accountPath()}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
+                  className="text-sm font-semibold text-[#554d46]"
                 >
                   {t.account}
                 </Link>
@@ -316,6 +355,7 @@ export default function Navbar({
               </>
             )}
 
+            {/* WHATSAPP */}
             <a
               href={whatsappUrl}
               target="_blank"

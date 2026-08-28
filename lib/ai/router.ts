@@ -85,7 +85,6 @@ const intentKeywords: Record<
     "طلب المساعدة",
     "بياناتي",
     "my account",
-    "my account",
     "support",
     "problem",
   ],
@@ -231,7 +230,10 @@ export function getToolsForIntent(
     case "general_question":
     case "unknown":
     default:
-      return [];
+      // مهم:
+      // حتى الأسئلة العامة يتم تمريرها إلى Knowledge Base
+      // حتى لا يعتمد Gemini على معلوماته العامة فقط.
+      return ["search_knowledge"];
   }
 }
 

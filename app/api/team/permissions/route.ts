@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { createSupabaseServerClient } from "../../../../lib/supabase-server";
 
+import { logError } from "../../../../lib/team-logs/store";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -14,7 +15,15 @@ async function getCurrentUser() {
   } = await supabase.auth.getUser();
 
   if (error) {
-    console.error("TEAM PERMISSIONS AUTH ERROR:", error);
+    logError(
+      "Team permissions authorization check failed",
+      "/api/team/permissions",
+      {
+        error: error instanceof Error
+          ? error.message
+          : "unknown error",
+      },
+    );
   }
 
   return {
@@ -45,9 +54,16 @@ async function authorize() {
     .maybeSingle();
 
   if (profileError) {
-    console.error(
+    logError(
       "TEAM PERMISSIONS PROFILE ERROR:",
-      profileError
+      "/api/team/permissions",
+      {
+        method: "UNKNOWN",
+        error:
+          profileError instanceof Error
+            ? profileError.message
+            : "unknown error",
+      },
     );
 
     return {
@@ -73,10 +89,15 @@ async function authorize() {
     };
   }
 
-  if (
-    profile.role !== "executive" &&
-    profile.role !== "admin"
-  ) {
+  const { hasTeamPermission } = await import(
+    "../../../../lib/team-permissions"
+  );
+
+  const allowed = await hasTeamPermission(
+    "manage_permissions"
+  );
+
+  if (!allowed) {
     return {
       error: NextResponse.json(
         {
@@ -151,10 +172,17 @@ export async function GET() {
       .order("permission");
 
     if (error) {
-      console.error(
-        "ROLE PERMISSIONS GET ERROR:",
-        error
-      );
+      logError(
+      "ROLE PERMISSIONS GET ERROR:",
+      "/api/team/permissions",
+      {
+        method: "UNKNOWN",
+        error:
+          error instanceof Error
+            ? error.message
+            : "unknown error",
+      },
+    );
 
       return NextResponse.json(
         {
@@ -170,9 +198,16 @@ export async function GET() {
       permissions: data ?? [],
     });
   } catch (error) {
-    console.error(
+    logError(
       "TEAM PERMISSIONS GET ERROR:",
-      error
+      "/api/team/permissions",
+      {
+        method: "UNKNOWN",
+        error:
+          error instanceof Error
+            ? error.message
+            : "unknown error",
+      },
     );
 
     return NextResponse.json(
@@ -241,10 +276,17 @@ export async function PATCH(request: Request) {
       .single();
 
     if (error) {
-      console.error(
-        "ROLE PERMISSIONS UPDATE ERROR:",
-        error
-      );
+      logError(
+      "ROLE PERMISSIONS UPDATE ERROR:",
+      "/api/team/permissions",
+      {
+        method: "UNKNOWN",
+        error:
+          error instanceof Error
+            ? error.message
+            : "unknown error",
+      },
+    );
 
       return NextResponse.json(
         {
@@ -261,9 +303,16 @@ export async function PATCH(request: Request) {
       permission: data,
     });
   } catch (error) {
-    console.error(
+    logError(
       "TEAM PERMISSIONS PATCH ERROR:",
-      error
+      "/api/team/permissions",
+      {
+        method: "UNKNOWN",
+        error:
+          error instanceof Error
+            ? error.message
+            : "unknown error",
+      },
     );
 
     return NextResponse.json(

@@ -261,7 +261,7 @@ export default function TeamMembersPage() {
                 </span>
               </div>
 
-              <h2 className="mt-5 text-3xl font-bold text-[#40372f]">
+              <h2 className="mt-5 text-3xl font-bold text-[#171717]">
                 أعضاء الفريق
               </h2>
 
@@ -277,7 +277,7 @@ export default function TeamMembersPage() {
                 setShowForm((value) => !value);
                 setMessage("");
               }}
-              className="rounded-full bg-[#c94a3d] px-7 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#aa3b31]"
+              className="rounded-full bg-[#c94a3d] px-7 py-4 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-[#a9362b]"
             >
               {showForm ? "إغلاق النموذج" : "+ إضافة عضو"}
             </button>
@@ -290,7 +290,7 @@ export default function TeamMembersPage() {
                   NEW TEAM MEMBER
                 </p>
 
-                <h3 className="mt-3 text-2xl font-bold text-[#40372f]">
+                <h3 className="mt-3 text-2xl font-bold text-[#171717]">
                   إضافة عضو جديد
                 </h3>
               </div>
@@ -300,7 +300,7 @@ export default function TeamMembersPage() {
                 className="grid gap-5 md:grid-cols-2"
               >
                 <div>
-                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                  <label className="mb-2 block text-xs font-semibold text-[#554d46]">
                     الاسم الكامل
                   </label>
 
@@ -310,12 +310,12 @@ export default function TeamMembersPage() {
                       setFullName(event.target.value)
                     }
                     placeholder="مثال: محمد أحمد"
-                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#171717] outline-none transition focus:border-[#c94a3d]"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                  <label className="mb-2 block text-xs font-semibold text-[#554d46]">
                     البريد الإلكتروني
                   </label>
 
@@ -327,12 +327,12 @@ export default function TeamMembersPage() {
                       setEmail(event.target.value)
                     }
                     placeholder="name@example.com"
-                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#171717] outline-none transition focus:border-[#c94a3d]"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                  <label className="mb-2 block text-xs font-semibold text-[#554d46]">
                     رقم الجوال
                   </label>
 
@@ -344,12 +344,12 @@ export default function TeamMembersPage() {
                       setPhone(event.target.value)
                     }
                     placeholder="+966..."
-                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#171717] outline-none transition focus:border-[#c94a3d]"
                   />
                 </div>
 
                 <div>
-                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                  <label className="mb-2 block text-xs font-semibold text-[#554d46]">
                     الدور
                   </label>
 
@@ -358,7 +358,7 @@ export default function TeamMembersPage() {
                     onChange={(event) =>
                       setRole(event.target.value)
                     }
-                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#40372f] outline-none focus:border-[#c94a3d]"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-sm text-[#171717] outline-none focus:border-[#c94a3d]"
                   >
                     <option value="member">عضو الفريق</option>
                     <option value="developer">المبرمج</option>
@@ -371,7 +371,7 @@ export default function TeamMembersPage() {
                 </div>
 
                 <div className="md:col-span-2">
-                  <label className="mb-2 block text-xs font-semibold text-[#514840]">
+                  <label className="mb-2 block text-xs font-semibold text-[#554d46]">
                     كلمة المرور المؤقتة
                   </label>
 
@@ -383,7 +383,7 @@ export default function TeamMembersPage() {
                       setPassword(event.target.value)
                     }
                     placeholder="8 أحرف على الأقل"
-                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#40372f] outline-none transition focus:border-[#c94a3d]"
+                    className="w-full rounded-2xl border border-[#ddd5cc] bg-white px-4 py-4 text-left text-sm text-[#171717] outline-none transition focus:border-[#c94a3d]"
                   />
                 </div>
 
@@ -399,7 +399,7 @@ export default function TeamMembersPage() {
                   </button>
 
                   {message && (
-                    <p className="text-sm font-semibold text-[#6f554a]">
+                    <p className="text-sm font-semibold text-[#554d46]">
                       {message}
                     </p>
                   )}
@@ -410,14 +410,14 @@ export default function TeamMembersPage() {
         </section>
 
         {message && !showForm && (
-          <div className="mt-6 rounded-2xl border border-[#e4ddd5] bg-white px-6 py-4 text-sm text-[#6f554a]">
+          <div className="mt-6 rounded-2xl border border-[#e4ddd5] bg-white px-6 py-4 text-sm text-[#554d46]">
             {message}
           </div>
         )}
 
         <section className="mt-10">
           <div className="overflow-hidden rounded-[32px] border border-[#e4ddd5] bg-white shadow-[0_15px_50px_rgba(40,30,20,0.05)]">
-            <div className="hidden grid-cols-[1.5fr_1.1fr_1fr_0.8fr_0.7fr] gap-5 border-b border-[#eee8e2] bg-[#f8f6f2] px-8 py-5 text-[10px] font-bold tracking-[0.15em] text-[#91877e] md:grid">
+            <div className="hidden grid-cols-[1.5fr_1.1fr_1fr_0.8fr_0.7fr] gap-5 border-b border-[#eee8e2] bg-[#f8f6f2] px-8 py-5 text-[10px] font-bold tracking-[0.15em] text-[#8a8179] md:grid">
               <div>العضو</div>
               <div>رقم الجوال</div>
               <div>الدور</div>
@@ -445,7 +445,7 @@ export default function TeamMembersPage() {
                     </div>
 
                     <div className="min-w-0">
-                      <p className="font-bold text-[#40372f]">
+                      <p className="font-bold text-[#171717]">
                         {member.full_name || "بدون اسم"}
                       </p>
 
@@ -460,13 +460,13 @@ export default function TeamMembersPage() {
 
                   <div
                     dir="ltr"
-                    className="text-sm text-[#665d56]"
+                    className="text-sm text-[#554d46]"
                   >
                     {member.phone || "—"}
                   </div>
 
                   <div>
-                    <span className="inline-flex rounded-full bg-[#f8f1ed] px-4 py-2 text-xs font-semibold text-[#6f554a]">
+                    <span className="inline-flex rounded-full bg-[#f8f1ed] px-4 py-2 text-xs font-semibold text-[#554d46]">
                       {roleLabels[member.role || ""] ||
                         member.role ||
                         "غير محدد"}
@@ -485,7 +485,7 @@ export default function TeamMembersPage() {
                       type="button"
                       onClick={() => handleDelete(member)}
                       disabled={deletingId === member.id}
-                      className="rounded-full border border-[#e6c8c3] bg-[#fff7f5] px-4 py-2 text-xs font-semibold text-[#b33e32] transition hover:bg-[#c94a3d] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+                      className="rounded-full border border-[#e6c8c3] bg-[#fff7f5] px-4 py-2 text-xs font-semibold text-[#b83e33] transition hover:bg-[#c94a3d] hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {deletingId === member.id
                         ? "جاري الحذف..."
@@ -500,7 +500,7 @@ export default function TeamMembersPage() {
                   👥
                 </div>
 
-                <h3 className="mt-5 text-lg font-bold text-[#40372f]">
+                <h3 className="mt-5 text-lg font-bold text-[#171717]">
                   لا يوجد أعضاء حتى الآن
                 </h3>
 

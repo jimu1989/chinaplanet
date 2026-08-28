@@ -264,14 +264,14 @@ export default function Navbar({
             ))}
           </div>
 
-          {/* AUTH LINKS */}
+          {/* MOBILE ACCOUNT */}
           <div className="mt-5 flex flex-col gap-3 border-t border-[#e5ddd5] pt-5">
             {!loadingUser && userEmail ? (
               <>
                 <Link
                   href={accountPath()}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
+                  className="text-sm font-semibold text-[#554d46]"
                 >
                   {t.account}
                 </Link>
@@ -288,34 +288,9 @@ export default function Navbar({
                       : "تسجيل الخروج"}
                 </button>
               </>
-            ) : (
-              <>
-                <Link
-                  href={`/login?lang=${currentLanguage}`}
-                  onClick={() => setOpen(false)}
-                  className="text-sm font-semibold text-[#554d46]"
-                >
-                  {t.login}
-                </Link>
+            ) : null}
 
-                <Link
-                  href={`/team/login?lang=${currentLanguage}`}
-                  onClick={() => setOpen(false)}
-                  className="text-sm font-semibold text-[#554d46]"
-                >
-                  {t.team}
-                </Link>
-
-                <Link
-                  href={`/register?lang=${currentLanguage}`}
-                  onClick={() => setOpen(false)}
-                  className="rounded-full bg-[#c94a3d] px-5 py-3 text-center text-sm font-bold text-white shadow-sm transition hover:bg-[#b83e33]"
-                >
-                  {t.register}
-                </Link>
-              </>
-            )}
-
+            {/* WHATSAPP */}
             <a
               href={whatsappUrl}
               target="_blank"

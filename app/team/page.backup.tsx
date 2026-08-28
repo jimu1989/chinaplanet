@@ -204,70 +204,6 @@ export default async function TeamPage() {
 
         <TeamRequests isAdmin={isAdmin} />
 
-        {/* DEVELOPMENT TOOLS */}
-        {isDeveloper && (
-          <section className="mt-10">
-            <div className="mb-8">
-              <div className="flex items-center gap-3">
-                <span className="h-[2px] w-8 bg-[#c94a3d]" />
-                <span className="text-[10px] font-semibold tracking-[0.3em] text-[#a69c93]">
-                  DEVELOPMENT TOOLS
-                </span>
-              </div>
-
-              <h2 className="mt-5 text-3xl font-bold">
-                أدوات التطوير
-              </h2>
-
-              <p className="mt-3 max-w-2xl text-sm leading-7 text-[#8a8179]">
-                أدوات لمراقبة النظام واختبار الخدمات أثناء التطوير.
-              </p>
-            </div>
-
-            <Link
-              href="/team/development/apis"
-              className="block rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
-            >
-              <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
-                02
-              </span>
-
-              <h3 className="mt-6 text-xl font-bold">
-                APIs
-              </h3>
-
-              <p className="mt-3 text-sm leading-7 text-[#8a8179]">
-                استعراض واختبار واجهات API ومتابعة استجابتها.
-              </p>
-
-              <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
-                فتح APIs ←
-              </div>
-            </Link>
-
-            <Link
-              href="/team/development/system"
-              className="block rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
-            >
-              <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
-                01
-              </span>
-
-              <h3 className="mt-6 text-xl font-bold">
-                حالة النظام
-              </h3>
-
-              <p className="mt-3 text-sm leading-7 text-[#8a8179]">
-                متابعة حالة الخدمات الأساسية واتصال قاعدة البيانات.
-              </p>
-
-              <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
-                فتح حالة النظام ←
-              </div>
-            </Link>
-          </section>
-        )}
-
         {/* WORKSPACE */}
         <section className="mt-10">
           <div className="mb-8">
@@ -297,7 +233,7 @@ export default async function TeamPage() {
                   href="/team/members"
                   className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
                 >
-                  <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+                  <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                     01
                   </span>
 
@@ -320,7 +256,7 @@ export default async function TeamPage() {
                   href="/team/permissions"
                   className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
                 >
-                  <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+                  <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                     02
                   </span>
 
@@ -342,11 +278,8 @@ export default async function TeamPage() {
 
             {/* DEVELOPMENT */}
             {isDeveloper && (
-              <Link
-                href="/team/dashboard"
-                className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
-              >
-                <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+              <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                   03
                 </span>
 
@@ -355,22 +288,19 @@ export default async function TeamPage() {
                 </h3>
 
                 <p className="mt-3 text-sm leading-7 text-[#8a8179]">
-                  إدارة وتطوير الموقع والوظائف البرمجية ومتابعة حالة النظام.
+                  إدارة وتطوير الموقع والوظائف البرمجية.
                 </p>
 
                 <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
-                  فتح لوحة التطوير ←
+                  متاح لك
                 </div>
-              </Link>
+              </div>
             )}
 
             {/* CONTENT & DESIGN */}
             {isContent && (
-              <Link
-                href="/team/content"
-                className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
-              >
-                <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+              <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+                <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                   04
                 </span>
 
@@ -379,21 +309,18 @@ export default async function TeamPage() {
                 </h3>
 
                 <p className="mt-3 text-sm leading-7 text-[#8a8179]">
-                  إدارة محتوى الموقع والهوية البصرية ومراجعة التصميم.
+                  إدارة المحتوى والتصميم والهوية البصرية.
                 </p>
 
                 <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
-                  فتح مساحة المحتوى ←
+                  متاح لك
                 </div>
-              </Link>
+              </div>
             )}
 
             {/* CUSTOMER SUPPORT */}
-            <Link
-              href="/team/requests"
-              className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
-            >
-              <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+            <div className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1">
+              <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                 05
               </span>
 
@@ -406,16 +333,16 @@ export default async function TeamPage() {
               </p>
 
               <div className="mt-7 inline-flex rounded-full bg-[#f8f6f2] px-4 py-2 text-[11px] font-semibold text-[#554d46]">
-                فتح طلبات العملاء ←
+                متاح
               </div>
-            </Link>
+            </div>
 
             {/* ACCOUNT */}
             <Link
               href="/account"
               className="rounded-[30px] border border-[#e4ddd5] bg-white p-8 shadow-[0_15px_50px_rgba(40,30,20,0.04)] transition hover:-translate-y-1 hover:border-[#c94a3d]"
             >
-              <span className="text-xs font-semibold tracking-[0.2em] text-[#c94a3d]">
+              <span className="text-xs font-semibold tracking-[0.2em] text-[#b5966c]">
                 06
               </span>
 
@@ -442,7 +369,7 @@ export default async function TeamPage() {
             <div className="absolute -left-10 -top-10 h-44 w-44 rounded-full border border-white/10" />
 
             <div className="relative z-10 max-w-3xl">
-              <p className="text-[10px] font-semibold tracking-[0.3em] text-[#c94a3d]">
+              <p className="text-[10px] font-semibold tracking-[0.3em] text-[#b5966c]">
                 EXECUTIVE ACCESS
               </p>
 
@@ -484,14 +411,14 @@ export default async function TeamPage() {
           <div className="flex items-center gap-5">
             <Link
               href="/"
-              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#b5966c]"
             >
               الرئيسية
             </Link>
 
             <Link
               href="/account"
-              className="text-xs font-semibold text-[#756c64] transition hover:text-[#c94a3d]"
+              className="text-xs font-semibold text-[#756c64] transition hover:text-[#b5966c]"
             >
               حسابي
             </Link>

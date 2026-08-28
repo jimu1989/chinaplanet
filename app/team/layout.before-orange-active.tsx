@@ -277,7 +277,7 @@ export default function TeamLayout({
                   href={item.href}
                   className={`rounded-full px-4 py-2.5 text-xs font-semibold transition ${
                     active
-                      ? "bg-[#c94a3d] text-white"
+                      ? "bg-[#b5966c] text-white"
                       : "text-[#756c64] hover:bg-[#f7f4ee] hover:text-[#171717]"
                   }`}
                 >
@@ -323,7 +323,7 @@ export default function TeamLayout({
                   href={item.href}
                   className={`shrink-0 rounded-full px-4 py-2.5 text-xs font-semibold transition ${
                     active
-                      ? "bg-[#c94a3d] text-white"
+                      ? "bg-[#b5966c] text-white"
                       : "bg-[#f7f4ee] text-[#756c64]"
                   }`}
                 >
