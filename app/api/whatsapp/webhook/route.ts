@@ -9,39 +9,27 @@ export async function GET(request: Request) {
 
   const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN;
 
-  if (
-    mode === "subscribe" &&
-    token &&
-    verifyToken &&
-    token === verifyToken &&
-    challenge
-  ) {
+  if (mode === "subscribe" && token === verifyToken && challenge) {
     return new Response(challenge, {
       status: 200,
-      headers: {
-        "Content-Type": "text/plain",
-      },
     });
   }
 
-  return NextResponse.json(
-    {
-      ok: false,
-      error: "Invalid verification request",
-    },
-    { status: 403 }
-  );
+  return new Response("Forbidden", {
+    status: 403,
+  });
 }
 
 export async function POST(request: Request) {
   try {
-    const body = await request.json().catch(() => null);
+    const body = await request.json();
 
-    console.log("WhatsApp webhook received:", body);
+    console.log(
+      "WhatsApp webhook received:",
+      JSON.stringify(body, null, 2)
+    );
 
-    return NextResponse.json({
-      ok: true,
-    });
+    return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("WhatsApp webhook error:", error);
 
