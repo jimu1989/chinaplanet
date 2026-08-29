@@ -15,9 +15,21 @@ export async function GET(request: Request) {
     });
   }
 
-  return new Response("Forbidden", {
-    status: 403,
-  });
+  return new Response(
+    JSON.stringify({
+      error: "Forbidden",
+      hasVerifyToken: !!verifyToken,
+      mode,
+      hasToken: !!token,
+      hasChallenge: !!challenge,
+    }),
+    {
+      status: 403,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 }
 
 export async function POST(request: Request) {
