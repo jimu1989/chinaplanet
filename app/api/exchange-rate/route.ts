@@ -7,7 +7,7 @@ export async function GET() {
     const response = await fetch(
       "https://open.er-api.com/v6/latest/SAR",
       {
-        next: { revalidate: 900 },
+        cache: "no-store",
       }
     );
 
@@ -17,25 +17,46 @@ export async function GET() {
 
     const data = await response.json();
 
-    if (data.result !== "success" || !data.rates) {
-      throw new Error("Invalid exchange-rate response");
+    const sarToCny = Number(data?.rates?.CNY);
+
+    if (
+      data?.result !== "success" ||
+      !Number.isFinite(sarToCny) ||
+      sarToCny <= 0
+    ) {
+      throw new Error("Invalid SAR/CNY exchange rate");
     }
 
-    return NextResponse.json({
-      base: "SAR",
-      rates: {
-        SAR: 1,
-        CNY: data.rates.CNY,
-        USD: data.rates.USD,
-      },
-      updatedAt: new Date().toISOString(),
-    });
-  } catch {
     return NextResponse.json(
       {
-        error: "Unable to fetch exchange rates",
+        base: "SAR",
+        quote: "CNY",
+        rate: sarToCny,
+        rates: {
+          SAR: 1,
+          CNY: sarToCny,
+        },
+        updatedAt: new Date().toISOString(),
       },
-      { status: 503 }
+      {
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
+    );
+  } catch (error) {
+    console.error("EXCHANGE RATE ERROR:", error);
+
+    return NextResponse.json(
+      {
+        error: "Unable to fetch SAR/CNY exchange rate",
+      },
+      {
+        status: 503,
+        headers: {
+          "Cache-Control": "no-store",
+        },
+      }
     );
   }
 }

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 import type { Language } from "../lib/i18n";
 import { translations } from "../lib/i18n";
 import Image from "next/image";

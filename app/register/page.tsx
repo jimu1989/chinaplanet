@@ -162,11 +162,9 @@ export default function RegisterPage() {
 
       setTimeout(() => {
         router.push(
-          currentLanguage === "en"
-            ? "/en/login"
-            : currentLanguage === "zh"
-              ? "/zh/login"
-              : "/login"
+          currentLanguage === "ar"
+            ? "/login"
+            : `/login?lang=${currentLanguage}`
         );
       }, 2500);
     } catch {

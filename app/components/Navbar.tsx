@@ -10,6 +10,7 @@ import {
   type Language,
 } from "../lib/i18n";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
+import ToolsMenu from "./ToolsMenu";
 
 const WHATSAPP_NUMBER = "966560406506";
 const LANGUAGE_COOKIE = "china-planet-language";
@@ -190,6 +191,7 @@ export default function Navbar({
 
         {/* DESKTOP ACCOUNT AREA */}
         <div className="hidden items-center gap-3 lg:flex">
+          <ToolsMenu language={currentLanguage} />
           {!loadingUser && userEmail ? (
             <Link
               href={accountPath()}
@@ -245,6 +247,11 @@ export default function Navbar({
               </a>
             ))}
           </nav>
+
+          {/* MOBILE TOOLS */}
+          <div className="mt-5 border-t border-[#e5ddd5] pt-5">
+            <ToolsMenu language={currentLanguage} />
+          </div>
 
           {/* MOBILE LANGUAGES */}
           <div className="mt-5 flex gap-2 border-t border-[#e5ddd5] pt-5">
