@@ -41,7 +41,7 @@ export default function Navbar({
 
   const links = [
     { label: t.home, href: "#home" },
-    { label: t.services, href: "#services" },
+    { label: t.services, href: localizedPath(currentLanguage) + "/services" },
     { label: t.destinations, href: "#destinations" },
     { label: t.whyUs, href: localizedPath(currentLanguage) + "/about" },
     { label: t.contact, href: "#contact" },

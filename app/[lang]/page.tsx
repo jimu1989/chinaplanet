@@ -112,7 +112,6 @@ export default async function LocalizedHomePage({
       <main>
         <Goals language={language} />
         <Contact language={language} />
-        <Services language={language} />
         <Destinations language={language} />
         <Hero language={language} />
         <Testimonials language={language} />
