@@ -43,7 +43,7 @@ export default function Navbar({
     { label: t.home, href: "#home" },
     { label: t.services, href: "#services" },
     { label: t.destinations, href: "#destinations" },
-    { label: t.whyUs, href: "#why-us" },
+    { label: t.whyUs, href: localizedPath(currentLanguage) + "/about" },
     { label: t.contact, href: "#contact" },
   ];
 
