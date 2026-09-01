@@ -109,6 +109,27 @@ const destinations: Destination[] = [
     image: "/images/destinations/shenzhen.jpg",
   },
   {
+    slug: "chengdu",
+    title: { ar: "تشنغدو", en: "Chengdu", zh: "成都" },
+    subtitle: {
+      ar: "ثقافة وطبيعة بإيقاع مختلف",
+      en: "Culture and nature at a different pace",
+      zh: "独特节奏的文化与自然",
+    },
+    description: {
+      ar: "ثقافة محلية، طبيعة، وتجربة مختلفة في غرب الصين.",
+      en: "Local culture, nature, and a different side of China.",
+      zh: "体验中国西部独特的文化与自然。",
+    },
+    details: {
+      ar: ["الباندا العملاقة", "شارع جينلي", "قاعدة أبحاث الباندا", "المطبخ المحلي"],
+      en: ["Giant pandas", "Jinli Street", "Panda Research Base", "Sichuan cuisine"],
+      zh: ["大熊猫", "锦里古街", "大熊猫繁育研究基地", "四川美食"],
+    },
+    image: "/images/destinations/chengdu.jpg",
+  },
+
+  {
     slug: "yiwu",
     title: { ar: "إيوو", en: "Yiwu", zh: "义乌" },
     subtitle: {
@@ -182,6 +203,7 @@ export async function generateStaticParams() {
     { lang: "ar", slug: "shanghai" },
     { lang: "ar", slug: "guangzhou" },
     { lang: "ar", slug: "shenzhen" },
+    { lang: "ar", slug: "chengdu" },
     { lang: "ar", slug: "yiwu" },
     { lang: "ar", slug: "hangzhou" },
 
@@ -189,6 +211,7 @@ export async function generateStaticParams() {
     { lang: "en", slug: "shanghai" },
     { lang: "en", slug: "guangzhou" },
     { lang: "en", slug: "shenzhen" },
+    { lang: "en", slug: "chengdu" },
     { lang: "en", slug: "yiwu" },
     { lang: "en", slug: "hangzhou" },
 
@@ -196,6 +219,7 @@ export async function generateStaticParams() {
     { lang: "zh", slug: "shanghai" },
     { lang: "zh", slug: "guangzhou" },
     { lang: "zh", slug: "shenzhen" },
+    { lang: "zh", slug: "chengdu" },
     { lang: "zh", slug: "yiwu" },
     { lang: "zh", slug: "hangzhou" },
   ];
