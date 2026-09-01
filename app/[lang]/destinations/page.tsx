@@ -87,6 +87,22 @@ const destinations: Destination[] = [
     },
   },
   {
+    slug: "yiwu",
+    image: "/images/destinations/yiwu.jpg",
+    title: { ar: "إيوو", en: "Yiwu", zh: "义乌" },
+    subtitle: {
+      ar: "مدينة الأسواق والتوريد العالمي",
+      en: "The world's sourcing marketplace",
+      zh: "全球采购之都",
+    },
+    description: {
+      ar: "واحدة من أهم الوجهات العالمية للشراء بالجملة والتوريد والاستيراد.",
+      en: "One of the world's most important destinations for wholesale sourcing and importing.",
+      zh: "全球重要的批发采购、供应与进口目的地。",
+    },
+  },
+
+  {
     slug: "hangzhou",
     image: "/images/destinations/hangzhou.jpg",
     title: { ar: "هانغتشو", en: "Hangzhou", zh: "杭州" },
