@@ -1,0 +1,39 @@
+===== 1. STAGED DIFF STAT =====
+ app/api/exchange-rate/route.ts                     |   49 +-
+ app/components/Navbar.tsx                          |    7 +
+ app/components/TeamRequests.tsx                    |    2 +
+ app/components/ToolsMenu.tsx                       | 1741 ++++++++++++++++++++
+ app/components/WhyUs.tsx                           |    2 +
+ app/register/page.tsx                              |    8 +-
+ .../development/system/system-health-client.tsx    |    2 +
+ app/team/requests/requests-client.current.tsx      |    2 +
+ app/team/requests/requests-client.tsx              |    2 +
+ lib/ai/core.ts                                     |    2 +
+ lib/supabase-browser.ts                            |    5 -
+ proxy.ts                                           |    2 +-
+ 12 files changed, 1799 insertions(+), 25 deletions(-)
+
+===== 2. STAGED DIFF CHECK =====
+
+===== 3. STAGED FILES =====
+M	app/api/exchange-rate/route.ts
+M	app/components/Navbar.tsx
+M	app/components/TeamRequests.tsx
+A	app/components/ToolsMenu.tsx
+M	app/components/WhyUs.tsx
+M	app/register/page.tsx
+M	app/team/development/system/system-health-client.tsx
+M	app/team/requests/requests-client.current.tsx
+M	app/team/requests/requests-client.tsx
+M	lib/ai/core.ts
+M	lib/supabase-browser.ts
+M	proxy.ts
+
+===== 4. TOOLS MENU DIFF SUMMARY =====
+1741	0	app/components/ToolsMenu.tsx
+
+===== 5. SUPABASE DIFF =====
+0	5	lib/supabase-browser.ts
+
+===== 6. DIFF SIZE =====
+ 12 files changed, 1799 insertions(+), 25 deletions(-)

@@ -1,0 +1,460 @@
+==================================================
+        CHINAPLANET PROJECT AUDIT
+        الأحد أغسطس 30 22:10:27 +03 2026
+==================================================
+
+===== 1. ENVIRONMENT =====
+Node: v24.19.0
+NPM: 11.17.0
+Next: 16.3.0
+TypeScript: 5.9.3
+
+===== 2. GIT STATUS =====
+ M app/api/exchange-rate/route.ts
+ M app/components/Navbar.tsx
+ M app/components/TeamRequests.tsx
+ M app/components/WhyUs.tsx
+ M app/register/page.tsx
+ M app/team/development/system/system-health-client.tsx
+ M app/team/requests/requests-client.current.tsx
+ M app/team/requests/requests-client.tsx
+ M lib/ai/core.ts
+ M lib/supabase-browser.ts
+ M proxy.ts
+?? .backups/
+?? .tools-menu-backup-20260829-180343/
+?? PROJECT-AUDIT.txt
+?? add-tools-menu.sh
+?? app/api/exchange-rate/route.backup.ts
+?? app/components/ToolsMenu.before-calendar.20260829-193911.tsx.disabled
+?? app/components/ToolsMenu.before-drag-cleanup.tsx.disabled
+?? app/components/ToolsMenu.before-shipment-fix.tsx.disabled
+?? app/components/ToolsMenu.broken-before-restore-20260829.tsx.disabled
+?? app/components/ToolsMenu.tsx
+?? app/components/ToolsMenu.tsx.bak
+?? app/components/ToolsMenu.weather-backup.tsx.disabled
+?? project-audit.sh
+
+===== 3. ACTIVE SOURCE FILES =====
+app/[lang]/layout.tsx
+app/[lang]/page.tsx
+app/account/page.tsx
+app/api/ai/chat/route.ts
+app/api/exchange-rate/route.ts
+app/api/service-requests/route.ts
+app/api/team/api-catalog/route.ts
+app/api/team/dashboard/route.ts
+app/api/team/development/logs/route.ts
+app/api/team/development/test/route.ts
+app/api/team/members/route.ts
+app/api/team/permissions/route.ts
+app/api/team/service-requests/route.ts
+app/api/team/system-health/route.ts
+app/api/whatsapp/webhook/route.ts
+app/auth/signout/route.ts
+app/components/AIChat.tsx
+app/components/BackToTop.tsx
+app/components/Contact.tsx
+app/components/CurrencyConverter.tsx
+app/components/Destinations.tsx
+app/components/Footer.tsx
+app/components/Goals.tsx
+app/components/Hero.tsx
+app/components/LiveInfo.tsx
+app/components/Navbar.tsx
+app/components/Services.tsx
+app/components/TeamRequests.tsx
+app/components/Testimonials.tsx
+app/components/ToolsMenu.tsx
+app/components/WhyUs.tsx
+app/globals.css
+app/layout.tsx
+app/lib/i18n.ts
+app/lib/site.ts
+app/lib/supabase-browser.ts
+app/lib/supabase-server.ts
+app/login/page.tsx
+app/page.tsx
+app/privacy/page.tsx
+app/register/page.tsx
+app/reset-password/page.tsx
+app/robots.ts
+app/sitemap.ts
+app/team/content/page.tsx
+app/team/dashboard-client.tsx
+app/team/dashboard/page.tsx
+app/team/development/apis/apis-client.tsx
+app/team/development/apis/page.tsx
+app/team/development/apis/tester/api-tester-client.tsx
+app/team/development/apis/tester/page.tsx
+app/team/development/logs/logs-viewer-client.tsx
+app/team/development/logs/page.tsx
+app/team/development/page.tsx
+app/team/development/system/page.tsx
+app/team/development/system/system-health-client.tsx
+app/team/layout.tsx
+app/team/login/page.tsx
+app/team/members/page.tsx
+app/team/page.tsx
+app/team/permissions/page.tsx
+app/team/requests/page.tsx
+app/team/requests/requests-client.tsx
+app/terms/page.tsx
+lib/ai/core.openai.ts
+lib/ai/core.ts
+lib/ai/knowledge.ts
+lib/ai/memory.ts
+lib/ai/permissions.ts
+lib/ai/prompts.ts
+lib/ai/router.ts
+lib/ai/tools/customers.ts
+lib/ai/tools/orders.ts
+lib/ai/tools/products.ts
+lib/ai/tools/projects.ts
+lib/ai/tools/search.ts
+lib/ai/types.ts
+lib/supabase-browser.ts
+lib/supabase-server.ts
+lib/team-logs/store.ts
+lib/team-permissions.ts
+lib/whatsapp/client.ts
+lib/whatsapp/types.ts
+
+===== 4. ROUTES =====
+app/[lang]/layout.tsx
+app/[lang]/page.tsx
+app/account/page.tsx
+app/api/ai/chat/route.ts
+app/api/exchange-rate/route.ts
+app/api/service-requests/route.ts
+app/api/team/api-catalog/route.ts
+app/api/team/dashboard/route.ts
+app/api/team/development/logs/route.ts
+app/api/team/development/test/route.ts
+app/api/team/members/route.ts
+app/api/team/permissions/route.ts
+app/api/team/service-requests/route.ts
+app/api/team/system-health/route.ts
+app/api/whatsapp/webhook/route.ts
+app/auth/signout/route.ts
+app/layout.tsx
+app/login/page.tsx
+app/page.tsx
+app/privacy/page.tsx
+app/register/page.tsx
+app/reset-password/page.tsx
+app/team/content/page.tsx
+app/team/dashboard/page.tsx
+app/team/development/apis/page.tsx
+app/team/development/apis/tester/page.tsx
+app/team/development/logs/page.tsx
+app/team/development/page.tsx
+app/team/development/system/page.tsx
+app/team/layout.tsx
+app/team/login/page.tsx
+app/team/members/page.tsx
+app/team/page.tsx
+app/team/permissions/page.tsx
+app/team/requests/page.tsx
+app/terms/page.tsx
+
+===== 5. TYPESCRIPT CHECK =====
+TypeScript exit code: 0
+
+===== 6. ESLINT — ACTIVE CODE ONLY =====
+ESLint exit code: 0
+
+===== 7. NEXT BUILD =====
+
+> chinaplanet@0.1.0 build
+> next build
+
+▲ Next.js 16.3.0 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 55ms
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 731ms
+  Running TypeScript ...
+  Finished TypeScript in 998ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/39) ...
+  Generating static pages using 7 workers (9/39) 
+  Generating static pages using 7 workers (19/39) 
+  Generating static pages using 7 workers (29/39) 
+✓ Generating static pages using 7 workers (39/39) in 263ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├   /[lang]
+│ ├ ● /ar
+│ ├ ● /en
+│ └ ● /zh
+├ ƒ /account
+├ ƒ /api/ai/chat
+├ ƒ /api/exchange-rate
+├ ƒ /api/service-requests
+├ ƒ /api/team/api-catalog
+├ ƒ /api/team/dashboard
+├ ƒ /api/team/development/logs
+├ ƒ /api/team/development/test
+├ ƒ /api/team/members
+├ ƒ /api/team/permissions
+├ ƒ /api/team/service-requests
+├ ƒ /api/team/system-health
+├ ƒ /api/whatsapp/webhook
+├ ƒ /auth/signout
+├ ○ /login
+├ ○ /privacy
+├ ○ /register
+├ ○ /reset-password
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+├ ƒ /team
+├ ○ /team/content
+├ ƒ /team/dashboard
+├ ƒ /team/development
+├ ƒ /team/development/apis
+├ ƒ /team/development/apis/tester
+├ ƒ /team/development/logs
+├ ƒ /team/development/system
+├ ○ /team/login
+├ ○ /team/members
+├ ○ /team/permissions
+├ ƒ /team/requests
+└ ○ /terms
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
+Build exit code: 0
+
+===== 8. SECURITY — ENV FILE NAMES ONLY =====
+./.env.local
+./.env.vercel.production
+
+===== 9. POSSIBLE SECRETS IN SOURCE =====
+app/api/service-requests/route.ts:8:const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+app/api/service-requests/route.ts:9:const resendApiKey = process.env.RESEND_API_KEY;
+app/api/service-requests/route.ts:800:        "RESEND CONFIG ERROR: RESEND_API_KEY or ADMIN_EMAIL is missing."
+app/api/team/permissions/route.ts:7:const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+app/api/team/members/route.ts:10:const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+app/api/whatsapp/webhook/route.ts:10:  const verifyToken = process.env.WHATSAPP_VERIFY_TOKEN;
+lib/ai/core.ts:28:const GEMINI_API_KEY =
+lib/ai/core.ts:29:  process.env.GEMINI_API_KEY;
+lib/ai/core.ts:190:  if (!GEMINI_API_KEY) {
+lib/ai/core.ts:230:        "x-goog-api-key": GEMINI_API_KEY,
+lib/ai/core.ts:387:  if (!GEMINI_API_KEY) {
+lib/ai/core.ts:389:      "GEMINI_API_KEY is missing."
+lib/ai/core.ts:595:  if (!GEMINI_API_KEY) {
+lib/ai/core.ts:709:              GEMINI_API_KEY,
+lib/ai/core.openai.ts:19:  apiKey: process.env.OPENAI_API_KEY,
+
+===== 10. DEBUG LOGS — ACTIVE CODE =====
+app/components/Contact.tsx:224:        console.error(
+app/components/Contact.tsx:229:        console.log("SERVICE REQUEST SAVED SUCCESSFULLY");
+app/components/Contact.tsx:232:      console.error("SERVICE REQUEST SUBMIT ERROR:", error);
+app/components/TeamRequests.tsx:90:      console.error("TEAM REQUESTS LOAD ERROR:", error);
+app/components/TeamRequests.tsx:201:      console.error("STATUS UPDATE ERROR:", error);
+app/components/TeamRequests.tsx:239:      console.error("DELETE REQUEST ERROR:", error);
+app/components/AIChat.tsx:222:      console.error(
+app/components/ToolsMenu.tsx:852:      console.error("EXCHANGE RATE ERROR:", error);
+app/components/ToolsMenu.tsx:976:      console.error("CITY SEARCH ERROR:", error);
+app/components/TeamRequests.tsx.backup:92:      console.error("TEAM REQUESTS LOAD ERROR:", error);
+app/team/requests/requests-client.tsx:125:      console.error("REQUESTS LOAD ERROR:", err);
+app/team/requests/requests-client.tsx:272:      console.error("UPDATE REQUEST ERROR:", err);
+app/team/requests/requests-client.tsx:331:      console.error("DELETE REQUEST ERROR:", err);
+app/team/requests/requests-client.current.tsx:125:      console.error("REQUESTS LOAD ERROR:", err);
+app/team/requests/requests-client.current.tsx:272:      console.error("UPDATE REQUEST ERROR:", err);
+app/team/requests/requests-client.current.tsx:331:      console.error("DELETE REQUEST ERROR:", err);
+app/team/layout.tsx:102:        console.error(
+app/team/layout.tsx:147:          console.error(
+app/team/layout.tsx:153:        console.error(
+app/team/dashboard-client.tsx:54:        console.error("DASHBOARD LOAD ERROR:", error);
+app/team/login/page.tsx:50:        console.error("TEAM LOGIN SUPABASE ERROR:", loginError);
+app/api/exchange-rate/route.ts:48:    console.error("EXCHANGE RATE ERROR:", error);
+app/api/service-requests/route.ts:509:      console.error("SERVICE REQUEST INSERT ERROR:", error);
+app/api/service-requests/route.ts:650:          console.error(
+app/api/service-requests/route.ts:657:          console.log(
+app/api/service-requests/route.ts:774:                console.error(
+app/api/service-requests/route.ts:779:                console.log(
+app/api/service-requests/route.ts:785:              console.error(
+app/api/service-requests/route.ts:793:        console.error(
+app/api/service-requests/route.ts:799:      console.error(
+app/api/service-requests/route.ts:813:    console.error(
+app/api/ai/chat/route.ts:100:      console.log(`AI TIMING → ${name}: ${(performance.now() - t0).toFixed(0)}ms`);
+app/api/ai/chat/route.ts:262:            console.error(
+app/api/ai/chat/route.ts:302:    console.error(
+app/api/whatsapp/webhook/route.ts:39:    console.log(
+app/api/whatsapp/webhook/route.ts:46:    console.error("WhatsApp webhook error:", error);
+lib/team-permissions.ts:92:    console.error(
+lib/ai/core.ts:388:    console.error(
+lib/ai/core.ts:450:    console.log(
+lib/ai/core.ts:454:    console.log(
+lib/ai/core.ts:475:      console.error(
+lib/ai/core.ts:492:    console.log(
+lib/ai/core.ts:498:    console.log(
+lib/ai/core.ts:526:      console.error(
+lib/ai/core.ts:550:    console.error(
+lib/ai/core.ts:675:    console.log(
+lib/ai/core.ts:679:    console.log(
+lib/ai/core.ts:735:    console.log(
+lib/ai/core.ts:746:      console.error(
+lib/ai/core.ts:763:    console.log(
+lib/ai/core.ts:777:    console.error(
+lib/ai/core.openai.ts:124:    console.error("AI CORE ERROR:", error);
+
+===== 11. TODO / FIXME / HACK =====
+app/components/Contact.tsx:312:                    placeholder="+966 5X XXX XXXX"
+app/register/page.tsx:21:    phonePlaceholder: "05xxxxxxxx",
+app/register/page.tsx:34:    phonePlaceholder: "05xxxxxxxx",
+app/register/page.tsx:48:    phonePlaceholder: "05xxxxxxxx",
+
+===== 12. BACKUP / OLD FILES =====
+.backups/ToolsMenu.before-city-search-fix.20260830-001039.tsx
+.backups/ToolsMenu.before-drag-scope-fix.20260829-210400.tsx
+.backups/ToolsMenu.before-dynamic-weather.20260830-150433.tsx
+.backups/ToolsMenu.before-final-drag-fix.20260830-000051.tsx
+.backups/ToolsMenu.before-horizontal-cities.20260830-002420.tsx
+.backups/ToolsMenu.before-manual-drag-fix.20260829-233810.tsx
+.backups/ToolsMenu.before-premium-city-cards.20260830-150748.tsx
+.backups/ToolsMenu.before-premium-weather.20260830-151546.tsx
+.backups/ToolsMenu.before-scope-repair.20260829-233518.tsx
+.backups/ToolsMenu.before-weather-final.20260830-001914.tsx
+app/api/exchange-rate/route.backup.ts
+app/components/Navbar.tsx.before-auth-menu-fix
+app/components/Navbar.tsx.before-menu-fix
+app/components/ToolsMenu.before-calendar.20260829-193911.tsx.disabled
+app/components/ToolsMenu.before-drag-cleanup.tsx.disabled
+app/components/ToolsMenu.before-shipment-fix.tsx.disabled
+app/components/ToolsMenu.broken-before-restore-20260829.tsx.disabled
+app/components/ToolsMenu.tsx.bak
+app/components/ToolsMenu.weather-backup.tsx.disabled
+app/team/layout.before-orange-active.tsx
+app/team/page.backup.tsx
+app/team/page.current.tsx
+app/team/requests/requests-client.current.tsx
+lib/ai/core.ts.before-stream
+
+===== 13. DEPENDENCY AUDIT =====
+found 0 vulnerabilities
+npm audit exit code: 0
+
+===== 14. OUTDATED PACKAGES =====
+Package                 Current    Wanted   Latest  Location                            Depended by
+@supabase/ssr            0.12.4    0.12.5   0.12.5  node_modules/@supabase/ssr          chinaplanet
+@supabase/supabase-js   2.112.3   2.112.4  2.112.4  node_modules/@supabase/supabase-js  chinaplanet
+@types/node            20.19.43  20.19.43   26.4.0  node_modules/@types/node            chinaplanet
+@types/react-dom         19.2.4    19.2.5   19.2.5  node_modules/@types/react-dom       chinaplanet
+eslint                   9.39.5    9.39.5   10.9.1  node_modules/eslint                 chinaplanet
+eslint-config-next       16.3.0    16.3.0   16.3.3  node_modules/eslint-config-next     chinaplanet
+framer-motion            13.0.0    13.1.1   13.1.1  node_modules/framer-motion          chinaplanet
+next                     16.3.0    16.3.0   16.3.3  node_modules/next                   chinaplanet
+openai                    7.5.0     7.8.0    7.8.0  node_modules/openai                 chinaplanet
+resend                   6.22.0    6.25.0   6.25.0  node_modules/resend                 chinaplanet
+typescript                5.9.3     5.9.3    7.0.2  node_modules/typescript             chinaplanet
+
+===== 15. PACKAGE SCRIPTS =====
+{
+  "name": "chinaplanet",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.12.4",
+    "@supabase/supabase-js": "^2.112.3",
+    "framer-motion": "^13.0.0",
+    "next": "16.3.0",
+    "openai": "^7.5.0",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "resend": "^6.22.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.3.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
+  }
+}
+
+===== 16. PROJECT SIZE =====
+705M	.
+1٫0	app
+ 88K	lib
+4٫8	public
+200M	.next
+482M	node_modules
+ 11M	.git
+552K	.backups
+
+===== 17. LARGE ACTIVE SOURCE FILES =====
+    1741 app/components/ToolsMenu.tsx
+     825 app/api/service-requests/route.ts
+     791 lib/ai/core.ts
+     772 app/api/team/members/route.ts
+     747 app/team/requests/requests-client.tsx
+     747 app/team/requests/requests-client.current.tsx
+     722 app/lib/i18n.ts
+     668 app/components/TeamRequests.tsx
+     581 app/components/Contact.tsx
+     539 app/team/members/page.tsx
+     502 app/team/page.tsx
+     451 app/team/page.current.tsx
+     445 app/account/page.tsx
+     434 app/team/development/apis/tester/api-tester-client.tsx
+     432 app/components/Destinations.tsx
+     413 app/register/page.tsx
+     382 app/team/development/apis/apis-client.tsx
+     369 app/team/layout.tsx
+     359 app/components/AIChat.tsx
+     338 app/components/Navbar.tsx
+     325 app/api/team/permissions/route.ts
+     317 app/api/team/service-requests/route.ts
+     317 app/api/ai/chat/route.ts
+     307 lib/ai/prompts.ts
+     297 app/team/dashboard-client.tsx
+     289 app/team/permissions/page.tsx
+     278 app/components/WhyUs.tsx
+     264 app/components/Goals.tsx
+     261 lib/ai/knowledge.ts
+     260 app/login/page.tsx
+
+===== 18. DUPLICATE BASENAME CHECK =====
+layout.tsx
+page.tsx
+route.ts
+supabase-browser.ts
+supabase-server.ts
+types.ts
+
+===== 19. NPM INSTALL SCRIPTS =====
+1 package has install scripts not yet covered by allowScripts:
+  unrs-resolver@1.12.2 (postinstall: node postinstall.js)
+
+Run `npm approve-scripts <pkg>` to allow, or `npm deny-scripts <pkg>` to deny.
+
+==================================================
+AUDIT FINISHED
+==================================================
+TypeScript: 0
+ESLint:     0
+Build:      0
+Audit:      0
+
+REPORT: PROJECT-AUDIT.txt
+==================================================

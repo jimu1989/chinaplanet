@@ -4,22 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  languages,
-  translations,
-  type Language,
-} from "../lib/i18n";
+import { languages, translations, type Language } from "../lib/i18n";
 import { createSupabaseBrowserClient } from "../../lib/supabase-browser";
 import ToolsMenu from "./ToolsMenu";
 
 const WHATSAPP_NUMBER = "966560406506";
 const LANGUAGE_COOKIE = "china-planet-language";
 
-export default function Navbar({
-  language = "ar",
-}: {
-  language?: Language;
-}) {
+export default function Navbar({ language = "ar" }: { language?: Language }) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -28,23 +20,22 @@ export default function Navbar({
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
 
-  const currentLanguage: Language =
-    pathname.startsWith("/en")
-      ? "en"
-      : pathname.startsWith("/zh")
-        ? "zh"
-        : pathname.startsWith("/ar")
-          ? "ar"
-          : language;
+  const currentLanguage: Language = pathname.startsWith("/en")
+    ? "en"
+    : pathname.startsWith("/zh")
+      ? "zh"
+      : pathname.startsWith("/ar")
+        ? "ar"
+        : language;
 
   const t = translations[currentLanguage].nav;
 
   const links = [
-    { label: t.home, href: "#home" },
-    { label: t.services, href: localizedPath(currentLanguage) + "/services" },
-    { label: t.destinations, href: "#destinations" },
-    { label: t.whyUs, href: localizedPath(currentLanguage) + "/about" },
-    { label: t.contact, href: "#contact" },
+    { label: t.home, href: `/${currentLanguage}` },
+    { label: t.services, href: `/${currentLanguage}/services` },
+    { label: t.destinations, href: `/${currentLanguage}/destinations` },
+    { label: t.whyUs, href: `/${currentLanguage}/about` },
+    { label: t.contact, href: `/${currentLanguage}#contact` },
   ];
 
   useEffect(() => {
@@ -92,8 +83,7 @@ export default function Navbar({
   }, []);
 
   function localizedPath(lang: Language) {
-    const cleanPath =
-      pathname.replace(/^\/(ar|en|zh)/, "") || "/";
+    const cleanPath = pathname.replace(/^\/(ar|en|zh)/, "") || "/";
 
     if (lang === "ar") {
       return `/ar${cleanPath === "/" ? "" : cleanPath}`;
@@ -142,7 +132,8 @@ export default function Navbar({
         <Link
           href={localizedPath(currentLanguage)}
           onClick={() => setOpen(false)}
-          className="shrink-0"
+          className="group shrink-0"
+          aria-label="China Planet"
         >
           <Image
             src="/images/china-planet-logo.png"
@@ -160,7 +151,7 @@ export default function Navbar({
             <a
               key={link.href}
               href={link.href}
-              className="text-[12px] font-medium text-[#554d46] transition-colors duration-300 hover:text-[#c94a3d]"
+              className="cp-link-line text-[12px] font-medium text-[#554d46] transition-colors duration-300 hover:text-[#c94a3d]"
             >
               {link.label}
             </a>

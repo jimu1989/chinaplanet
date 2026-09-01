@@ -7,16 +7,25 @@ export default function MouseMotion() {
     const root = document.documentElement;
 
     let raf = 0;
-    let mouseX = 0;
-    let mouseY = 0;
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
 
     const update = () => {
-      root.style.setProperty("--mouse-x", `${mouseX}px`);
-      root.style.setProperty("--mouse-y", `${mouseY}px`);
+      root.style.setProperty(
+        "--mouse-x",
+        `${mouseX}px`,
+      );
+
+      root.style.setProperty(
+        "--mouse-y",
+        `${mouseY}px`,
+      );
+
       root.style.setProperty(
         "--mouse-x-percent",
         `${(mouseX / Math.max(window.innerWidth, 1)) * 100}%`,
       );
+
       root.style.setProperty(
         "--mouse-y-percent",
         `${(mouseY / Math.max(window.innerHeight, 1)) * 100}%`,
@@ -25,7 +34,9 @@ export default function MouseMotion() {
       raf = 0;
     };
 
-    const handlePointerMove = (event: PointerEvent) => {
+    const handlePointerMove = (
+      event: PointerEvent,
+    ) => {
       mouseX = event.clientX;
       mouseY = event.clientY;
 
@@ -34,12 +45,19 @@ export default function MouseMotion() {
       }
     };
 
-    window.addEventListener("pointermove", handlePointerMove, {
-      passive: true,
-    });
+    window.addEventListener(
+      "pointermove",
+      handlePointerMove,
+      { passive: true },
+    );
+
+    update();
 
     return () => {
-      window.removeEventListener("pointermove", handlePointerMove);
+      window.removeEventListener(
+        "pointermove",
+        handlePointerMove,
+      );
 
       if (raf) {
         cancelAnimationFrame(raf);

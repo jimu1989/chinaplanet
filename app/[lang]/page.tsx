@@ -37,7 +37,7 @@ const seo = {
   },
 } as const;
 
-export async function generateStaticParams() {
+export function generateStaticParams() {
   return Object.keys(languages).map((lang) => ({
     lang,
   }));
@@ -60,7 +60,6 @@ export async function generateMetadata({
   return {
     title: current.title,
     description: current.description,
-
     alternates: {
       canonical: `${baseUrl}/${language}`,
       languages: {
@@ -70,7 +69,6 @@ export async function generateMetadata({
         "x-default": `${baseUrl}/ar`,
       },
     },
-
     openGraph: {
       type: "website",
       url: `${baseUrl}/${language}`,
@@ -84,7 +82,6 @@ export async function generateMetadata({
             ? "zh_CN"
             : "en_US",
     },
-
     robots: {
       index: true,
       follow: true,
@@ -110,11 +107,26 @@ export default async function LocalizedHomePage({
       <Navbar language={language} />
 
       <main>
-        <Goals language={language} />
-        <Contact language={language} />
-        <Destinations language={language} />
+        {/* 01 — HERO */}
         <Hero language={language} />
+
+        {/* 02 — INTRO / SERVICES */}
+        <Services language={language} />
+
+        {/* 03 — DESTINATIONS */}
+        <Destinations language={language} />
+
+        {/* 04 — WHY CHINA PLANET */}
+        <WhyUs language={language} />
+
+        {/* 05 — EXPERIENCE / PROCESS */}
+        <Goals language={language} />
+
+        {/* 06 — TESTIMONIALS */}
         <Testimonials language={language} />
+
+        {/* 07 — CONTACT / CTA */}
+        <Contact language={language} />
       </main>
 
       <Footer language={language} />

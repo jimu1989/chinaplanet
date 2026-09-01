@@ -5,11 +5,7 @@ import type { Language } from "../lib/i18n";
 import { translations } from "../lib/i18n";
 import { siteConfig } from "../lib/site";
 
-export default function Footer({
-  language = "ar",
-}: {
-  language?: Language;
-}) {
+export default function Footer({ language = "ar" }: { language?: Language }) {
   const t = translations[language];
   const isArabic = language === "ar";
 

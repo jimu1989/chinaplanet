@@ -1,0 +1,1044 @@
+"use client";
+
+import { useEffect, useMemo, useState } from "react";
+
+type Language = "ar" | "en" | "zh";
+
+type Tab =
+  | "time"
+  | "weather"
+  | "currency"
+  | "shipping"
+  | "holidays";
+
+type City = {
+  name: string;
+  country: string;
+  countryCode: "SA" | "CN";
+  latitude: number;
+  longitude: number;
+};
+
+type Weather = {
+  temperature: number;
+  apparent: number;
+  wind: number;
+  humidity: number;
+};
+
+type Holiday = {
+  name: string;
+  chineseName: string;
+  start: string;
+  end: string;
+  days: number;
+  workdays?: string[];
+  note: string;
+};
+
+const TEXT = {
+  ar: {
+    tools: "أدوات الصين والسعودية",
+    time: "التوقيت",
+    weather: "الطقس",
+    currency: "العملات",
+    shipping: "حاسبة الشحنة",
+    holidays: "الأعياد والعطلات الصينية",
+    saudi: "الرياض",
+    china: "شنغهاي",
+    searchCity: "ابحث عن مدينة في السعودية أو الصين",
+    search: "بحث",
+    loading: "جاري التحميل...",
+    temperature: "الحرارة",
+    feelsLike: "المحسوسة",
+    wind: "الرياح",
+    humidity: "الرطوبة",
+    amount: "المبلغ بالريال",
+    cny: "يوان صيني",
+    convert: "القيمة باليوان",
+    refresh: "تحديث السعر",
+    rateUnavailable: "تعذر الحصول على سعر الصرف",
+    updated: "آخر تحديث",
+    weight: "الوزن الفعلي",
+    length: "الطول",
+    width: "العرض",
+    height: "الارتفاع",
+    cartons: "عدد الكراتين",
+    cbm: "الحجم الإجمالي",
+    volumetric: "الوزن الحجمي",
+    chargeable: "الوزن المحتسب",
+    calculate: "احسب",
+    air: "جوي",
+    sea: "بحري",
+    shippingNote:
+      "لا نعرض سعر شحن وهميًا. هذه الحاسبة تحسب بيانات الشحنة فقط، أما سعر الناقل فيختلف حسب الشركة والمسار ونوع البضاعة.",
+    year: "السنة",
+    official: "بيانات العطلات الرسمية",
+    workdays: "أيام العمل التعويضية",
+    factoryNote:
+      "العطلة الرسمية لا تعني بالضرورة أن كل مصنع يغلق بنفس المدة. يجب تأكيد إجازة المصنع والناقل مباشرة قبل الطلب.",
+    days: "أيام",
+    noData: "لا توجد بيانات رسمية مدخلة لهذه السنة.",
+    noCity: "لم يتم العثور على مدينة.",
+    selectCity: "اختر مدينة لعرض الطقس",
+    source: "المصدر: جدول العطلات الرسمي الصيني",
+  },
+
+  en: {
+    tools: "China & Saudi Tools",
+    time: "Time",
+    weather: "Weather",
+    currency: "Currency",
+    shipping: "Shipment Calculator",
+    holidays: "Chinese Holidays",
+    saudi: "Riyadh",
+    china: "Shanghai",
+    searchCity: "Search a Saudi or Chinese city",
+    search: "Search",
+    loading: "Loading...",
+    temperature: "Temperature",
+    feelsLike: "Feels like",
+    wind: "Wind",
+    humidity: "Humidity",
+    amount: "Amount in SAR",
+    cny: "Chinese Yuan",
+    convert: "Value in CNY",
+    refresh: "Refresh rate",
+    rateUnavailable: "Exchange rate unavailable",
+    updated: "Updated",
+    weight: "Actual weight",
+    length: "Length",
+    width: "Width",
+    height: "Height",
+    cartons: "Cartons",
+    cbm: "Total volume",
+    volumetric: "Volumetric weight",
+    chargeable: "Chargeable weight",
+    calculate: "Calculate",
+    air: "Air",
+    sea: "Sea",
+    shippingNote:
+      "We do not display invented shipping prices. This calculator calculates shipment data only; carrier pricing depends on the company, route and cargo.",
+    year: "Year",
+    official: "Official holiday data",
+    workdays: "Make-up workdays",
+    factoryNote:
+      "An official holiday does not mean every factory closes for the same period. Confirm factory and carrier schedules before ordering.",
+    days: "days",
+    noData: "No official data is currently entered for this year.",
+    noCity: "No city found.",
+    selectCity: "Select a city to view weather",
+    source: "Source: official Chinese holiday schedule",
+  },
+
+  zh: {
+    tools: "中沙工具",
+    time: "时间",
+    weather: "天气",
+    currency: "货币",
+    shipping: "货物计算",
+    holidays: "中国节假日",
+    saudi: "利雅得",
+    china: "上海",
+    searchCity: "搜索沙特或中国城市",
+    search: "搜索",
+    loading: "加载中...",
+    temperature: "温度",
+    feelsLike: "体感",
+    wind: "风速",
+    humidity: "湿度",
+    amount: "沙特里亚尔金额",
+    cny: "人民币",
+    convert: "人民币金额",
+    refresh: "刷新汇率",
+    rateUnavailable: "无法获取汇率",
+    updated: "更新时间",
+    weight: "实际重量",
+    length: "长度",
+    width: "宽度",
+    height: "高度",
+    cartons: "箱数",
+    cbm: "总体积",
+    volumetric: "体积重量",
+    chargeable: "计费重量",
+    calculate: "计算",
+    air: "空运",
+    sea: "海运",
+    shippingNote:
+      "我们不会显示虚假的运费。此工具只计算货物数据，实际价格取决于物流公司、路线和货物类型。",
+    year: "年份",
+    official: "官方节假日数据",
+    workdays: "调休工作日",
+    factoryNote:
+      "法定节假日不代表所有工厂都会关闭相同时间。下单前请直接确认工厂和物流公司的假期安排。",
+    days: "天",
+    noData: "目前没有该年份的官方数据。",
+    source: "来源：中国官方节假日安排",
+  },
+} as const;
+
+const HOLIDAYS: Record<number, Holiday[]> = {
+  2026: [
+    {
+      name: "New Year's Day",
+      chineseName: "元旦",
+      start: "2026-01-01",
+      end: "2026-01-03",
+      days: 3,
+      workdays: ["2026-01-04"],
+      note: "Official national holiday period.",
+    },
+    {
+      name: "Spring Festival",
+      chineseName: "春节",
+      start: "2026-02-15",
+      end: "2026-02-23",
+      days: 9,
+      workdays: ["2026-02-14", "2026-02-28"],
+      note: "Major annual disruption period for factories and logistics.",
+    },
+    {
+      name: "Qingming Festival",
+      chineseName: "清明节",
+      start: "2026-04-04",
+      end: "2026-04-06",
+      days: 3,
+      note: "Official national holiday period.",
+    },
+    {
+      name: "Labor Day",
+      chineseName: "劳动节",
+      start: "2026-05-01",
+      end: "2026-05-05",
+      days: 5,
+      workdays: ["2026-05-09"],
+      note: "Official national holiday period.",
+    },
+    {
+      name: "Dragon Boat Festival",
+      chineseName: "端午节",
+      start: "2026-06-19",
+      end: "2026-06-21",
+      days: 3,
+      note: "Official national holiday period.",
+    },
+    {
+      name: "Mid-Autumn Festival",
+      chineseName: "中秋节",
+      start: "2026-09-25",
+      end: "2026-09-27",
+      days: 3,
+      note: "Official national holiday period.",
+    },
+    {
+      name: "National Day",
+      chineseName: "国庆节",
+      start: "2026-10-01",
+      end: "2026-10-07",
+      days: 7,
+      workdays: ["2026-09-20", "2026-10-10"],
+      note: "National Day holiday period.",
+    },
+  ],
+};
+
+function formatDate(date: string, language: Language) {
+  return new Intl.DateTimeFormat(
+    language === "ar"
+      ? "ar-SA"
+      : language === "zh"
+        ? "zh-CN"
+        : "en-US",
+    {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    },
+  ).format(new Date(`${date}T12:00:00`));
+}
+
+function formatNumber(value: number, language: Language) {
+  return new Intl.NumberFormat(
+    language === "ar"
+      ? "ar-SA"
+      : language === "zh"
+        ? "zh-CN"
+        : "en-US",
+    { maximumFractionDigits: 2 },
+  ).format(value);
+}
+
+export default function ToolsMenu({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
+  const t = TEXT[language];
+
+  const [open, setOpen] = useState(false);
+  const [tab, setTab] = useState<Tab>("time");
+
+  const [now, setNow] = useState(new Date());
+
+  const [cityQuery, setCityQuery] = useState("");
+  const [cities, setCities] = useState<City[]>([]);
+  const [city, setCity] = useState<City | null>(null);
+  const [weather, setWeather] = useState<Weather | null>(null);
+  const [weatherLoading, setWeatherLoading] = useState(false);
+
+  const [amount, setAmount] = useState("100");
+  const [rate, setRate] = useState<number | null>(null);
+  const [rateUpdatedAt] = useState<string | null>(null);
+  const [currencyLoading, setCurrencyLoading] = useState(false);
+
+  const [weight, setWeight] = useState("100");
+  const [cartons, setCartons] = useState("1");
+  const [length, setLength] = useState("50");
+  const [width, setWidth] = useState("40");
+  const [height, setHeight] = useState("40");
+  const [shippingMode, setShippingMode] = useState<"air" | "sea">("sea");
+
+  const [holidayYear, setHolidayYear] = useState(2026);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNow(new Date());
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
+  async function loadRate() {
+    setCurrencyLoading(true);
+
+    try {
+      const response = await fetch("/api/exchange-rate", {
+        cache: "no-store",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          data?.error || "تعذر الحصول على سعر الصرف",
+        );
+      }
+
+      const possibleRate = Number(data?.rates?.CNY);
+
+      if (!Number.isFinite(possibleRate) || possibleRate <= 0) {
+        throw new Error("سعر CNY غير موجود في استجابة API");
+      }
+
+      setRate(possibleRate);
+    } catch (error) {
+      console.error("EXCHANGE RATE ERROR:", error);
+      setRate(null);
+    } finally {
+      setCurrencyLoading(false);
+    }
+  }
+
+  async function searchCities() {
+    const query = cityQuery.trim();
+
+    if (!query) {
+      setCities([]);
+      return;
+    }
+
+    try {
+      const url =
+        "https://geocoding-api.open-meteo.com/v1/search" +
+        `?name=${encodeURIComponent(query)}` +
+        "&count=20&language=en&format=json";
+
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error("City search failed");
+      }
+
+      const data = await response.json();
+
+      const results: City[] = (data.results ?? [])
+        .filter(
+          (item: {
+            name?: string;
+            country?: string;
+            country_code?: string;
+            latitude?: number;
+            longitude?: number;
+          }) =>
+            (item.country_code === "SA" || item.country_code === "CN") &&
+            typeof item.latitude === "number" &&
+            typeof item.longitude === "number" &&
+            typeof item.name === "string",
+        )
+        .map(
+          (item: {
+            name: string;
+            country: string;
+            country_code: "SA" | "CN";
+            latitude: number;
+            longitude: number;
+          }) => ({
+            name: item.name,
+            country: item.country,
+            countryCode: item.country_code,
+            latitude: item.latitude,
+            longitude: item.longitude,
+          }),
+        );
+
+      setCities(results);
+    } catch {
+      setCities([]);
+    }
+  }
+
+  async function loadWeather(selectedCity: City) {
+    setCity(selectedCity);
+    setCities([]);
+    setWeatherLoading(true);
+
+    try {
+      const url =
+        "https://api.open-meteo.com/v1/forecast" +
+        `?latitude=${selectedCity.latitude}` +
+        `&longitude=${selectedCity.longitude}` +
+        "&current=temperature_2m,apparent_temperature,wind_speed_10m,relative_humidity_2m" +
+        "&timezone=auto";
+
+      const response = await fetch(url, {
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error("Weather request failed");
+      }
+
+      const data = await response.json();
+
+      setWeather({
+        temperature: Number(data.current?.temperature_2m ?? 0),
+        apparent: Number(data.current?.apparent_temperature ?? 0),
+        wind: Number(data.current?.wind_speed_10m ?? 0),
+        humidity: Number(data.current?.relative_humidity_2m ?? 0),
+      });
+    } catch {
+      setWeather(null);
+    } finally {
+      setWeatherLoading(false);
+    }
+  }
+
+  const shipment = useMemo(() => {
+    const actualWeight = Math.max(Number(weight) || 0, 0);
+    const boxCount = Math.max(Number(cartons) || 1, 1);
+    const l = Math.max(Number(length) || 0, 0);
+    const w = Math.max(Number(width) || 0, 0);
+    const h = Math.max(Number(height) || 0, 0);
+
+    const cbmPerCarton = (l * w * h) / 1_000_000;
+    const totalCbm = cbmPerCarton * boxCount;
+
+    /*
+     * Volumetric divisor varies by carrier/service.
+     * We deliberately use common reference values only as a calculation
+     * reference, NOT as a freight quote.
+     */
+    const divisor = shippingMode === "air" ? 6000 : 1000000;
+    const volumetricWeight =
+      shippingMode === "air"
+        ? (l * w * h * boxCount) / divisor
+        : totalCbm;
+
+    const chargeableWeight =
+      shippingMode === "air"
+        ? Math.max(actualWeight, volumetricWeight)
+        : actualWeight;
+
+    return {
+      actualWeight,
+      boxCount,
+      totalCbm,
+      volumetricWeight,
+      chargeableWeight,
+    };
+  }, [weight, cartons, length, width, height, shippingMode]);
+
+  const holidays = HOLIDAYS[holidayYear] ?? [];
+
+  const formattedTime = new Intl.DateTimeFormat(
+    language === "ar"
+      ? "ar-SA"
+      : language === "zh"
+        ? "zh-CN"
+        : "en-US",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: language === "en",
+      timeZone: "Asia/Riyadh",
+    },
+  ).format(now);
+
+  const formattedChinaTime = new Intl.DateTimeFormat(
+    language === "ar"
+      ? "ar-SA"
+      : language === "zh"
+        ? "zh-CN"
+        : "en-US",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: language === "en",
+      timeZone: "Asia/Shanghai",
+    },
+  ).format(now);
+
+  const formattedDate = new Intl.DateTimeFormat(
+    language === "ar"
+      ? "ar-SA"
+      : language === "zh"
+        ? "zh-CN"
+        : "en-US",
+    {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+      timeZone: "Asia/Riyadh",
+    },
+  ).format(now);
+
+  const converted =
+    rate !== null ? (Number(amount) || 0) * rate : null;
+
+  const tabs: Array<[Tab, string, string]> = [
+    ["time", "🕐", t.time],
+    ["weather", "🌤️", t.weather],
+    ["currency", "💱", t.currency],
+    ["shipping", "📦", t.shipping],
+    ["holidays", "🧧", t.holidays],
+  ];
+
+  return (
+    <div className="relative">
+      <button
+        type="button"
+        onClick={() => setOpen((value) => !value)}
+        aria-expanded={open}
+        aria-label={t.tools}
+        className={`flex items-center gap-2 rounded-full border px-4 py-2.5 text-[11px] font-semibold transition ${
+          open
+            ? "border-[#c94a3d] bg-[#c94a3d] text-white"
+            : "border-[#cdbfb4] text-[#554d46] hover:border-[#c94a3d] hover:text-[#c94a3d]"
+        }`}
+      >
+        <span aria-hidden="true">⚙</span>
+        {t.tools}
+      </button>
+
+      {open && (
+        <div
+          dir={language === "ar" ? "rtl" : "ltr"}
+          className="absolute top-[calc(100%+12px)] end-0 z-[80] w-[430px] max-w-[calc(100vw-24px)] overflow-hidden rounded-[24px] border border-[#e3ddd6] bg-[#f8f6f2] shadow-[0_20px_60px_rgba(40,30,20,0.18)]"
+        >
+          <div className="overflow-x-auto border-b border-[#e3ddd6] bg-white p-2">
+            <div className="flex min-w-max gap-1">
+              {tabs.map(([value, icon, label]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setTab(value)}
+                  className={`rounded-xl px-3 py-2 text-[10px] font-semibold transition ${
+                    tab === value
+                      ? "bg-[#171717] text-white"
+                      : "text-[#756b62] hover:bg-[#f3f0eb]"
+                  }`}
+                >
+                  <span className="me-1">{icon}</span>
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-5">
+            {tab === "time" && (
+              <div>
+                <p className="text-[10px] font-semibold text-[#9a9087]">
+                  {t.time}
+                </p>
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl bg-white p-4 text-center ring-1 ring-[#e3ddd6]">
+                    <p className="text-[10px] text-[#9a9087]">
+                      🇸🇦 {t.saudi}
+                    </p>
+                    <p dir="ltr" className="mt-2 text-2xl font-semibold text-[#302c28]">
+                      {formattedTime}
+                    </p>
+                    <p className="mt-1 text-[9px] text-[#9a9087]">
+                      Asia/Riyadh
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-white p-4 text-center ring-1 ring-[#e3ddd6]">
+                    <p className="text-[10px] text-[#9a9087]">
+                      🇨🇳 {t.china}
+                    </p>
+                    <p dir="ltr" className="mt-2 text-2xl font-semibold text-[#302c28]">
+                      {formattedChinaTime}
+                    </p>
+                    <p className="mt-1 text-[9px] text-[#9a9087]">
+                      Asia/Shanghai
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-3 rounded-2xl bg-white p-4 text-center ring-1 ring-[#e3ddd6]">
+                  <p className="text-xs text-[#756b62]">{formattedDate}</p>
+                  <p className="mt-2 text-[9px] text-[#9a9087]">
+                    فرق التوقيت بين الرياض والصين: +5 ساعات
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {tab === "weather" && (
+              <div>
+                <p className="text-[10px] font-semibold text-[#9a9087]">
+                  {t.weather}
+                </p>
+
+                <div className="mt-3 flex gap-2">
+                  <input
+                    value={cityQuery}
+                    onChange={(event) => setCityQuery(event.target.value)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter") {
+                        void searchCities();
+                      }
+                    }}
+                    placeholder={t.searchCity}
+                    className="min-w-0 flex-1 rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-xs outline-none focus:border-[#c94a3d]"
+                  />
+
+                  <button
+                    type="button"
+                    onClick={() => void searchCities()}
+                    className="shrink-0 rounded-2xl bg-[#171717] px-4 text-xs font-semibold text-white"
+                  >
+                    {t.search}
+                  </button>
+                </div>
+
+                {cities.length > 0 && (
+                  <div className="mt-2 max-h-48 overflow-y-auto rounded-2xl border border-[#e3ddd6] bg-white">
+                    {cities.map((item) => (
+                      <button
+                        key={`${item.countryCode}-${item.name}-${item.latitude}-${item.longitude}`}
+                        type="button"
+                        onClick={() => void loadWeather(item)}
+                        className="block w-full border-b border-[#eee8e1] px-4 py-3 text-start text-xs text-[#554d46] last:border-0 hover:bg-[#faf9f7]"
+                      >
+                        <span className="me-2">
+                          {item.countryCode === "SA" ? "🇸🇦" : "🇨🇳"}
+                        </span>
+                        {item.name}
+                        <span className="ms-2 text-[10px] text-[#9a9087]">
+                          {item.country}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {!city && (
+                  <div className="mt-4 rounded-2xl bg-white p-5 text-center text-xs text-[#756b62] ring-1 ring-[#e3ddd6]">
+                    {t.selectCity}
+                  </div>
+                )}
+
+                {city && (
+                  <div className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="text-sm font-semibold text-[#302c28]">
+                          {city.name}
+                        </p>
+                        <p className="mt-1 text-[9px] text-[#9a9087]">
+                          {city.country}
+                        </p>
+                      </div>
+                      <span className="text-2xl">🌤️</span>
+                    </div>
+
+                    {weatherLoading ? (
+                      <p className="mt-4 text-xs text-[#756b62]">
+                        {t.loading}
+                      </p>
+                    ) : weather ? (
+                      <div className="mt-4 grid grid-cols-4 gap-2">
+                        <div className="rounded-xl bg-[#f8f6f2] p-2 text-center">
+                          <p className="text-[9px] text-[#9a9087]">
+                            {t.temperature}
+                          </p>
+                          <p className="mt-1 text-sm font-semibold">
+                            {weather.temperature}°
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl bg-[#f8f6f2] p-2 text-center">
+                          <p className="text-[9px] text-[#9a9087]">
+                            {t.feelsLike}
+                          </p>
+                          <p className="mt-1 text-sm font-semibold">
+                            {weather.apparent}°
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl bg-[#f8f6f2] p-2 text-center">
+                          <p className="text-[9px] text-[#9a9087]">
+                            {t.wind}
+                          </p>
+                          <p className="mt-1 text-sm font-semibold">
+                            {weather.wind}
+                          </p>
+                        </div>
+
+                        <div className="rounded-xl bg-[#f8f6f2] p-2 text-center">
+                          <p className="text-[9px] text-[#9a9087]">
+                            {t.humidity}
+                          </p>
+                          <p className="mt-1 text-sm font-semibold">
+                            {weather.humidity}%
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="mt-4 text-xs text-[#756b62]">
+                        {t.noCity}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {tab === "currency" && (
+              <div>
+                <p className="text-[10px] font-semibold text-[#9a9087]">
+                  {t.currency}
+                </p>
+
+                <div className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
+                  <label className="text-[10px] text-[#756b62]">
+                    {t.amount}
+                  </label>
+
+                  <input
+                    type="number"
+                    min="0"
+                    value={amount}
+                    onChange={(event) => setAmount(event.target.value)}
+                    className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-[#f8f6f2] px-4 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                  />
+
+                  <div className="mt-4">
+                    <p className="text-[10px] text-[#9a9087]">
+                      {t.convert}
+                    </p>
+
+                    <p className="mt-1 text-2xl font-semibold text-[#302c28]">
+                      {currencyLoading
+                        ? "..."
+                        : converted !== null
+                          ? `${formatNumber(converted, language)} CNY`
+                          : "—"}
+                    </p>
+                  </div>
+
+                  {rate !== null && (
+                    <p className="mt-2 text-[9px] text-[#9a9087]">
+                      1 SAR = {rate.toFixed(4)} CNY
+                    </p>
+                  )}
+
+                  {rateUpdatedAt && (
+                    <p className="mt-1 text-[9px] text-[#9a9087]">
+                      {t.updated}:{" "}
+                      {new Date(rateUpdatedAt).toLocaleString(
+                        language === "ar"
+                          ? "ar-SA"
+                          : language === "zh"
+                            ? "zh-CN"
+                            : "en-US",
+                      )}
+                    </p>
+                  )}
+
+                  {rate === null && !currencyLoading && (
+                    <p className="mt-2 text-[9px] text-[#c94a3d]">
+                      {t.rateUnavailable}
+                    </p>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => void loadRate()}
+                  className="mt-3 w-full rounded-2xl bg-[#171717] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#c94a3d]"
+                >
+                  {t.refresh}
+                </button>
+              </div>
+            )}
+
+            {tab === "shipping" && (
+              <div>
+                <p className="text-[10px] font-semibold text-[#9a9087]">
+                  {t.shipping}
+                </p>
+
+                <div className="mt-4 grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] text-[#756b62]">
+                      {t.weight} kg
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={weight}
+                      onChange={(event) => setWeight(event.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-[#756b62]">
+                      {t.cartons}
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      value={cartons}
+                      onChange={(event) => setCartons(event.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-[#756b62]">
+                      {t.length} cm
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={length}
+                      onChange={(event) => setLength(event.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-[#756b62]">
+                      {t.width} cm
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={width}
+                      onChange={(event) => setWidth(event.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="text-[10px] text-[#756b62]">
+                      {t.height} cm
+                    </label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={height}
+                      onChange={(event) => setHeight(event.target.value)}
+                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-4">
+                  <p className="text-[10px] text-[#756b62]">
+                    طريقة الشحن
+                  </p>
+
+                  <div className="mt-2 grid grid-cols-2 gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShippingMode("air")}
+                      className={`rounded-2xl px-3 py-3 text-xs font-semibold ${
+                        shippingMode === "air"
+                          ? "bg-[#171717] text-white"
+                          : "bg-white text-[#554d46] ring-1 ring-[#e3ddd6]"
+                      }`}
+                    >
+                      ✈️ {t.air}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => setShippingMode("sea")}
+                      className={`rounded-2xl px-3 py-3 text-xs font-semibold ${
+                        shippingMode === "sea"
+                          ? "bg-[#171717] text-white"
+                          : "bg-white text-[#554d46] ring-1 ring-[#e3ddd6]"
+                      }`}
+                    >
+                      🚢 {t.sea}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <div className="rounded-2xl bg-white p-3 ring-1 ring-[#e3ddd6]">
+                    <p className="text-[9px] text-[#9a9087]">{t.cbm}</p>
+                    <p className="mt-1 text-lg font-semibold">
+                      {shipment.totalCbm.toFixed(3)} m³
+                    </p>
+                  </div>
+
+                  <div className="rounded-2xl bg-white p-3 ring-1 ring-[#e3ddd6]">
+                    <p className="text-[9px] text-[#9a9087]">
+                      {t.volumetric}
+                    </p>
+                    <p className="mt-1 text-lg font-semibold">
+                      {shipment.volumetricWeight.toFixed(2)}
+                      {shippingMode === "air" ? " kg" : " m³"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-2 rounded-2xl bg-[#171717] p-4 text-white">
+                  <p className="text-[9px] text-white/60">
+                    {t.chargeable}
+                  </p>
+                  <p className="mt-1 text-2xl font-semibold">
+                    {shipment.chargeableWeight.toFixed(2)}
+                    {shippingMode === "air" ? " kg" : " kg actual"}
+                  </p>
+                </div>
+
+                <p className="mt-3 text-[9px] leading-5 text-[#8a8179]">
+                  {t.shippingNote}
+                </p>
+              </div>
+            )}
+
+            {tab === "holidays" && (
+              <div>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-[10px] font-semibold text-[#9a9087]">
+                      🧧 {t.holidays}
+                    </p>
+                    <p className="mt-1 text-xs text-[#756b62]">
+                      {t.factoryNote}
+                    </p>
+                  </div>
+
+                  <select
+                    value={holidayYear}
+                    onChange={(event) =>
+                      setHolidayYear(Number(event.target.value))
+                    }
+                    className="rounded-xl border border-[#e3ddd6] bg-white px-3 py-2 text-xs outline-none"
+                  >
+                    <option value={2026}>2026</option>
+                  </select>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {holidays.length === 0 ? (
+                    <div className="rounded-2xl bg-white p-4 text-center text-xs text-[#756b62] ring-1 ring-[#e3ddd6]">
+                      {t.noData}
+                    </div>
+                  ) : (
+                    holidays.map((holiday) => (
+                      <div
+                        key={`${holidayYear}-${holiday.name}`}
+                        className="rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]"
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="text-xs font-semibold text-[#302c28]">
+                              {language === "zh"
+                                ? holiday.chineseName
+                                : holiday.name}
+                            </p>
+
+                            {language !== "zh" && (
+                              <p className="mt-1 text-[9px] text-[#9a9087]">
+                                {holiday.chineseName}
+                              </p>
+                            )}
+
+                            <p className="mt-2 text-[10px] text-[#756b62]">
+                              {formatDate(holiday.start, language)} —{" "}
+                              {formatDate(holiday.end, language)}
+                            </p>
+                          </div>
+
+                          <span className="shrink-0 rounded-full bg-[#f3f0eb] px-2 py-1 text-[9px] font-semibold text-[#554d46]">
+                            {holiday.days} {t.days}
+                          </span>
+                        </div>
+
+                        <p className="mt-3 text-[9px] leading-5 text-[#9a9087]">
+                          {holiday.note}
+                        </p>
+
+                        {holiday.workdays &&
+                          holiday.workdays.length > 0 && (
+                            <div className="mt-3 rounded-xl bg-[#fff8f6] p-3">
+                              <p className="text-[9px] font-semibold text-[#c94a3d]">
+                                {t.workdays}
+                              </p>
+
+                              <p className="mt-1 text-[9px] text-[#756b62]">
+                                {holiday.workdays
+                                  .map((date) =>
+                                    formatDate(date, language),
+                                  )
+                                  .join(" • ")}
+                              </p>
+                            </div>
+                          )}
+                      </div>
+                    ))
+                  )}
+                </div>
+
+                <div className="mt-4 rounded-2xl border border-[#ead3ce] bg-[#fff8f6] p-4">
+                  <p className="text-[10px] font-semibold text-[#c94a3d]">
+                    ⚠️ {t.factoryNote}
+                  </p>
+
+                  <p className="mt-2 text-[9px] leading-5 text-[#756b62]">
+                    {t.source}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -4,7 +4,7 @@ import "./globals.css";
 import { siteConfig } from "./lib/site";
 
 import MouseMotion from "./components/motion/MouseMotion";
-import MouseGlow from "./components/MouseGlow";
+import PageTransition from "./components/motion/PageTransition";
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
   display: "swap",
@@ -110,8 +110,9 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={cairo.variable}>
-        {children}
-        <MouseGlow />
+{children}
+        <PageTransition />
+        <MouseMotion />
       </body>
     </html>
   );

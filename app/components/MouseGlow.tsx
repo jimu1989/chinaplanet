@@ -4,19 +4,19 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useEffect } from "react";
 
 export default function MouseGlow() {
-  const x = useMotionValue(-100);
-  const y = useMotionValue(-100);
+  const x = useMotionValue(-200);
+  const y = useMotionValue(-200);
 
   const springX = useSpring(x, {
-    stiffness: 260,
-    damping: 30,
-    mass: 0.25,
+    stiffness: 80,
+    damping: 24,
+    mass: 0.7,
   });
 
   const springY = useSpring(y, {
-    stiffness: 260,
-    damping: 30,
-    mass: 0.25,
+    stiffness: 80,
+    damping: 24,
+    mass: 0.7,
   });
 
   useEffect(() => {
@@ -25,10 +25,17 @@ export default function MouseGlow() {
       y.set(event.clientY);
     };
 
-    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener(
+      "pointermove",
+      move,
+      { passive: true },
+    );
 
     return () => {
-      window.removeEventListener("pointermove", move);
+      window.removeEventListener(
+        "pointermove",
+        move,
+      );
     };
   }, [x, y]);
 
@@ -39,7 +46,7 @@ export default function MouseGlow() {
         left: springX,
         top: springY,
       }}
-      className="pointer-events-none fixed z-[9998] hidden h-32 w-32 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c94a3d]/[0.035] blur-3xl md:block"
+      className="pointer-events-none fixed z-[9998] hidden h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#c94a3d]/[0.035] blur-3xl md:block"
     />
   );
 }
