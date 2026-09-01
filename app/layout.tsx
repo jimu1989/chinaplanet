@@ -3,6 +3,8 @@ import { Cairo } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "./lib/site";
 
+import MouseMotion from "./components/motion/MouseMotion";
+import MouseGlow from "./components/MouseGlow";
 const cairo = Cairo({
   subsets: ["arabic", "latin"],
   display: "swap",
@@ -107,7 +109,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ar" dir="rtl">
-      <body className={cairo.variable}>{children}</body>
+      <body className={cairo.variable}>
+        {children}
+        <MouseGlow />
+      </body>
     </html>
   );
 }

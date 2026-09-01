@@ -120,3 +120,115 @@ a {
 .animate-fade-in {
   animation: cp-fade-in 650ms ease-out both;
 }
+
+/* CHINA PLANET MOTION SYSTEM */
+
+:root {
+  --mouse-x: 50vw;
+  --mouse-y: 50vh;
+  --mouse-x-percent: 50%;
+  --mouse-y-percent: 50%;
+}
+
+@media (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .cp-motion-card {
+    transform:
+      perspective(1200px)
+      rotateX(
+        calc((var(--mouse-y) - 50vh) * -0.004deg)
+      )
+      rotateY(
+        calc((var(--mouse-x) - 50vw) * 0.004deg)
+      )
+      translate3d(
+        calc((var(--mouse-x) - 50vw) * 0.0025),
+        calc((var(--mouse-y) - 50vh) * 0.0025),
+        0
+      );
+
+    transition:
+      transform 800ms cubic-bezier(.22, 1, .36, 1),
+      box-shadow 800ms cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .cp-motion-card:hover {
+    box-shadow:
+      0 28px 80px rgba(40, 30, 20, 0.11);
+  }
+
+  .cp-motion-image {
+    transform:
+      scale(1.01)
+      translate3d(
+        calc((var(--mouse-x) - 50vw) * -0.004),
+        calc((var(--mouse-y) - 50vh) * -0.004),
+        0
+      );
+
+    transition:
+      transform 1000ms cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .group:hover .cp-motion-image {
+    transform:
+      scale(1.045)
+      translate3d(
+        calc((var(--mouse-x) - 50vw) * -0.006),
+        calc((var(--mouse-y) - 50vh) * -0.006),
+        0
+      );
+  }
+
+  .cp-magnetic {
+    transition:
+      transform 500ms cubic-bezier(.22, 1, .36, 1);
+  }
+
+  .cp-magnetic:hover {
+    transform: translate3d(
+      calc((var(--mouse-x) - 50vw) * 0.004),
+      calc((var(--mouse-y) - 50vh) * 0.004),
+      0
+    );
+  }
+
+  .cp-cursor-glow {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .cp-cursor-glow::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    border-radius: inherit;
+    opacity: 0;
+    background:
+      radial-gradient(
+        260px circle at var(--mouse-x-percent) var(--mouse-y-percent),
+        rgba(201, 74, 61, 0.07),
+        transparent 70%
+      );
+    transition: opacity 500ms ease;
+  }
+
+  .cp-cursor-glow:hover::after {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cp-motion-card,
+  .cp-motion-image,
+  .cp-magnetic {
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .cp-cursor-glow::after {
+    display: none;
+  }
+}
+
