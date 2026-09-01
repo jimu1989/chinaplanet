@@ -105,81 +105,100 @@ export default function Services({ language = "ar" }: { language?: Language }) {
     <section
       id="services"
       dir={isArabic ? "rtl" : "ltr"}
-      className="cp-section relative overflow-hidden bg-[#f7f3ec]"
+      className="cp-editorial-section relative overflow-hidden bg-[#f8f6f2]"
     >
-      <div className="absolute -right-40 top-20 h-80 w-80 rounded-full bg-[#b94b3f]/[0.035] blur-3xl" />
+      <div className="pointer-events-none absolute -right-40 top-0 h-[420px] w-[420px] rounded-full border border-[#c94a3d]/[0.07]" />
+      <div className="pointer-events-none absolute -right-24 top-16 h-[260px] w-[260px] rounded-full border border-[#c94a3d]/[0.06]" />
 
-      <div className="cp-container relative">
-        <div className="grid gap-10 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
+      <div className="cp-editorial-container relative mx-auto w-full max-w-[1250px] px-5 md:px-8">
+        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
             <div className="flex items-center gap-3">
-              <span className="cp-line" />
+              <span className="h-px w-10 bg-[#c94a3d]" />
               <span className="cp-label">{t.label}</span>
             </div>
 
-            <h2 className="cp-title mt-6 max-w-[520px] text-4xl sm:text-5xl lg:text-[58px]">
+            <h2 className="mt-6 max-w-[600px] text-[clamp(2.8rem,6vw,5.5rem)] font-semibold leading-[0.95] tracking-[-0.055em] text-[#40372f]">
               {t.title}
             </h2>
           </div>
 
-          <div className={isArabic ? "lg:pr-12" : "lg:pl-12"}>
-            <p className="max-w-[650px] text-sm leading-8 text-[#786e65] sm:text-base">
+          <div className={isArabic ? "lg:pr-16" : "lg:pl-16"}>
+            <p className="cp-editorial-copy max-w-[620px] text-sm leading-8 text-[#786e65] md:text-base">
               {t.description}
             </p>
           </div>
         </div>
 
-        <div className="mt-16 border-t border-[#ded6ce]">
+        <div className="mt-20 border-t border-[#ded6ce]">
           <div className="grid md:grid-cols-2 lg:grid-cols-4">
             {services.map((service, index) => (
               <ServiceCardMotion key={service.title}>
                 <article
-                  className={`group relative min-h-[350px] border-b border-[#ded6ce] px-7 py-9 transition-all duration-500 hover:bg-[#fffdf9] ${
-                    index > 0 ? "lg:border-s" : ""
-                  }`}
+                  className={[
+                    "group relative min-h-[390px] overflow-hidden border-b border-[#ded6ce] px-7 py-8 transition-all duration-700",
+                    "hover:bg-[#fffdf9]",
+                    index > 0 ? "lg:border-s" : "",
+                  ].join(" ")}
                 >
-                  <div className="flex items-start justify-between">
-                    <span className="text-[10px] font-semibold tracking-[0.2em] text-[#a89c91]">
+                  <div className="pointer-events-none absolute -bottom-20 -right-20 h-48 w-48 rounded-full border border-[#c94a3d]/0 transition-all duration-700 group-hover:border-[#c94a3d]/10" />
+
+                  <div className="relative flex items-start justify-between">
+                    <span className="text-[10px] font-semibold tracking-[0.22em] text-[#9a9087]">
                       {service.number}
                     </span>
 
-                    <div className="text-[#b5966c] transition-all duration-500 group-hover:-translate-y-1 group-hover:text-[#b94b3f]">
+                    <div className="text-[#b5966c] transition-all duration-700 group-hover:-translate-y-2 group-hover:text-[#c94a3d]">
                       {service.icon}
                     </div>
                   </div>
 
-                  <div className="mt-20">
-                    <div className="mb-5 h-px w-7 bg-[#b94b3f] transition-all duration-500 group-hover:w-12" />
+                  <div className="relative mt-24">
+                    <div className="mb-6 h-px w-8 bg-[#c94a3d] transition-all duration-700 group-hover:w-14" />
 
-                    <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#40372f]">
+                    <h3 className="text-2xl font-semibold tracking-[-0.035em] text-[#40372f] md:text-[27px]">
                       {service.title}
                     </h3>
 
-                    <p className="mt-4 max-w-[230px] text-xs leading-7 text-[#786e65]">
+                    <p className="mt-4 max-w-[245px] text-sm leading-7 text-[#786e65]">
                       {service.description}
                     </p>
 
                     <a
                       href="#contact"
-                      className="mt-7 inline-flex items-center gap-2 text-[11px] font-semibold text-[#574d45] transition-colors duration-300 group-hover:text-[#b94b3f]"
+                      className="mt-8 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.14em] text-[#554d46] transition-colors duration-500 group-hover:text-[#c94a3d]"
                     >
                       {t.more}
                       <InteractiveArrow
                         size={15}
-                        className="h-6 w-6 text-[#b94b3f]"
+                        className="h-6 w-6 text-[#c94a3d] transition-transform duration-500 group-hover:translate-x-1"
                       />
                     </a>
                   </div>
+
+                  <span
+                    className={[
+                      "pointer-events-none absolute bottom-4 text-[72px] font-semibold leading-none tracking-[-0.08em] text-[#40372f]/[0.035] transition-all duration-700 group-hover:text-[#c94a3d]/[0.07]",
+                      isArabic ? "left-5" : "right-5",
+                    ].join(" ")}
+                  >
+                    {service.number}
+                  </span>
                 </article>
               </ServiceCardMotion>
             ))}
           </div>
         </div>
 
-        <div className="mt-10 flex justify-end">
-          <a href="#contact" className="cp-button">
+        <div className="mt-12 flex justify-end">
+          <a
+            href="#contact"
+            className="cp-editorial-button group inline-flex items-center gap-4"
+          >
             {t.explore}
-            <span className="text-[#b94b3f]">{isArabic ? "←" : "→"}</span>
+            <span className="transition-transform duration-500 group-hover:translate-x-1">
+              {isArabic ? "←" : "→"}
+            </span>
           </a>
         </div>
       </div>
