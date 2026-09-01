@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import Navbar from "../../components/Navbar";
 import Footer from "../../components/Footer";
 import type { Language } from "../../lib/i18n";
 import { isLanguage, languages } from "../../lib/i18n";
@@ -63,7 +62,6 @@ export default async function ServicesPage({
 
   return (
     <>
-      <Navbar language={language} />
 
       <main className="pt-[76px]">
         <Services language={language} />

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import Services from "../components/Services";
 import WhyUs from "../components/WhyUs";
@@ -104,7 +103,6 @@ export default async function LocalizedHomePage({
 
   return (
     <>
-      <Navbar language={language} />
 
       <main>
         {/* 01 — HERO */}
