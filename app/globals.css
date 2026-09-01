@@ -739,3 +739,155 @@ button {
     display: none;
   }
 }
+
+
+/* =========================================================
+   CHINA PLANET — EDITORIAL SYSTEM
+   ========================================================= */
+
+.cp-editorial-page {
+  min-height: 100vh;
+  background: var(--cp-ivory);
+  color: var(--cp-brown);
+}
+
+.cp-editorial-container {
+  width: min(1250px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.cp-editorial-section {
+  position: relative;
+  padding-block: clamp(90px, 10vw, 150px);
+}
+
+.cp-editorial-eyebrow {
+  color: var(--cp-red);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.cp-editorial-heading {
+  margin: 0;
+  color: var(--cp-brown);
+  font-weight: 600;
+  letter-spacing: -0.055em;
+  line-height: 0.94;
+}
+
+.cp-editorial-heading-accent {
+  color: var(--cp-red);
+}
+
+.cp-editorial-copy {
+  color: var(--cp-muted);
+  font-size: 16px;
+  line-height: 2;
+}
+
+.cp-editorial-rule {
+  width: 56px;
+  height: 1px;
+  background: var(--cp-red-soft);
+}
+
+.cp-editorial-image {
+  position: relative;
+  overflow: hidden;
+  background: #ddd6ce;
+}
+
+.cp-editorial-image img {
+  transition: transform 1200ms var(--cp-ease);
+}
+
+.cp-editorial-image:hover img {
+  transform: scale(1.05);
+}
+
+.cp-editorial-card {
+  position: relative;
+  overflow: hidden;
+  background: var(--cp-brown);
+}
+
+.cp-editorial-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(32, 27, 23, 0.88),
+    rgba(32, 27, 23, 0.12) 65%,
+    transparent
+  );
+  pointer-events: none;
+}
+
+.cp-editorial-cta {
+  position: relative;
+  overflow: hidden;
+  background: var(--cp-red);
+  color: white;
+}
+
+.cp-editorial-cta-dark {
+  background: var(--cp-brown);
+}
+
+.cp-editorial-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding-inline: 28px;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  transition:
+    transform 450ms var(--cp-ease),
+    background-color 450ms var(--cp-ease),
+    color 450ms var(--cp-ease);
+}
+
+.cp-editorial-button:hover {
+  transform: translateY(-2px);
+}
+
+.cp-editorial-button-light {
+  color: var(--cp-brown);
+  background: white;
+  border-color: white;
+}
+
+.cp-editorial-button-light:hover {
+  background: transparent;
+  color: white;
+}
+
+@media (max-width: 767px) {
+  .cp-editorial-container {
+    width: min(100% - 28px, 1250px);
+  }
+
+  .cp-editorial-section {
+    padding-block: 80px;
+  }
+
+  .cp-editorial-copy {
+    font-size: 15px;
+    line-height: 1.9;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cp-editorial-image img,
+  .cp-editorial-button {
+    transition: none;
+  }
+}
