@@ -121,10 +121,10 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
 
   return (
     <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
+      className={`fixed inset-x-0 top-0 z-50 transition-all duration-700 ${
         scrolled
-          ? "bg-[#f8f6f2]/95 shadow-sm backdrop-blur-xl"
-          : "bg-[#f8f6f2]/70 backdrop-blur-md"
+          ? "border-b border-[var(--cp-line)] bg-[var(--cp-ivory)]/96 shadow-[0_8px_30px_rgba(43,37,33,0.06)] backdrop-blur-xl"
+          : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex h-[76px] max-w-[1250px] items-center justify-between px-5 lg:px-8">
@@ -141,7 +141,7 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
             width={180}
             height={65}
             priority
-            className="h-[52px] w-[150px] object-contain"
+            className="h-[52px] w-[150px] object-contain transition-transform duration-500 group-hover:scale-[1.02]"
           />
         </Link>
 
@@ -151,7 +151,9 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
             <a
               key={link.href}
               href={link.href}
-              className="cp-link-line text-[12px] font-medium text-[#554d46] transition-colors duration-300 hover:text-[#c94a3d]"
+              className={`cp-link-line text-[12px] font-medium transition-colors duration-300 hover:text-[var(--cp-red)] ${
+                scrolled ? "text-[var(--cp-brown)]" : "text-white/90"
+              }`}
             >
               {link.label}
             </a>
@@ -170,8 +172,10 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
                 onClick={() => handleLanguageChange(lang)}
                 className={`rounded-full px-3 py-2 text-[10px] font-semibold transition ${
                   active
-                    ? "bg-[#c94a3d] text-white"
-                    : "text-[#786e65] hover:bg-[#f3f0eb]"
+                    ? "bg-[var(--cp-red)] text-white"
+                    : scrolled
+                      ? "text-[var(--cp-muted)] hover:bg-[var(--cp-ivory-light)]"
+                      : "text-white/75 hover:bg-white/10 hover:text-white"
                 }`}
               >
                 {languages[lang].short}
@@ -199,8 +203,10 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
             onClick={() => setOpen((value) => !value)}
             className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all ${
               open
-                ? "border-[#c94a3d] bg-[#c94a3d] text-white"
-                : "border-[#cdbfb4] text-[#554d46] hover:border-[#c94a3d] hover:text-[#c94a3d]"
+                ? "border-[var(--cp-red)] bg-[var(--cp-red)] text-white"
+                : scrolled
+                  ? "border-[var(--cp-line-dark)] text-[var(--cp-brown)] hover:border-[var(--cp-red)] hover:text-[var(--cp-red)]"
+                  : "border-white/30 text-white hover:border-white/60"
             }`}
           >
             {open ? "×" : "☰"}
@@ -215,8 +221,10 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
           onClick={() => setOpen((value) => !value)}
           className={`flex h-10 w-10 items-center justify-center rounded-full border text-lg transition-all lg:hidden ${
             open
-              ? "border-[#c94a3d] bg-[#c94a3d] text-white"
-              : "border-[#cdbfb4] text-[#554d46]"
+              ? "border-[var(--cp-red)] bg-[var(--cp-red)] text-white"
+              : scrolled
+                ? "border-[var(--cp-line-dark)] text-[var(--cp-brown)]"
+                : "border-white/30 text-white"
           }`}
         >
           {open ? "×" : "☰"}

@@ -1,11 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-
 import type { Language } from "../lib/i18n";
 import { translations } from "../lib/i18n";
 import { siteConfig } from "../lib/site";
 
-export default function Footer({ language = "ar" }: { language?: Language }) {
+export default function Footer({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   const t = translations[language];
   const isArabic = language === "ar";
 
@@ -22,82 +25,105 @@ export default function Footer({ language = "ar" }: { language?: Language }) {
   return (
     <footer
       dir={isArabic ? "rtl" : "ltr"}
-      className="border-t border-[#e7e0d8] bg-[#f7f4ee] text-[#171717]"
+      className="relative overflow-hidden border-t border-[var(--cp-line)] bg-[var(--cp-ivory)] text-[var(--cp-brown)]"
     >
-      <div className="mx-auto max-w-[1280px] px-5 py-16 lg:px-8">
-        <div className="grid gap-12 lg:grid-cols-[1.4fr_1fr_1fr]">
+      <div className="pointer-events-none absolute -bottom-44 -end-44 h-[420px] w-[420px] rounded-full border border-[var(--cp-red)]/[0.06]" />
+
+      <div className="cp-editorial-container relative">
+        <div className="grid gap-14 py-16 lg:grid-cols-[1.4fr_0.8fr_0.8fr] lg:py-20">
           <div>
-            <a
-              href="#home"
-              className="inline-flex items-center"
+            <Link
+              href={`/${language}`}
+              className="group inline-flex items-center"
               aria-label="China Planet"
             >
               <Image
                 src="/images/china-planet-logo.png"
                 alt="China Planet"
-                width={165}
-                height={58}
-                className="h-[58px] w-[165px] object-contain"
-                draggable={false}
+                width={175}
+                height={62}
+                className="h-auto w-[150px] object-contain transition-transform duration-500 group-hover:scale-[1.02] sm:w-[175px]"
               />
-            </a>
+            </Link>
 
-            <p className="mt-6 max-w-[380px] text-sm leading-7 text-[#6b625b]">
+            <p className="mt-7 max-w-md text-sm leading-8 text-[var(--cp-muted)]">
               {language === "ar" &&
-                "كوكب الصين — بوابتك الموثوقة لاكتشاف الصين، خدماتها، وجهاتها، وفرصها."}
+                "كوكب الصين — نقرّب لك الصين، ونساعدك تبدأ رحلتك بثقة ووضوح."}
               {language === "en" &&
-                "China Planet — your trusted gateway to discovering China, its services, destinations, and opportunities."}
+                "China Planet — bringing China closer and helping you move forward with clarity and confidence."}
               {language === "zh" &&
-                "中国星球——探索中国、了解其服务、目的地与商机的可靠门户。"}
+                "中国星球——让中国更近，帮助您更清晰、更自信地迈出下一步。"}
             </p>
+
+            <div className="mt-8 flex items-center gap-3">
+              <span className="h-px w-10 bg-[var(--cp-red)]" />
+              <span className="text-[10px] font-semibold tracking-[0.24em] text-[var(--cp-muted-light)]">
+                SAUDI ARABIA × CHINA
+              </span>
+            </div>
           </div>
 
           <div>
-            <h3 className="mb-5 text-sm font-semibold text-[#171717]">
-              {language === "ar" && "روابط سريعة"}
-              {language === "en" && "Quick Links"}
-              {language === "zh" && "快速链接"}
-            </h3>
+            <p className="cp-label">
+              {language === "ar"
+                ? "استكشف"
+                : language === "zh"
+                  ? "探索"
+                  : "EXPLORE"}
+            </p>
 
-            <nav className="grid gap-3">
+            <nav className="mt-7 grid gap-4">
               {footerLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
-                  className="w-fit text-sm text-[#6b625b] transition-colors duration-300 hover:text-[#c94a3d]"
+                  className="group flex w-fit items-center gap-3 text-sm text-[var(--cp-muted)] transition-colors duration-300 hover:text-[var(--cp-red)]"
                 >
-                  {link.label}
+                  <span className="h-px w-0 bg-current transition-all duration-300 group-hover:w-5" />
+                  <span>{link.label}</span>
                 </a>
               ))}
             </nav>
           </div>
 
           <div>
-            <h3 className="mb-5 text-sm font-semibold text-[#171717]">
-              {t.nav.contact}
-            </h3>
+            <p className="cp-label">
+              {language === "ar"
+                ? "تواصل"
+                : language === "zh"
+                  ? "联系"
+                  : "CONTACT"}
+            </p>
 
-            <div className="grid gap-4">
+            <div className="mt-7 grid gap-5">
               <a
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-sm text-[#6b625b] transition-colors duration-300 hover:text-[#c94a3d]"
+                className="text-sm text-[var(--cp-muted)] transition-colors duration-300 hover:text-[var(--cp-red)]"
               >
                 {t.footer.whatsapp}
               </a>
 
               <a
                 href={`mailto:${siteConfig.contact.email}`}
-                className="text-sm text-[#6b625b] transition-colors duration-300 hover:text-[#c94a3d]"
+                className="break-all text-sm text-[var(--cp-muted)] transition-colors duration-300 hover:text-[var(--cp-red)]"
               >
                 {siteConfig.contact.email}
               </a>
+
+              <span className="pt-1 text-xs text-[var(--cp-muted-light)]">
+                {language === "ar"
+                  ? "السعودية · الصين"
+                  : language === "zh"
+                    ? "沙特阿拉伯 · 中国"
+                    : "Saudi Arabia · China"}
+              </span>
             </div>
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-4 border-t border-[#e2d9cf] pt-6 text-xs text-[#8a8179] md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-5 border-t border-[var(--cp-line)] py-6 text-xs text-[var(--cp-muted-light)] md:flex-row md:items-center md:justify-between">
           <p>
             © {new Date().getFullYear()} China Planet.{" "}
             {language === "ar" && "جميع الحقوق محفوظة."}
@@ -105,10 +131,10 @@ export default function Footer({ language = "ar" }: { language?: Language }) {
             {language === "zh" && "版权所有。"}
           </p>
 
-          <div className="flex gap-5">
+          <div className="flex flex-wrap gap-5">
             <Link
-              href="/privacy"
-              className="transition-colors duration-300 hover:text-[#c94a3d]"
+              href={`/${language}/privacy`}
+              className="transition-colors duration-300 hover:text-[var(--cp-red)]"
             >
               {language === "ar" && "الخصوصية"}
               {language === "en" && "Privacy"}
@@ -116,8 +142,8 @@ export default function Footer({ language = "ar" }: { language?: Language }) {
             </Link>
 
             <Link
-              href="/terms"
-              className="transition-colors duration-300 hover:text-[#c94a3d]"
+              href={`/${language}/terms`}
+              className="transition-colors duration-300 hover:text-[var(--cp-red)]"
             >
               {language === "ar" && "الشروط والأحكام"}
               {language === "en" && "Terms & Conditions"}

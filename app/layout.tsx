@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Cairo } from "next/font/google";
 import "./globals.css";
 import { siteConfig } from "./lib/site";
+import ScrollBlur from "./components/ScrollBlur";
 
 import MouseMotion from "./components/motion/MouseMotion";
 import PageTransition from "./components/motion/PageTransition";
@@ -110,6 +111,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className={cairo.variable}>
+        <ScrollBlur />
 {children}
         <PageTransition />
         <MouseMotion />

@@ -891,3 +891,287 @@ button {
     transition: none;
   }
 }
+
+/* =========================================================
+   CHINA PLANET — UNIFIED HERO LANGUAGE
+   ========================================================= */
+
+
+/* =========================================================
+   CHINA PLANET — UNIFIED HERO LANGUAGE
+   ========================================================= */
+
+.cp-editorial-section {
+  position: relative;
+  overflow: hidden;
+  padding-block: clamp(88px, 10vw, 150px);
+  background: var(--cp-ivory);
+}
+
+.cp-editorial-container {
+  width: min(1250px, calc(100% - 40px));
+  margin-inline: auto;
+}
+
+.cp-editorial-section + .cp-editorial-section {
+  border-top: 1px solid var(--cp-line);
+}
+
+.cp-editorial-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--cp-red);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.cp-editorial-kicker::before {
+  content: "";
+  width: 38px;
+  height: 1px;
+  background: currentColor;
+}
+
+.cp-editorial-heading {
+  color: var(--cp-brown);
+  font-size: clamp(2.8rem, 6vw, 5.8rem);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.055em;
+}
+
+.cp-editorial-copy {
+  color: var(--cp-muted);
+  font-size: 15px;
+  line-height: 2;
+}
+
+.cp-editorial-accent {
+  color: var(--cp-red);
+}
+
+.cp-editorial-button {
+  min-height: 48px;
+  padding-inline: 24px;
+  border: 1px solid rgba(201, 74, 61, 0.42);
+  color: var(--cp-brown);
+  background: transparent;
+  transition:
+    background-color 450ms var(--cp-ease),
+    color 450ms var(--cp-ease),
+    border-color 450ms var(--cp-ease),
+    transform 450ms var(--cp-ease);
+}
+
+.cp-editorial-button:hover {
+  background: var(--cp-red);
+  border-color: var(--cp-red);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.cp-editorial-rule {
+  width: 100%;
+  height: 1px;
+  background: var(--cp-line);
+}
+
+.cp-editorial-panel {
+  background: var(--cp-white);
+  border: 1px solid var(--cp-line);
+}
+
+.cp-editorial-dark {
+  background: var(--cp-brown-deep);
+  color: #fff;
+}
+
+.cp-editorial-image {
+  overflow: hidden;
+}
+
+.cp-editorial-image img {
+  transition:
+    transform 900ms var(--cp-ease),
+    filter 900ms var(--cp-ease);
+}
+
+.cp-editorial-image:hover img {
+  transform: scale(1.035);
+  filter: saturate(0.92);
+}
+
+@media (max-width: 767px) {
+  .cp-editorial-section {
+    padding-block: 78px;
+  }
+
+  .cp-editorial-container {
+    width: min(100% - 28px, 1250px);
+  }
+
+  .cp-editorial-heading {
+    font-size: clamp(2.5rem, 12vw, 4rem);
+  }
+}
+
+/* =========================================================
+   CHINA PLANET — CINEMATIC HOMEPAGE SYSTEM
+   ========================================================= */
+
+.cp-editorial-section {
+  position: relative;
+  isolation: isolate;
+}
+
+.cp-editorial-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 82% 12%,
+      rgba(201, 74, 61, 0.055),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 8% 78%,
+      rgba(181, 150, 108, 0.045),
+      transparent 28%
+    );
+}
+
+.cp-editorial-section::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--cp-line),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.cp-editorial-heading {
+  text-wrap: balance;
+}
+
+.cp-editorial-heading .cp-editorial-accent,
+.cp-editorial-accent {
+  color: var(--cp-red-soft);
+}
+
+.cp-editorial-section h2,
+.cp-editorial-section h3 {
+  text-wrap: balance;
+}
+
+.cp-editorial-section p {
+  text-wrap: pretty;
+}
+
+.cp-editorial-section button,
+.cp-editorial-section a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.cp-cinematic-panel {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(43, 37, 33, 0.98),
+      rgba(32, 27, 23, 1)
+    );
+  color: white;
+}
+
+.cp-cinematic-panel::before {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  top: -280px;
+  right: -180px;
+  border-radius: 999px;
+  border: 1px solid rgba(201, 74, 61, 0.12);
+  pointer-events: none;
+}
+
+.cp-cinematic-panel::after {
+  content: "";
+  position: absolute;
+  width: 340px;
+  height: 340px;
+  bottom: -220px;
+  left: -120px;
+  border-radius: 999px;
+  background: rgba(201, 74, 61, 0.055);
+  filter: blur(70px);
+  pointer-events: none;
+}
+
+.cp-editorial-number {
+  font-size: clamp(5rem, 12vw, 11rem);
+  font-weight: 600;
+  line-height: 0.8;
+  letter-spacing: -0.09em;
+  color: rgba(43, 37, 33, 0.045);
+}
+
+.cp-dark-number {
+  color: rgba(255, 255, 255, 0.045);
+}
+
+.cp-editorial-image {
+  position: relative;
+  isolation: isolate;
+}
+
+.cp-editorial-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      to top,
+      rgba(23, 18, 15, 0.62),
+      transparent 42%
+    );
+}
+
+.cp-editorial-image img {
+  transform: scale(1.001);
+  transition:
+    transform 1100ms var(--cp-ease),
+    filter 1100ms var(--cp-ease);
+}
+
+.cp-editorial-image:hover img {
+  transform: scale(1.035);
+  filter: saturate(0.88) contrast(1.03);
+}
+
+.cp-editorial-section [class*="border"] {
+  border-color: var(--cp-line);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cp-editorial-image img {
+    transition: none;
+  }
+}

@@ -1,6 +1,6 @@
 import type { Language } from "../lib/i18n";
 import { translations } from "../lib/i18n";
-import InteractiveArrow from "./InteractiveArrow";
+import Link from "next/link";
 import ServiceCardMotion from "./motion/ServiceCardMotion";
 
 const icons = [
@@ -65,12 +65,24 @@ const icons = [
     <path d="M22 28H42" strokeLinecap="round" />
     <path d="M22 35H42" strokeLinecap="round" />
     <path d="M22 42H42" strokeLinecap="round" />
-    <path d="M8 16L16 10L24 16" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M40 16L48 10L56 16" strokeLinecap="round" strokeLinejoin="round" />
+    <path
+      d="M8 16L16 10L24 16"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M40 16L48 10L56 16"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
   </svg>,
 ];
 
-export default function Services({ language = "ar" }: { language?: Language }) {
+export default function Services({
+  language = "ar",
+}: {
+  language?: Language;
+}) {
   const t = translations[language].services;
   const isArabic = language === "ar";
 
@@ -80,24 +92,28 @@ export default function Services({ language = "ar" }: { language?: Language }) {
       title: t.business.title,
       description: t.business.description,
       icon: icons[0],
+      slug: "business",
     },
     {
       number: "02",
       title: t.travel.title,
       description: t.travel.description,
       icon: icons[1],
+      slug: "travel",
     },
     {
       number: "03",
       title: t.study.title,
       description: t.study.description,
       icon: icons[2],
+      slug: "study",
     },
     {
       number: "04",
       title: t.trade.title,
       description: t.trade.description,
       icon: icons[3],
+      slug: "trade",
     },
   ];
 
@@ -105,101 +121,121 @@ export default function Services({ language = "ar" }: { language?: Language }) {
     <section
       id="services"
       dir={isArabic ? "rtl" : "ltr"}
-      className="cp-editorial-section relative overflow-hidden bg-[#f8f6f2]"
+      className="cp-editorial-section cp-section-atmosphere"
     >
-      <div className="pointer-events-none absolute -right-40 top-0 h-[420px] w-[420px] rounded-full border border-[#c94a3d]/[0.07]" />
-      <div className="pointer-events-none absolute -right-24 top-16 h-[260px] w-[260px] rounded-full border border-[#c94a3d]/[0.06]" />
-
-      <div className="cp-editorial-container relative mx-auto w-full max-w-[1250px] px-5 md:px-8">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
+      <div className="cp-editorial-container">
+        <div className="grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <div className="flex items-center gap-3">
-              <span className="h-px w-10 bg-[#c94a3d]" />
-              <span className="cp-label">{t.label}</span>
+            <div className="cp-editorial-kicker">
+              <span>{t.label}</span>
             </div>
 
-            <h2 className="mt-6 max-w-[600px] text-[clamp(2.8rem,6vw,5.5rem)] font-semibold leading-[0.95] tracking-[-0.055em] text-[#40372f]">
-              {t.title}
+            <h2 className="cp-editorial-heading mt-6 max-w-3xl">
+              <span className="block">
+                {language === "ar"
+                  ? "كل ما تحتاجه"
+                  : language === "zh"
+                    ? "您所需要的"
+                    : "Everything you need"}
+              </span>
+
+              <span className="cp-editorial-accent block">
+                {language === "ar"
+                  ? "في مكان واحد."
+                  : language === "zh"
+                    ? "尽在这里。"
+                    : "In one place."}
+              </span>
             </h2>
           </div>
 
           <div className={isArabic ? "lg:pr-16" : "lg:pl-16"}>
-            <p className="cp-editorial-copy max-w-[620px] text-sm leading-8 text-[#786e65] md:text-base">
+            <p className="cp-editorial-copy max-w-xl">
               {t.description}
             </p>
+
+            <div className="mt-7 flex items-center gap-3">
+              <span className="h-px w-10 bg-[var(--cp-red)]" />
+              <span className="text-[10px] font-semibold tracking-[0.22em] text-[var(--cp-muted-light)]">
+                CHINA PLANET
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="mt-20 border-t border-[#ded6ce]">
-          <div className="grid md:grid-cols-2 lg:grid-cols-4">
+        <div className="mt-16 border-t border-[var(--cp-line)]">
+          <div className="grid lg:grid-cols-2">
             {services.map((service, index) => (
-              <ServiceCardMotion key={service.title}>
-                <article
+              <ServiceCardMotion key={service.slug}>
+                <Link
+                  href={`/${language}/services/${service.slug}`}
                   className={[
-                    "group relative min-h-[390px] overflow-hidden border-b border-[#ded6ce] px-7 py-8 transition-all duration-700",
-                    "hover:bg-[#fffdf9]",
-                    index > 0 ? "lg:border-s" : "",
+                    "group relative block min-h-[360px] overflow-hidden border-b border-[var(--cp-line)] px-6 py-8 transition-all duration-700 sm:px-8 sm:py-10",
+                    index % 2 === 1 ? "lg:border-s" : "",
+                    "hover:bg-[var(--cp-white)]",
                   ].join(" ")}
                 >
-                  <div className="pointer-events-none absolute -bottom-20 -right-20 h-48 w-48 rounded-full border border-[#c94a3d]/0 transition-all duration-700 group-hover:border-[#c94a3d]/10" />
-
-                  <div className="relative flex items-start justify-between">
-                    <span className="text-[10px] font-semibold tracking-[0.22em] text-[#9a9087]">
-                      {service.number}
-                    </span>
-
-                    <div className="text-[#b5966c] transition-all duration-700 group-hover:-translate-y-2 group-hover:text-[#c94a3d]">
-                      {service.icon}
-                    </div>
-                  </div>
-
-                  <div className="relative mt-24">
-                    <div className="mb-6 h-px w-8 bg-[#c94a3d] transition-all duration-700 group-hover:w-14" />
-
-                    <h3 className="text-2xl font-semibold tracking-[-0.035em] text-[#40372f] md:text-[27px]">
-                      {service.title}
-                    </h3>
-
-                    <p className="mt-4 max-w-[245px] text-sm leading-7 text-[#786e65]">
-                      {service.description}
-                    </p>
-
-                    <a
-                      href="#contact"
-                      className="mt-8 inline-flex items-center gap-3 text-[10px] font-semibold tracking-[0.14em] text-[#554d46] transition-colors duration-500 group-hover:text-[#c94a3d]"
-                    >
-                      {t.more}
-                      <InteractiveArrow
-                        size={15}
-                        className="h-6 w-6 text-[#c94a3d] transition-transform duration-500 group-hover:translate-x-1"
-                      />
-                    </a>
-                  </div>
-
                   <span
                     className={[
-                      "pointer-events-none absolute bottom-4 text-[72px] font-semibold leading-none tracking-[-0.08em] text-[#40372f]/[0.035] transition-all duration-700 group-hover:text-[#c94a3d]/[0.07]",
-                      isArabic ? "left-5" : "right-5",
+                      "pointer-events-none absolute bottom-0 text-[150px] font-semibold leading-none tracking-[-0.1em] text-[var(--cp-brown)]/[0.035] transition-all duration-700",
+                      isArabic ? "left-4" : "right-4",
+                      "group-hover:text-[var(--cp-red)]/[0.06]",
                     ].join(" ")}
                   >
                     {service.number}
                   </span>
-                </article>
+
+                  <div className="relative flex items-start justify-between">
+                    <span className="text-[10px] font-semibold tracking-[0.22em] text-[var(--cp-muted-light)]">
+                      {service.number}
+                    </span>
+
+                    <div className="flex h-12 w-12 items-center justify-center border border-[var(--cp-line)] text-[var(--cp-gold)] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-[var(--cp-red)] group-hover:text-[var(--cp-red)]">
+                      {service.icon}
+                    </div>
+                  </div>
+
+                  <div className="relative mt-20 max-w-xl">
+                    <span className="mb-6 block h-px w-8 bg-[var(--cp-red)] transition-all duration-500 group-hover:w-14" />
+
+                    <h3 className="text-3xl font-semibold tracking-[-0.045em] text-[var(--cp-brown)] sm:text-4xl">
+                      {service.title}
+                    </h3>
+
+                    <p className="mt-5 max-w-lg text-sm leading-8 text-[var(--cp-muted)]">
+                      {service.description}
+                    </p>
+
+                    <div className="mt-8 inline-flex items-center gap-4 text-[10px] font-semibold tracking-[0.18em] text-[var(--cp-brown)] transition-colors duration-500 group-hover:text-[var(--cp-red)]">
+                      <span>{t.more}</span>
+
+                      <span className="transition-transform duration-500 group-hover:translate-x-1">
+                        {isArabic ? "←" : "→"}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
               </ServiceCardMotion>
             ))}
           </div>
         </div>
 
-        <div className="mt-12 flex justify-end">
-          <a
-            href="#contact"
-            className="cp-editorial-button group inline-flex items-center gap-4"
+        <div className="mt-10 flex flex-col gap-5 border-t border-[var(--cp-line)] pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs leading-6 text-[var(--cp-muted-light)]">
+            {language === "ar"
+              ? "من أول خطوة إلى آخر التفاصيل، نرتّب لك الطريق."
+              : language === "zh"
+                ? "从第一步到最后一个细节，我们为您梳理整个过程。"
+                : "From the first step to the final detail, we make the journey clearer."}
+          </p>
+
+          <Link
+            href={`/${language}/services`}
+            className="cp-editorial-button inline-flex w-fit items-center gap-4"
           >
             {t.explore}
-            <span className="transition-transform duration-500 group-hover:translate-x-1">
-              {isArabic ? "←" : "→"}
-            </span>
-          </a>
+            <span>{isArabic ? "←" : "→"}</span>
+          </Link>
         </div>
       </div>
     </section>

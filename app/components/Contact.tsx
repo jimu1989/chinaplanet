@@ -40,28 +40,26 @@ const services = {
 const contactTranslations = {
   ar: {
     label: "تواصل معنا",
-    title: "ماذا تحتاج من",
-    titleAccent: "كوكب الصين؟",
+    title: "الصين؟",
+    titleAccent: "خلّها علينا.",
     description:
-      "اختر الخدمة وأخبرنا بالتفاصيل، وسنجهز لك رسالة واتساب مباشرة.",
+      "قل لنا وش تحتاج، ونرتّب لك الخطوة التالية مع كوكب الصين.",
     request: "YOUR REQUEST",
-    choose: "اختر ما تحتاج إليه",
+    choose: "وش تحتاج؟",
     name: "الاسم",
     namePlaceholder: "اسمك الكامل",
-    chooseService: "اختر الخدمة",
-    chooseServiceHint: "اختر الخيار الأقرب لاحتياجك",
+    chooseService: "الخدمة",
+    chooseServiceHint: "اختر الخدمة الأقرب لاحتياجك",
     details: "تفاصيل طلبك",
-    detailsPlaceholder: "اكتب لنا ما تريد معرفته أو تفاصيل طلبك...",
+    detailsPlaceholder: "اكتب لنا التفاصيل أو الشيء الذي تريد معرفته...",
     whatsappButton: "تواصل معنا عبر واتساب",
-    whatsappHint: "سيتم فتح واتساب مع تجهيز رسالة الطلب تلقائيًا.",
+    whatsappHint: "ستفتح واتساب مع تجهيز رسالة طلبك تلقائيًا.",
     brand: "CHINA PLANET",
-    heading: "نحن هنا.",
-    headingAccent: "لنبدأ معك.",
-    paragraph:
-      "سواء كنت تخطط للسفر أو الدراسة، أو تبحث عن فرصة تجارية في الصين، تحدث معنا مباشرة وسنساعدك في الخطوة التالية.",
+    heading: "جاهز تبدأ؟",
+    headingAccent: "خلّنا نبدأ.",
     phone: "اتصل بنا",
     email: "راسلنا عبر البريد",
-    whatsapp: "تواصل معنا مباشرة",
+    whatsapp: "واتساب",
     phoneLabel: "PHONE",
     emailLabel: "EMAIL",
     whatsappLabel: "WHATSAPP",
@@ -78,28 +76,26 @@ const contactTranslations = {
 
   en: {
     label: "CONTACT US",
-    title: "What do you need from",
-    titleAccent: "China Planet?",
+    title: "China?",
+    titleAccent: "We’ll Bring It Closer.",
     description:
-      "Choose a service and tell us the details. We’ll prepare a WhatsApp message for you.",
+      "Tell us what you need, and we’ll help you take the next step with China Planet.",
     request: "YOUR REQUEST",
-    choose: "Tell us what you need",
+    choose: "What do you need?",
     name: "Name",
     namePlaceholder: "Your full name",
-    chooseService: "Choose a service",
-    chooseServiceHint: "Select the option closest to your needs",
+    chooseService: "Service",
+    chooseServiceHint: "Choose the service closest to your needs",
     details: "Request details",
-    detailsPlaceholder: "Tell us what you would like to know or share your request details...",
+    detailsPlaceholder: "Tell us what you need or what you would like to know...",
     whatsappButton: "Contact us on WhatsApp",
-    whatsappHint: "WhatsApp will open with your request message prepared automatically.",
+    whatsappHint: "WhatsApp will open with your request prepared automatically.",
     brand: "CHINA PLANET",
-    heading: "We’re here.",
-    headingAccent: "Let’s get started.",
-    paragraph:
-      "Whether you’re planning a trip or studying in China, or looking for a business opportunity, talk to us directly and we’ll help you with the next step.",
+    heading: "Ready to start?",
+    headingAccent: "Let’s begin.",
     phone: "Call us",
     email: "Email us",
-    whatsapp: "Contact us directly",
+    whatsapp: "WhatsApp",
     phoneLabel: "PHONE",
     emailLabel: "EMAIL",
     whatsappLabel: "WHATSAPP",
@@ -116,28 +112,26 @@ const contactTranslations = {
 
   zh: {
     label: "联系我们",
-    title: "您需要中国星球",
-    titleAccent: "为您提供什么？",
+    title: "中国？",
+    titleAccent: "让我们为您拉近距离。",
     description:
-      "选择您需要的服务并告诉我们详情，我们会为您准备 WhatsApp 消息。",
+      "告诉我们您的需求，我们会帮助您与中国星球一起迈出下一步。",
     request: "YOUR REQUEST",
-    choose: "告诉我们您的需求",
+    choose: "您需要什么？",
     name: "姓名",
     namePlaceholder: "您的姓名",
-    chooseService: "选择服务",
-    chooseServiceHint: "请选择最符合您需求的选项",
+    chooseService: "服务",
+    chooseServiceHint: "请选择最符合您需求的服务",
     details: "需求详情",
-    detailsPlaceholder: "请告诉我们您想了解的内容或您的具体需求...",
+    detailsPlaceholder: "请告诉我们您的需求或想了解的内容...",
     whatsappButton: "通过 WhatsApp 联系我们",
-    whatsappHint: "WhatsApp 将自动打开，并准备好您的需求消息。",
+    whatsappHint: "WhatsApp 将自动打开并准备好您的需求消息。",
     brand: "CHINA PLANET",
-    heading: "我们就在这里。",
-    headingAccent: "让我们从这里开始。",
-    paragraph:
-      "无论您计划来中国旅行、留学，还是正在寻找中国的商业机会，都可以直接联系我们，我们会帮助您完成下一步。",
+    heading: "准备好了吗？",
+    headingAccent: "让我们开始。",
     phone: "联系我们",
     email: "发送邮件",
-    whatsapp: "直接联系我们",
+    whatsapp: "WhatsApp",
     phoneLabel: "PHONE",
     emailLabel: "EMAIL",
     whatsappLabel: "WHATSAPP",
@@ -205,7 +199,7 @@ export default function Contact({
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 
     try {
-      const response = await fetch("/api/service-requests", {
+      await fetch("/api/service-requests", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -219,17 +213,8 @@ export default function Contact({
           language,
         }),
       });
-
-      if (!response.ok) {
-        console.error(
-          "SERVICE REQUEST API ERROR:",
-          await response.text()
-        );
-      } else {
-        console.log("SERVICE REQUEST SAVED SUCCESSFULLY");
-      }
-    } catch (error) {
-      console.error("SERVICE REQUEST SUBMIT ERROR:", error);
+    } catch {
+      // WhatsApp already opened; request logging is best-effort.
     }
   };
 
@@ -237,156 +222,176 @@ export default function Contact({
     <section
       id="contact"
       dir={direction}
-      className="cp-section bg-[#f8f6f2]"
+      className="cp-editorial-section bg-[var(--cp-brown-deep)] text-white"
     >
-      <div className="cp-container">
-        <div className="max-w-3xl">
-          <div
-            className={`flex items-center gap-3 ${
-              !isArabic ? "flex-row" : ""
-            }`}
-          >
-            <span className="h-px w-10 bg-[#c94a3d]" />
-            <span className="text-[10px] font-semibold tracking-[0.28em] text-[#9a9087]">
-              {t.label}
-            </span>
+      <div className="cp-editorial-container">
+        <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+          <div>
+            <div className="flex items-center gap-3 text-[var(--cp-red-soft)]">
+              <span className="h-px w-10 bg-current" />
+              <span className="text-[10px] font-semibold tracking-[0.25em]">
+                {t.label}
+              </span>
+            </div>
+
+            <h2 className="mt-7 max-w-3xl text-[clamp(3.3rem,7vw,7rem)] font-semibold leading-[0.9] tracking-[-0.065em]">
+              <span className="block">{t.title}</span>
+              <span className="block text-[var(--cp-red-soft)]">
+                {t.titleAccent}
+              </span>
+            </h2>
           </div>
 
-          <h2 className="mt-7 max-w-2xl text-4xl font-semibold leading-[1.25] tracking-tight text-[#171717] sm:text-5xl lg:text-[56px]">
-            {t.title}
-            <br />
-            <span className="text-[#c94a3d]">{t.titleAccent}</span>
-          </h2>
+          <div className={isArabic ? "lg:pr-10" : "lg:pl-10"}>
+            <p className="max-w-xl text-sm leading-8 text-white/55 sm:text-base">
+              {t.description}
+            </p>
 
-          <p className="mt-6 max-w-xl text-sm leading-8 text-[#786e65]">
-            {t.description}
-          </p>
+            <div className="mt-8 flex items-center gap-3">
+              <span className="text-[10px] font-semibold tracking-[0.24em] text-white/30">
+                CHINA PLANET
+              </span>
+              <span className="h-px w-10 bg-[var(--cp-red-soft)]" />
+              <span className="text-[10px] font-semibold tracking-[0.18em] text-white/30">
+                {t.location}
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-16 grid gap-16 lg:grid-cols-[1fr_0.72fr] lg:items-start lg:gap-24">
-          <div className="rounded-[32px] bg-white p-7 shadow-[0_20px_70px_rgba(40,30,20,0.045)] sm:p-10 lg:p-12">
-            <div className="mb-10">
-              <p className="text-[10px] font-semibold tracking-[0.25em] text-[#b5966c]">
+        <div className="mt-16 grid overflow-hidden border border-white/10 lg:grid-cols-[0.72fr_1.28fr]">
+          <div className="relative overflow-hidden p-8 sm:p-10 lg:p-12">
+            <span className="pointer-events-none absolute -bottom-10 -start-2 text-[180px] font-semibold leading-none tracking-[-0.12em] text-white/[0.035]">
+              →
+            </span>
+
+            <div className="relative z-10">
+              <p className="text-[10px] font-semibold tracking-[0.24em] text-white/30">
                 {t.request}
               </p>
 
-              <h3 className="mt-3 text-2xl font-semibold text-[#171717]">
-                {t.choose}
+              <h3 className="mt-6 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
+                {t.heading}
               </h3>
-            </div>
 
-            <div className="grid gap-8">
+              <p className="mt-2 text-2xl text-[var(--cp-red-soft)] sm:text-3xl">
+                {t.headingAccent}
+              </p>
+
+              <div className="mt-12 space-y-3 text-sm text-white/50">
+                <div className="flex items-center gap-4 border-t border-white/10 pt-4">
+                  <span className="w-20 text-[9px] font-semibold tracking-[0.2em] text-white/25">
+                    {t.phoneLabel}
+                  </span>
+                  <span>{t.phone}</span>
+                </div>
+
+                <div className="flex items-center gap-4 border-t border-white/10 pt-4">
+                  <span className="w-20 text-[9px] font-semibold tracking-[0.2em] text-white/25">
+                    {t.emailLabel}
+                  </span>
+                  <span className="truncate">{siteConfig.contact.email}</span>
+                </div>
+
+                <div className="flex items-center gap-4 border-t border-white/10 pt-4">
+                  <span className="w-20 text-[9px] font-semibold tracking-[0.2em] text-white/25">
+                    {t.whatsappLabel}
+                  </span>
+                  <span>{t.whatsapp}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="border-t border-white/10 bg-white/[0.035] p-7 sm:p-10 lg:border-s lg:border-t-0 lg:p-12">
+            <div className="grid gap-7">
               <div>
                 <label
                   htmlFor="contact-name"
-                  className="mb-3 block text-xs font-semibold text-[#554d46]"
+                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
                 >
                   {t.name}
                 </label>
 
                 <input
                   id="contact-name"
-                  type="text"
                   value={name}
                   onChange={(event) => setName(event.target.value)}
                   placeholder={t.namePlaceholder}
-                  autoComplete="name"
-                  className="w-full rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm text-[#302c28] outline-none transition-all duration-300 placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white focus:shadow-[0_8px_30px_rgba(201,74,61,0.06)]"
+                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
                 />
               </div>
 
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div>
-                  <label
-                    htmlFor="contact-phone"
-                    className="mb-3 block text-xs font-semibold text-[#554d46]"
-                  >
-                    رقم الجوال
-                  </label>
+              <div>
+                <label
+                  htmlFor="contact-service"
+                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
+                >
+                  {t.chooseService}
+                </label>
 
-                  <input
-                    id="contact-phone"
-                    type="tel"
-                    value={phone}
-                    onChange={(event) => setPhone(event.target.value)}
-                    placeholder="+966 5X XXX XXXX"
-                    autoComplete="tel"
-                    dir="ltr"
-                    className="w-full rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm text-[#302c28] outline-none transition-all duration-300 placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white focus:shadow-[0_8px_30px_rgba(201,74,61,0.06)]"
-                  />
-                </div>
+                <select
+                  id="contact-service"
+                  value={service}
+                  onChange={(event) => setService(event.target.value)}
+                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none focus:border-[var(--cp-red-soft)]"
+                >
+                  <option value="" className="bg-[var(--cp-brown-deep)] text-white">
+                    {t.chooseServiceHint}
+                  </option>
 
-                <div>
-                  <label
-                    htmlFor="contact-email"
-                    className="mb-3 block text-xs font-semibold text-[#554d46]"
-                  >
-                    البريد الإلكتروني
-                  </label>
-
-                  <input
-                    id="contact-email"
-                    type="email"
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    placeholder="name@example.com"
-                    autoComplete="email"
-                    dir="ltr"
-                    className="w-full rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm text-[#302c28] outline-none transition-all duration-300 placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white focus:shadow-[0_8px_30px_rgba(201,74,61,0.06)]"
-                  />
-                </div>
+                  {currentServices.map((item) => (
+                    <option
+                      key={item}
+                      value={item}
+                      className="bg-[var(--cp-brown-deep)] text-white"
+                    >
+                      {item}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div>
-                <div className="mb-4">
-                  <p className="text-xs font-semibold text-[#554d46]">
-                    {t.chooseService}
-                  </p>
+                <label
+                  htmlFor="contact-email"
+                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
+                >
+                  {t.email}
+                </label>
 
-                  <p className="mt-1 text-[11px] text-[#9a9087]">
-                    {t.chooseServiceHint}
-                  </p>
-                </div>
+                <input
+                  id="contact-email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  placeholder={siteConfig.contact.email}
+                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
+                />
+              </div>
 
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {currentServices.map((item) => {
-                    const selected = service === item;
+              <div>
+                <label
+                  htmlFor="contact-phone"
+                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
+                >
+                  {t.phone}
+                </label>
 
-                    return (
-                      <button
-                        key={item}
-                        type="button"
-                        onClick={() => setService(item)}
-                        aria-pressed={selected}
-                        className={`group relative min-h-[68px] rounded-2xl border px-5 py-4 text-sm font-medium transition-all duration-300 ${
-                          selected
-                            ? "border-[#c94a3d] bg-[#c94a3d] text-white shadow-[0_12px_30px_rgba(201,74,61,0.16)]"
-                            : "border-[#e3ddd6] bg-[#faf9f7] text-[#554d46] hover:-translate-y-0.5 hover:border-[#c94a3d] hover:bg-white hover:shadow-[0_8px_25px_rgba(40,30,20,0.06)]"
-                        }`}
-                      >
-                        <span className="flex items-center justify-between gap-3">
-                          <span>{item}</span>
-
-                          <span
-                            className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full border text-[11px] transition-all duration-300 ${
-                              selected
-                                ? "border-white/30 bg-white text-[#c94a3d]"
-                                : "border-[#d9d1c9] text-transparent group-hover:border-[#c94a3d]"
-                            }`}
-                          >
-                            ✓
-                          </span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <input
+                  id="contact-phone"
+                  type="tel"
+                  value={phone}
+                  onChange={(event) => setPhone(event.target.value)}
+                  placeholder="+966..."
+                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
+                />
               </div>
 
               <div>
                 <label
                   htmlFor="contact-details"
-                  className="mb-3 block text-xs font-semibold text-[#554d46]"
+                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
                 >
                   {t.details}
                 </label>
@@ -396,183 +401,40 @@ export default function Contact({
                   value={details}
                   onChange={(event) => setDetails(event.target.value)}
                   placeholder={t.detailsPlaceholder}
-                  rows={5}
-                  className="w-full resize-none rounded-2xl border border-[#e3ddd6] bg-[#faf9f7] px-5 py-4 text-sm leading-7 text-[#302c28] outline-none transition-all duration-300 placeholder:text-[#aaa19a] focus:border-[#c94a3d] focus:bg-white focus:shadow-[0_8px_30px_rgba(201,74,61,0.06)]"
+                  rows={4}
+                  className="w-full resize-none border-b border-white/15 bg-transparent px-0 py-3 text-sm leading-7 text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
                 />
               </div>
 
-              <div className="pt-1">
+              <div className="pt-3">
                 <button
                   type="button"
                   onClick={handleWhatsApp}
-                  className="group flex min-h-[58px] w-full items-center justify-center gap-3 rounded-2xl bg-[#171717] px-7 text-sm font-semibold text-white transition-all duration-300 hover:bg-[#c94a3d] hover:shadow-[0_12px_30px_rgba(201,74,61,0.16)]"
+                  disabled={!name.trim() || !service}
+                  className="group inline-flex min-h-12 items-center gap-4 border border-[var(--cp-red-soft)] px-6 text-sm font-semibold text-white transition-all duration-500 hover:bg-[var(--cp-red-soft)] disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/25"
                 >
                   <span>{t.whatsappButton}</span>
-
-                  <span className="text-base transition-transform duration-300 group-hover:-translate-x-1">
-                    ←
+                  <span className="transition-transform duration-500 group-hover:translate-x-1">
+                    {isArabic ? "←" : "→"}
                   </span>
                 </button>
 
-                <p className="mt-4 text-center text-[10px] leading-6 text-[#9a9087]">
+                <p className="mt-4 text-[11px] leading-6 text-white/30">
                   {t.whatsappHint}
                 </p>
               </div>
             </div>
           </div>
+        </div>
 
-          <div className="lg:pt-10">
-            <div className="flex items-center gap-3">
-              <span className="h-px w-10 bg-[#c94a3d]" />
+        <div className="mt-10 flex flex-col gap-5 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-white/35">{t.location}</p>
 
-              <span className="text-[10px] font-semibold tracking-[0.28em] text-[#9a9087]">
-                {t.brand}
-              </span>
-            </div>
-
-            <h3 className="mt-7 text-4xl font-semibold leading-[1.25] text-[#171717]">
-              {t.heading}
-              <br />
-              <span className="text-[#c94a3d]">{t.headingAccent}</span>
-            </h3>
-
-            <p className="mt-6 max-w-md text-sm leading-8 text-[#786e65]">
-              {t.paragraph}
-            </p>
-
-            <div className="mt-10 border-t border-[#ded7d0]">
-              <a
-                href={`tel:${siteConfig.contact.phone}`}
-                className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#ded7d0] bg-[#faf9f7] text-[#554d46] transition-all duration-500 group-hover:border-[#c94a3d] group-hover:bg-[#c94a3d] group-hover:text-white">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className="h-[19px] w-[19px]"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M7.8 3.5H5.6A2.1 2.1 0 0 0 3.5 5.6C3.5 14 10 20.5 18.4 20.5a2.1 2.1 0 0 0 2.1-2.1v-2.2a1.6 1.6 0 0 0-1.2-1.5l-3-.7a1.6 1.6 0 0 0-1.7.7l-.9 1.2a13.5 13.5 0 0 1-4.6-4.6l1.2-.9a1.6 1.6 0 0 0 .7-1.7l-.7-3A1.6 1.6 0 0 0 7.8 3.5Z"
-                      />
-                    </svg>
-                  </span>
-
-                  <div>
-                    <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
-                      {t.phoneLabel}
-                    </p>
-
-                    <p className="mt-1 text-sm font-semibold text-[#302c28] transition-colors duration-300 group-hover:text-[#c94a3d]">
-                      {t.phone}
-                    </p>
-                  </div>
-                </div>
-
-                <span className="text-lg text-[#b8afa7] transition-all duration-300 group-hover:-translate-x-1 group-hover:text-[#c94a3d]">
-                  ←
-                </span>
-              </a>
-
-              <a
-                href={`mailto:${siteConfig.contact.email}`}
-                className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#ded7d0] bg-[#faf9f7] text-[#554d46] transition-all duration-500 group-hover:border-[#c94a3d] group-hover:bg-[#c94a3d] group-hover:text-white">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className="h-[19px] w-[19px]"
-                    >
-                      <rect
-                        x="3.5"
-                        y="5"
-                        width="17"
-                        height="14"
-                        rx="2"
-                      />
-
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="m4.5 7 7.5 5.3L19.5 7"
-                      />
-                    </svg>
-                  </span>
-
-                  <div>
-                    <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
-                      {t.emailLabel}
-                    </p>
-
-                    <p className="mt-1 text-sm font-semibold text-[#302c28] transition-colors duration-300 group-hover:text-[#c94a3d]">
-                      {t.email}
-                    </p>
-                  </div>
-                </div>
-
-                <span className="text-lg text-[#b8afa7] transition-all duration-300 group-hover:-translate-x-1 group-hover:text-[#c94a3d]">
-                  ←
-                </span>
-              </a>
-
-              <a
-                href={`https://wa.me/${siteConfig.contact.whatsapp}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center justify-between border-b border-[#ded7d0] py-5"
-              >
-                <div className="flex items-center gap-4">
-                  <span className="flex h-11 w-11 items-center justify-center rounded-full border border-[#ded7d0] bg-[#faf9f7] text-[#554d46] transition-all duration-500 group-hover:border-[#c94a3d] group-hover:bg-[#c94a3d] group-hover:text-white">
-                    <svg
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      className="h-[19px] w-[19px]"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M20.3 3.7A10.7 10.7 0 0 0 3.2 16.8L2.5 21.5l4.8-1.2A10.7 10.7 0 1 0 20.3 3.7Z"
-                      />
-
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M8.2 7.8c.3-.4.6-.4.9-.1l1.2 1.4c.2.3.2.6 0 .9l-.7.8a8.4 8.4 0 0 0 3.6 3.6l.8-.7c.3-.2.7-.2.9 0l1.4 1.2c.3.3.3.6-.1.9-1.3.4-2.7.2-3.7-.7a11.2 11.2 0 0 1-3.9-3.9c-1-1-1.2-2.4-.7-3.7Z"
-                      />
-                    </svg>
-                  </span>
-
-                  <div>
-                    <p className="text-[9px] font-semibold tracking-[0.25em] text-[#a69c93]">
-                      {t.whatsappLabel}
-                    </p>
-
-                    <p className="mt-1 text-sm font-semibold text-[#302c28] transition-colors duration-300 group-hover:text-[#c94a3d]">
-                      {t.whatsapp}
-                    </p>
-                  </div>
-                </div>
-
-                <span className="text-lg text-[#b8afa7] transition-all duration-300 group-hover:-translate-x-1 group-hover:text-[#c94a3d]">
-                  ←
-                </span>
-              </a>
-            </div>
-
-            <div className="mt-8 flex items-center gap-3 text-[10px] font-medium tracking-[0.15em] text-[#9a9087]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#c94a3d]" />
-              {t.location}
-            </div>
+          <div className="flex items-center gap-3">
+            <span className="h-px w-10 bg-[var(--cp-red-soft)]" />
+            <span className="text-[10px] font-semibold tracking-[0.24em] text-white/25">
+              CHINA PLANET
+            </span>
           </div>
         </div>
       </div>
