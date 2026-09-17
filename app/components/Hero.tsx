@@ -107,8 +107,8 @@ export default function Hero({ language }: HeroProps) {
           pointerEvents: "none",
         }}
         transition={{
-          delay: 1.6,
-          duration: 1.2,
+          delay: 0.15,
+          duration: 0.65,
           ease: [0.76, 0, 0.24, 1],
         }}
         className="absolute inset-0 z-50 flex items-center justify-center bg-[#17120f]"
@@ -208,8 +208,8 @@ export default function Hero({ language }: HeroProps) {
                   y: 0,
                 }}
                 transition={{
-                  delay: 2.3,
-                  duration: 1,
+                  delay: 0.45,
+                  duration: 0.7,
                   ease: [0.22, 1, 0.36, 1],
                 }}
                 className="text-balance text-[clamp(3.6rem,7.4vw,7.5rem)] font-medium leading-[0.9] tracking-[-0.06em]"
@@ -234,8 +234,8 @@ export default function Hero({ language }: HeroProps) {
                   y: 0,
                 }}
                 transition={{
-                  delay: 2.68,
-                  duration: 0.8,
+                  delay: 0.65,
+                  duration: 0.55,
                 }}
                 className="mt-8 max-w-2xl text-base leading-8 text-white/65 sm:text-lg"
               >
@@ -253,8 +253,8 @@ export default function Hero({ language }: HeroProps) {
                   y: 0,
                 }}
                 transition={{
-                  delay: 2.95,
-                  duration: 0.8,
+                  delay: 0.8,
+                  duration: 0.55,
                 }}
                 className="mt-9 flex flex-wrap items-center gap-3"
               >
@@ -299,8 +299,8 @@ export default function Hero({ language }: HeroProps) {
                 x: 0,
               }}
               transition={{
-                delay: 2.45,
-                duration: 1.15,
+                delay: 0.5,
+                duration: 0.8,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="relative mx-auto flex h-[340px] w-full max-w-[410px] items-center justify-center lg:h-[500px]"
@@ -391,8 +391,8 @@ export default function Hero({ language }: HeroProps) {
               opacity: 1,
             }}
             transition={{
-              delay: 3.2,
-              duration: 0.9,
+              delay: 1.0,
+              duration: 0.6,
             }}
             className="mt-10 flex items-center justify-between border-t border-white/10 pt-5"
           >
