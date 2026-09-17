@@ -76,11 +76,13 @@ export default function Hero({ language }: HeroProps) {
          ========================================================= */}
       <div className="absolute inset-0">
         <Image
-          src="/images/hero-china.png"
+          src="/images/hero-china-blur.jpg"
           alt=""
           fill
           priority
-          className="scale-110 object-cover blur-[12px]"
+          quality={72}
+          sizes="100vw"
+          className="object-cover"
         />
 
         {/* Readability layers */}
