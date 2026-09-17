@@ -1175,3 +1175,25 @@ button {
     transition: none;
   }
 }
+
+/* China Planet link reset */
+a,
+a:visited,
+a:active {
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus {
+  outline: none;
+}
+
+a:focus-visible {
+  outline: 2px solid var(--cp-red);
+  outline-offset: 4px;
+}
+
+button,
+button:active {
+  -webkit-tap-highlight-color: transparent;
+}
