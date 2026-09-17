@@ -190,7 +190,7 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
           {!loadingUser && userEmail ? (
             <Link
               href={accountPath()}
-              className="rounded-full border border-[#cdbfb4] px-5 py-2.5 text-[11px] font-semibold text-[#554d46] transition-all hover:border-[#c94a3d] hover:text-[#c94a3d]"
+              className="rounded-full border border-[var(--cp-line-dark)] px-5 py-2.5 text-[11px] font-semibold text-[var(--cp-brown)] transition-all hover:border-[var(--cp-red)] hover:text-[var(--cp-red)]"
             >
               {t.account}
             </Link>
@@ -233,14 +233,14 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
 
       {/* MOBILE MENU */}
       {open && (
-        <div className="border-t border-[#e5ddd5] bg-[#f8f6f2] px-5 py-5">
+        <div className="border-t border-[var(--cp-line)] bg-[var(--cp-ivory)] px-5 py-5">
           <nav className="flex flex-col gap-4">
             {links.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="text-sm font-medium text-[#554d46]"
+                className="text-sm font-medium text-[var(--cp-brown)]"
               >
                 {link.label}
               </a>
@@ -248,12 +248,12 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
           </nav>
 
           {/* MOBILE TOOLS */}
-          <div className="mt-5 border-t border-[#e5ddd5] pt-5">
+          <div className="mt-5 border-t border-[var(--cp-line)] pt-5">
             <ToolsMenu language={currentLanguage} />
           </div>
 
           {/* MOBILE LANGUAGES */}
-          <div className="mt-5 flex gap-2 border-t border-[#e5ddd5] pt-5">
+          <div className="mt-5 flex gap-2 border-t border-[var(--cp-line)] pt-5">
             {(Object.keys(languages) as Language[]).map((lang) => (
               <button
                 key={lang}
@@ -261,8 +261,8 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
                 onClick={() => handleLanguageChange(lang)}
                 className={`rounded-full px-4 py-2 text-xs font-semibold ${
                   currentLanguage === lang
-                    ? "bg-[#c94a3d] text-white"
-                    : "bg-[#eeeae4] text-[#554d46]"
+                    ? "bg-[var(--cp-red)] text-white"
+                    : "bg-[var(--cp-ivory-light)] text-[var(--cp-brown)]"
                 }`}
               >
                 {languages[lang].short}
@@ -271,13 +271,13 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
           </div>
 
           {/* AUTH LINKS */}
-          <div className="mt-5 flex flex-col gap-3 border-t border-[#e5ddd5] pt-5">
+          <div className="mt-5 flex flex-col gap-3 border-t border-[var(--cp-line)] pt-5">
             {!loadingUser && userEmail ? (
               <>
                 <Link
                   href={accountPath()}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-semibold text-[#554d46] transition hover:text-[#c94a3d]"
+                  className="text-sm font-semibold text-[var(--cp-brown)] transition hover:text-[var(--cp-red)]"
                 >
                   {t.account}
                 </Link>
@@ -285,7 +285,7 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
                 <button
                   type="button"
                   onClick={handleSignOut}
-                  className="text-start text-sm font-semibold text-[#c94a3d]"
+                  className="text-start text-sm font-semibold text-[var(--cp-red)]"
                 >
                   {currentLanguage === "en"
                     ? "Logout"
@@ -299,7 +299,7 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
                 <Link
                   href={`/login?lang=${currentLanguage}`}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-semibold text-[#554d46]"
+                  className="text-sm font-semibold text-[var(--cp-brown)]"
                 >
                   {t.login}
                 </Link>
@@ -307,7 +307,7 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
                 <Link
                   href={`/team/login?lang=${currentLanguage}`}
                   onClick={() => setOpen(false)}
-                  className="text-sm font-semibold text-[#554d46]"
+                  className="text-sm font-semibold text-[var(--cp-brown)]"
                 >
                   {t.team}
                 </Link>
@@ -315,7 +315,7 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
                 <Link
                   href={`/register?lang=${currentLanguage}`}
                   onClick={() => setOpen(false)}
-                  className="rounded-full bg-[#c94a3d] px-5 py-3 text-center text-sm font-bold text-white shadow-sm transition hover:bg-[#b83e33]"
+                  className="rounded-full bg-[var(--cp-red)] px-5 py-3 text-center text-sm font-bold text-white shadow-sm transition hover:bg-[var(--cp-red-dark)]"
                 >
                   {t.register}
                 </Link>
@@ -326,7 +326,7 @@ export default function Navbar({ language = "ar" }: { language?: Language }) {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full border border-[#cdbfb4] px-5 py-3 text-center text-sm font-semibold text-[#554d46] transition hover:border-[#c94a3d] hover:text-[#c94a3d]"
+              className="rounded-full border border-[var(--cp-line-dark)] px-5 py-3 text-center text-sm font-semibold text-[var(--cp-brown)] transition hover:border-[var(--cp-red)] hover:text-[var(--cp-red)]"
             >
               {translations[currentLanguage].footer.whatsapp}
             </a>

@@ -1088,10 +1088,10 @@ export default function ToolsMenu({
         onClick={() => setOpen((value) => !value)}
         aria-expanded={open}
         aria-label={t.tools}
-        className={`flex items-center gap-2 rounded-full border px-4 py-2.5 text-[11px] font-semibold transition ${
+        className={`flex items-center gap-2 rounded-none border px-4 py-2.5 text-[11px] font-semibold transition ${
           open
-            ? "border-[#c94a3d] bg-[#c94a3d] text-white"
-            : "border-[#cdbfb4] text-[#554d46] hover:border-[#c94a3d] hover:text-[#c94a3d]"
+            ? "border-[var(--cp-red)] bg-[var(--cp-red)] text-white"
+            : "border-[var(--cp-line-dark)] text-[var(--cp-brown)] hover:border-[var(--cp-red)] hover:text-[var(--cp-red)]"
         }`}
       >
         <span aria-hidden="true">⚙</span>
@@ -1119,7 +1119,7 @@ export default function ToolsMenu({
          */
         <div
           dir={language === "ar" ? "rtl" : "ltr"}
-          className="fixed z-[80] w-[420px] max-w-[calc(100vw-24px)] overflow-hidden rounded-[24px] border border-[#e3ddd6] bg-[#f8f6f2] shadow-[0_20px_60px_rgba(40,30,20,0.18)]"
+          className="fixed z-[80] w-[420px] max-w-[calc(100vw-24px)] overflow-hidden border border-[var(--cp-line)] bg-[var(--cp-ivory)] shadow-[0_20px_60px_rgba(40,30,20,0.18)]"
 
           style={{
             left: menuPosition ? `${menuPosition.x}px` : undefined,
@@ -1132,12 +1132,12 @@ export default function ToolsMenu({
             onPointerMove={handleMenuPointerMove}
             onPointerUp={handleMenuPointerUp}
             onPointerCancel={handleMenuPointerUp}
-            className={`flex cursor-grab select-none items-center justify-between border-b border-[#e3ddd6] bg-white px-4 py-2 ${
+            className={`flex cursor-grab select-none items-center justify-between border-b border-[var(--cp-line)] bg-white px-4 py-2 ${
               dragging ? "cursor-grabbing" : ""
             }`}
             style={{ touchAction: "none" }}
           >
-            <span className="text-[9px] font-semibold tracking-[0.12em] text-[#9a9087]">
+            <span className="text-[9px] font-semibold tracking-[0.12em] text-[var(--cp-muted-light)]">
               {language === "ar"
                 ? "اسحب لتحريك القائمة"
                 : language === "zh"
@@ -1150,17 +1150,17 @@ export default function ToolsMenu({
             </span>
           </div>
 
-          <div className="overflow-x-auto border-b border-[#e3ddd6] bg-white p-2">
+          <div className="overflow-x-auto border-b border-[var(--cp-line)] bg-white p-2">
             <div className="flex min-w-max gap-1">
               {tabs.map(([value, icon, label]) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setTab(value)}
-                  className={`rounded-xl px-3 py-2 text-[10px] font-semibold transition ${
+                  className={`rounded-none px-3 py-2 text-[10px] font-semibold transition ${
                     tab === value
-                      ? "bg-[#171717] text-white"
-                      : "text-[#756b62] hover:bg-[#f3f0eb]"
+                      ? "bg-[var(--cp-brown-deep)] text-white"
+                      : "text-[var(--cp-muted)] hover:bg-[var(--cp-ivory-light)]"
                   }`}
                 >
                   <span className="me-1">{icon}</span>
@@ -1173,7 +1173,7 @@ export default function ToolsMenu({
           <div className="max-h-[70vh] overflow-y-auto overscroll-contain p-5">
             {tab === "time" && (
               <div className="text-center">
-                <p className="text-[10px] font-semibold text-[#9a9087]">
+                <p className="text-[10px] font-semibold text-[var(--cp-muted-light)]">
                   {t.time}
                 </p>
 
@@ -1184,19 +1184,19 @@ export default function ToolsMenu({
                   {formattedTime}
                 </p>
 
-                <p className="mt-3 text-xs text-[#756b62]">{formattedDate}</p>
+                <p className="mt-3 text-xs text-[var(--cp-muted)]">{formattedDate}</p>
 
                 <div className="mt-5 grid grid-cols-2 gap-2">
-                  <div className="rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
-                    <p className="text-[10px] text-[#9a9087]">🇸🇦 {t.saudi}</p>
-                    <p className="mt-2 text-sm font-semibold text-[#554d46]">
+                  <div className="rounded-none bg-white p-4 ring-1 ring-[var(--cp-line)]">
+                    <p className="text-[10px] text-[var(--cp-muted-light)]">🇸🇦 {t.saudi}</p>
+                    <p className="mt-2 text-sm font-semibold text-[var(--cp-brown)]">
                       Asia/Riyadh
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
-                    <p className="text-[10px] text-[#9a9087]">🇨🇳 {t.china}</p>
-                    <p className="mt-2 text-sm font-semibold text-[#554d46]">
+                  <div className="rounded-none bg-white p-4 ring-1 ring-[var(--cp-line)]">
+                    <p className="text-[10px] text-[var(--cp-muted-light)]">🇨🇳 {t.china}</p>
+                    <p className="mt-2 text-sm font-semibold text-[var(--cp-brown)]">
                       Asia/Shanghai
                     </p>
                   </div>
@@ -1206,23 +1206,23 @@ export default function ToolsMenu({
 
             {tab === "weather" && (
               <div>
-                <p className="text-[10px] font-semibold text-[#9a9087]">
+                <p className="text-[10px] font-semibold text-[var(--cp-muted-light)]">
                   {t.weather}
                 </p>
 
                 <section className="mt-4">
                   <div className="flex items-center justify-between">
-                    <p className="text- font-semibold tracking-wide text-[#756b62]">{language === "ar"? "المدن السريعة" : language === "zh"? "快速城市" : "Quick cities"}</p>
+                    <p className="text- font-semibold tracking-wide text-[var(--cp-muted)]">{language === "ar"? "المدن السريعة" : language === "zh"? "快速城市" : "Quick cities"}</p>
                     <div className="flex gap-1">
-                      <button type="button" onClick={() => cityScrollRef.current?.scrollBy({ left: -220, behavior: "smooth" })} className="h-6 w-6 rounded-full bg-white ring-1 ring-[#e3ddd6] flex items-center justify-center text- hover:bg-black hover:text-white">‹</button>
-                      <button type="button" onClick={() => cityScrollRef.current?.scrollBy({ left: 220, behavior: "smooth" })} className="h-6 w-6 rounded-full bg-white ring-1 ring-[#e3ddd6] flex items-center justify-center text- hover:bg-black hover:text-white">›</button>
+                      <button type="button" onClick={() => cityScrollRef.current?.scrollBy({ left: -220, behavior: "smooth" })} className="h-6 w-6 rounded-none bg-white ring-1 ring-[var(--cp-line)] flex items-center justify-center text- hover:bg-black hover:text-white">‹</button>
+                      <button type="button" onClick={() => cityScrollRef.current?.scrollBy({ left: 220, behavior: "smooth" })} className="h-6 w-6 rounded-none bg-white ring-1 ring-[var(--cp-line)] flex items-center justify-center text- hover:bg-black hover:text-white">›</button>
                     </div>
                   </div>
                   <div ref={cityScrollRef} className="mt-3 flex gap-2 overflow-x-auto pb-3 snap-x snap-mandatory -mx-1 px-1 scrollbar-hide" style={{scrollbarWidth:"none"}}>
                     {QUICK_WEATHER_CITIES.map((item) => {
                       const active = city?.latitude === item.latitude;
                       return (
-                        <button key={`${item.latitude}-${item.longitude}`} type="button" onClick={() => void loadWeather(item)} className={`snap-start shrink-0 flex items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold ring-1 transition ${active? "bg-black text-white ring-black" : "bg-white text-[#554d46] ring-[#e3ddd6] hover:bg-black hover:text-white"}`}>
+                        <button key={`${item.latitude}-${item.longitude}`} type="button" onClick={() => void loadWeather(item)} className={`snap-start shrink-0 flex items-center gap-2 rounded-none px-4 py-2.5 text-xs font-bold ring-1 transition ${active? "bg-black text-white ring-black" : "bg-white text-[var(--cp-brown)] ring-[var(--cp-line)] hover:bg-black hover:text-white"}`}>
                           <span>{item.countryCode==="SA"?"🇸🇦":"🇨🇳"}</span><span className="whitespace-nowrap">{cityName(item, language)}</span>
                         </button>
                       );
@@ -1231,7 +1231,7 @@ export default function ToolsMenu({
                 </section>
 
                 <section className="mt-5">
-                  <p className="text-[10px] font-semibold text-[#756b62]">
+                  <p className="text-[10px] font-semibold text-[var(--cp-muted)]">
                     {language === "ar"
                       ? "البحث عن مدينة"
                       : language === "zh"
@@ -1239,7 +1239,7 @@ export default function ToolsMenu({
                         : "Search for a city"}
                   </p>
 
-                  <p className="mt-1 text-[9px] leading-5 text-[#9a9087]">
+                  <p className="mt-1 text-[9px] leading-5 text-[var(--cp-muted-light)]">
                     {language === "ar"
                       ? "اكتب اسم المدينة بالعربي أو English أو 中文"
                       : language === "zh"
@@ -1263,13 +1263,13 @@ export default function ToolsMenu({
                             ? "جدة / Jeddah / 上海"
                             : "جدة / Jeddah / 上海"
                       }
-                      className="min-w-0 flex-1 rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-xs outline-none focus:border-[#c94a3d]"
+                      className="min-w-0 flex-1 rounded-none border border-[var(--cp-line)] bg-white px-3 py-3 text-xs outline-none focus:border-[var(--cp-red)]"
                     />
 
                     <button
                       type="button"
                       onClick={() => void searchCities()}
-                      className="shrink-0 rounded-2xl bg-[#171717] px-4 text-xs font-semibold text-white transition hover:bg-[#c94a3d]"
+                      className="shrink-0 rounded-none bg-[var(--cp-brown-deep)] px-4 text-xs font-semibold text-white transition hover:bg-[var(--cp-red)]"
                     >
                       {t.search}
                     </button>
@@ -1277,7 +1277,7 @@ export default function ToolsMenu({
                 </section>
 
                 {cities.length > 0 && (
-                  <div className="mt-3 max-h-52 overflow-y-auto rounded-2xl border border-[#e3ddd6] bg-white">
+                  <div className="mt-3 max-h-52 overflow-y-auto rounded-none border border-[var(--cp-line)] bg-white">
                     {cities.map((item) => (
                       <button
                         key={`${item.countryCode}-${item.latitude}-${item.longitude}`}
@@ -1289,11 +1289,11 @@ export default function ToolsMenu({
                           <span>{item.countryCode === "SA" ? "🇸🇦" : "🇨🇳"}</span>
 
                           <div>
-                            <p className="text-xs font-semibold text-[#554d46]">
+                            <p className="text-xs font-semibold text-[var(--cp-brown)]">
                               {cityName(item, language)}
                             </p>
 
-                            <p className="mt-1 text-[9px] text-[#9a9087]">
+                            <p className="mt-1 text-[9px] text-[var(--cp-muted-light)]">
                               {cityCountry(item, language)}
                             </p>
                           </div>
@@ -1304,14 +1304,14 @@ export default function ToolsMenu({
                 )}
 
                 {city && (
-                  <div className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
+                  <div className="mt-4 rounded-none bg-white p-4 ring-1 ring-[var(--cp-line)]">
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-sm font-semibold text-[#302c28]">
                           {cityName(city, language)}
                         </p>
 
-                        <p className="mt-1 text-[9px] text-[#9a9087]">
+                        <p className="mt-1 text-[9px] text-[var(--cp-muted-light)]">
                           {cityCountry(city, language)}
                         </p>
                       </div>
@@ -1320,11 +1320,11 @@ export default function ToolsMenu({
                     </div>
 
                     {weatherLoading ? (
-                      <p className="mt-4 text-xs text-[#756b62]">{t.loading}</p>
+                      <p className="mt-4 text-xs text-[var(--cp-muted)]">{t.loading}</p>
                     ) : weather ? (
                       <div className="mt-4 grid grid-cols-3 gap-2">
-                        <div className="rounded-xl bg-[#f8f6f2] p-2 text-center">
-                          <p className="text-[9px] text-[#9a9087]">
+                        <div className="rounded-none bg-[var(--cp-ivory)] p-2 text-center">
+                          <p className="text-[9px] text-[var(--cp-muted-light)]">
                             {t.temperature}
                           </p>
                           <p className="mt-1 text-sm font-semibold text-[#302c28]">
@@ -1332,8 +1332,8 @@ export default function ToolsMenu({
                           </p>
                         </div>
 
-                        <div className="rounded-xl bg-[#f8f6f2] p-2 text-center">
-                          <p className="text-[9px] text-[#9a9087]">
+                        <div className="rounded-none bg-[var(--cp-ivory)] p-2 text-center">
+                          <p className="text-[9px] text-[var(--cp-muted-light)]">
                             {t.feelsLike}
                           </p>
                           <p className="mt-1 text-sm font-semibold text-[#302c28]">
@@ -1341,15 +1341,15 @@ export default function ToolsMenu({
                           </p>
                         </div>
 
-                        <div className="rounded-xl bg-[#f8f6f2] p-2 text-center">
-                          <p className="text-[9px] text-[#9a9087]">{t.wind}</p>
+                        <div className="rounded-none bg-[var(--cp-ivory)] p-2 text-center">
+                          <p className="text-[9px] text-[var(--cp-muted-light)]">{t.wind}</p>
                           <p className="mt-1 text-sm font-semibold text-[#302c28]">
                             {weather.wind} km/h
                           </p>
                         </div>
                       </div>
                     ) : (
-                      <p className="mt-4 text-xs text-[#756b62]">{t.noCity}</p>
+                      <p className="mt-4 text-xs text-[var(--cp-muted)]">{t.noCity}</p>
                     )}
                   </div>
                 )}
@@ -1358,12 +1358,12 @@ export default function ToolsMenu({
 
             {tab === "currency" && (
               <div>
-                <p className="text-[10px] font-semibold text-[#9a9087]">
+                <p className="text-[10px] font-semibold text-[var(--cp-muted-light)]">
                   {t.currency}
                 </p>
 
-                <div className="mt-4 rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
-                  <label className="text-[10px] text-[#756b62]">
+                <div className="mt-4 rounded-none bg-white p-4 ring-1 ring-[var(--cp-line)]">
+                  <label className="text-[10px] text-[var(--cp-muted)]">
                     {t.amount}
                   </label>
 
@@ -1372,11 +1372,11 @@ export default function ToolsMenu({
                     min="0"
                     value={amount}
                     onChange={(event) => setAmount(event.target.value)}
-                    className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-[#f8f6f2] px-4 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    className="mt-2 w-full rounded-none border border-[var(--cp-line)] bg-[var(--cp-ivory)] px-4 py-3 text-sm outline-none focus:border-[var(--cp-red)]"
                   />
 
                   <div className="mt-4">
-                    <p className="text-[10px] text-[#9a9087]">{t.cnyValue}</p>
+                    <p className="text-[10px] text-[var(--cp-muted-light)]">{t.cnyValue}</p>
 
                     <p className="mt-1 text-2xl font-semibold text-[#302c28]">
                       {currencyLoading
@@ -1387,7 +1387,7 @@ export default function ToolsMenu({
                     </p>
 
                     {!currencyLoading && rate === null && (
-                      <p className="mt-2 text-[10px] text-[#c94a3d]">
+                      <p className="mt-2 text-[10px] text-[var(--cp-red)]">
                         {t.rateError}
                       </p>
                     )}
@@ -1397,7 +1397,7 @@ export default function ToolsMenu({
                 <button
                   type="button"
                   onClick={() => void loadRate()}
-                  className="mt-3 w-full rounded-2xl bg-[#171717] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[#c94a3d]"
+                  className="mt-3 w-full rounded-none bg-[var(--cp-brown-deep)] px-4 py-3 text-xs font-semibold text-white transition hover:bg-[var(--cp-red)]"
                 >
                   {currencyLoading ? t.loadingRate : t.refresh}
                 </button>
@@ -1406,12 +1406,12 @@ export default function ToolsMenu({
 
             {tab === "shipping" && (
               <div>
-                <p className="text-[10px] font-semibold text-[#9a9087]">
+                <p className="text-[10px] font-semibold text-[var(--cp-muted-light)]">
                   {t.shipping}
                 </p>
 
                 <div className="mt-4">
-                  <label className="text-[10px] text-[#756b62]">
+                  <label className="text-[10px] text-[var(--cp-muted)]">
                     {t.actualWeight} ({t.kg})
                   </label>
 
@@ -1421,12 +1421,12 @@ export default function ToolsMenu({
                     step="0.01"
                     value={weight}
                     onChange={(event) => setWeight(event.target.value)}
-                    className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    className="mt-2 w-full rounded-none border border-[var(--cp-line)] bg-white px-3 py-3 text-sm outline-none focus:border-[var(--cp-red)]"
                   />
                 </div>
 
                 <div className="mt-4">
-                  <label className="text-[10px] text-[#756b62]">
+                  <label className="text-[10px] text-[var(--cp-muted)]">
                     {t.cartons}
                   </label>
 
@@ -1436,13 +1436,13 @@ export default function ToolsMenu({
                     step="1"
                     value={cartons}
                     onChange={(event) => setCartons(event.target.value)}
-                    className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                    className="mt-2 w-full rounded-none border border-[var(--cp-line)] bg-white px-3 py-3 text-sm outline-none focus:border-[var(--cp-red)]"
                   />
                 </div>
 
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-[10px] text-[#756b62]">
+                    <label className="text-[10px] text-[var(--cp-muted)]">
                       {t.length} ({t.cm})
                     </label>
 
@@ -1452,12 +1452,12 @@ export default function ToolsMenu({
                       step="0.1"
                       value={length}
                       onChange={(event) => setLength(event.target.value)}
-                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                      className="mt-2 w-full rounded-none border border-[var(--cp-line)] bg-white px-3 py-3 text-sm outline-none focus:border-[var(--cp-red)]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-[#756b62]">
+                    <label className="text-[10px] text-[var(--cp-muted)]">
                       {t.width} ({t.cm})
                     </label>
 
@@ -1467,12 +1467,12 @@ export default function ToolsMenu({
                       step="0.1"
                       value={width}
                       onChange={(event) => setWidth(event.target.value)}
-                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                      className="mt-2 w-full rounded-none border border-[var(--cp-line)] bg-white px-3 py-3 text-sm outline-none focus:border-[var(--cp-red)]"
                     />
                   </div>
 
                   <div>
-                    <label className="text-[10px] text-[#756b62]">
+                    <label className="text-[10px] text-[var(--cp-muted)]">
                       {t.height} ({t.cm})
                     </label>
 
@@ -1482,22 +1482,22 @@ export default function ToolsMenu({
                       step="0.1"
                       value={height}
                       onChange={(event) => setHeight(event.target.value)}
-                      className="mt-2 w-full rounded-2xl border border-[#e3ddd6] bg-white px-3 py-3 text-sm outline-none focus:border-[#c94a3d]"
+                      className="mt-2 w-full rounded-none border border-[var(--cp-line)] bg-white px-3 py-3 text-sm outline-none focus:border-[var(--cp-red)]"
                     />
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-[10px] text-[#756b62]">{t.method}</p>
+                  <p className="text-[10px] text-[var(--cp-muted)]">{t.method}</p>
 
                   <div className="mt-2 grid grid-cols-2 gap-2">
                     <button
                       type="button"
                       onClick={() => setMethod("air")}
-                      className={`rounded-2xl px-3 py-3 text-xs font-semibold ${
+                      className={`rounded-none px-3 py-3 text-xs font-semibold ${
                         method === "air"
-                          ? "bg-[#171717] text-white"
-                          : "bg-white text-[#554d46] ring-1 ring-[#e3ddd6]"
+                          ? "bg-[var(--cp-brown-deep)] text-white"
+                          : "bg-white text-[var(--cp-brown)] ring-1 ring-[var(--cp-line)]"
                       }`}
                     >
                       ✈️ {t.air}
@@ -1506,10 +1506,10 @@ export default function ToolsMenu({
                     <button
                       type="button"
                       onClick={() => setMethod("sea")}
-                      className={`rounded-2xl px-3 py-3 text-xs font-semibold ${
+                      className={`rounded-none px-3 py-3 text-xs font-semibold ${
                         method === "sea"
-                          ? "bg-[#171717] text-white"
-                          : "bg-white text-[#554d46] ring-1 ring-[#e3ddd6]"
+                          ? "bg-[var(--cp-brown-deep)] text-white"
+                          : "bg-white text-[var(--cp-brown)] ring-1 ring-[var(--cp-line)]"
                       }`}
                     >
                       🚢 {t.sea}
@@ -1518,8 +1518,8 @@ export default function ToolsMenu({
                 </div>
 
                 <div className="mt-5 grid grid-cols-2 gap-2">
-                  <div className="rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
-                    <p className="text-[9px] text-[#9a9087]">{t.totalVolume}</p>
+                  <div className="rounded-none bg-white p-4 ring-1 ring-[var(--cp-line)]">
+                    <p className="text-[9px] text-[var(--cp-muted-light)]">{t.totalVolume}</p>
 
                     <p className="mt-2 text-xl font-semibold text-[#302c28]">
                       {shipping.totalVolumeM3.toFixed(3)}
@@ -1527,8 +1527,8 @@ export default function ToolsMenu({
                     </p>
                   </div>
 
-                  <div className="rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
-                    <p className="text-[9px] text-[#9a9087]">
+                  <div className="rounded-none bg-white p-4 ring-1 ring-[var(--cp-line)]">
+                    <p className="text-[9px] text-[var(--cp-muted-light)]">
                       {t.volumetricWeight}
                     </p>
 
@@ -1541,8 +1541,8 @@ export default function ToolsMenu({
                   </div>
                 </div>
 
-                <div className="mt-2 rounded-2xl bg-white p-4 ring-1 ring-[#e3ddd6]">
-                  <p className="text-[9px] text-[#9a9087]">
+                <div className="mt-2 rounded-none bg-white p-4 ring-1 ring-[var(--cp-line)]">
+                  <p className="text-[9px] text-[var(--cp-muted-light)]">
                     {t.chargeableWeight}
                   </p>
 
@@ -1551,7 +1551,7 @@ export default function ToolsMenu({
                       ? shipping.chargeableAirKg.toFixed(2)
                       : shipping.actualKg.toFixed(2)}
                     {" kg "}
-                    <span className="text-xs font-medium text-[#756b62]">
+                    <span className="text-xs font-medium text-[var(--cp-muted)]">
                       (
                       {method === "air"
                         ? shipping.airVolumetricKg > shipping.actualKg
@@ -1563,30 +1563,30 @@ export default function ToolsMenu({
                   </p>
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-[#e3ddd6] bg-[#fff] p-4">
-                  <p className="text-[10px] font-semibold text-[#554d46]">
+                <div className="mt-4 rounded-none border border-[var(--cp-line)] bg-[var(--cp-white)] p-4">
+                  <p className="text-[10px] font-semibold text-[var(--cp-brown)]">
                     {t.calculationBasis}
                   </p>
 
-                  <p className="mt-2 text-[10px] leading-5 text-[#756b62]">
+                  <p className="mt-2 text-[10px] leading-5 text-[var(--cp-muted)]">
                     {method === "air" ? t.airBasis : t.seaBasis}
                   </p>
 
                   {method === "air" && (
-                    <p className="mt-2 text-[9px] leading-5 text-[#9a9087]">
+                    <p className="mt-2 text-[9px] leading-5 text-[var(--cp-muted-light)]">
                       {t.source}: {t.iata}. {t.carrierDependent}.
                     </p>
                   )}
 
                   {method === "sea" && (
-                    <p className="mt-2 text-[9px] leading-5 text-[#9a9087]">
+                    <p className="mt-2 text-[9px] leading-5 text-[var(--cp-muted-light)]">
                       {t.source}: {t.carrierDependent}.
                     </p>
                   )}
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-[#ead3ce] bg-[#fff8f6] p-4">
-                  <p className="text-[10px] leading-5 text-[#756b62]">
+                <div className="mt-4 rounded-none border border-[#ead3ce] bg-[var(--cp-white)8f6] p-4">
+                  <p className="text-[10px] leading-5 text-[var(--cp-muted)]">
                     {t.shippingExplanation}
                   </p>
                 </div>
@@ -1598,7 +1598,7 @@ export default function ToolsMenu({
                 <div className="mb-5">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="text-[10px] font-semibold tracking-[0.18em] text-[#9a9087]">
+                      <p className="text-[10px] font-semibold tracking-[0.18em] text-[var(--cp-muted-light)]">
                         🧧 {t.holidays}
                       </p>
 
@@ -1610,7 +1610,7 @@ export default function ToolsMenu({
                             : "Chinese Holiday Calendar"}
                       </h3>
 
-                      <p className="mt-2 text-[11px] leading-5 text-[#756b62]">
+                      <p className="mt-2 text-[11px] leading-5 text-[var(--cp-muted)]">
                         {language === "ar"
                           ? "اختر أي عيد لمعرفة التاريخ ومدة الإجازة وتأثيرها المحتمل على المصانع والشحن."
                           : language === "zh"
@@ -1619,14 +1619,14 @@ export default function ToolsMenu({
                       </p>
                     </div>
 
-                    <span className="shrink-0 rounded-full bg-[#f3f0eb] px-3 py-2 text-[10px] font-semibold text-[#554d46]">
+                    <span className="shrink-0 rounded-none bg-[var(--cp-ivory-light)] px-3 py-2 text-[10px] font-semibold text-[var(--cp-brown)]">
                       {holidayYear}
                     </span>
                   </div>
                 </div>
 
                 <div className="mb-4">
-                  <label className="mb-2 block text-[10px] font-semibold text-[#756b62]">
+                  <label className="mb-2 block text-[10px] font-semibold text-[var(--cp-muted)]">
                     {t.year}
                   </label>
 
@@ -1635,7 +1635,7 @@ export default function ToolsMenu({
                     onChange={(event) =>
                       setHolidayYear(Number(event.target.value))
                     }
-                    className="w-full rounded-2xl border border-[#e3ddd6] bg-white px-4 py-3 text-xs font-semibold text-[#554d46] outline-none transition focus:border-[#c94a3d]"
+                    className="w-full rounded-none border border-[var(--cp-line)] bg-white px-4 py-3 text-xs font-semibold text-[var(--cp-brown)] outline-none transition focus:border-[var(--cp-red)]"
                   >
                     <option value={2026}>2026</option>
                     <option value={2027}>2027</option>
@@ -1646,10 +1646,10 @@ export default function ToolsMenu({
                   {holidays.map((holiday, index) => (
                     <details
                       key={`${holidayYear}-${holiday.id}`}
-                      className="group overflow-hidden rounded-2xl border border-[#e5ded7] bg-white transition-shadow open:shadow-[0_8px_25px_rgba(40,30,20,0.06)]"
+                      className="group overflow-hidden rounded-none border border-[#e5ded7] bg-white transition-shadow open:shadow-[0_8px_25px_rgba(40,30,20,0.06)]"
                     >
                       <summary className="flex cursor-pointer list-none items-center gap-3 px-4 py-4 [&::-webkit-details-marker]:hidden">
-                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#f8f6f2] text-sm font-semibold text-[#9a9087]">
+                        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-none bg-[var(--cp-ivory)] text-sm font-semibold text-[var(--cp-muted-light)]">
                           {String(index + 1).padStart(2, "0")}
                         </span>
 
@@ -1658,7 +1658,7 @@ export default function ToolsMenu({
                             {holiday.name[language]}
                           </p>
 
-                          <p className="mt-1 text-[9px] text-[#9a9087]">
+                          <p className="mt-1 text-[9px] text-[var(--cp-muted-light)]">
                             {language === "ar"
                               ? "اضغط لعرض التاريخ والتفاصيل"
                               : language === "zh"
@@ -1667,15 +1667,15 @@ export default function ToolsMenu({
                           </p>
                         </div>
 
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#f8f6f2] text-sm text-[#756b62] transition-transform group-open:rotate-180">
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-none bg-[var(--cp-ivory)] text-sm text-[var(--cp-muted)] transition-transform group-open:rotate-180">
                           ↓
                         </span>
                       </summary>
 
                       <div className="border-t border-[#eee8e1] px-4 pb-4 pt-3">
                         <div className="grid grid-cols-2 gap-2">
-                          <div className="rounded-xl bg-[#f8f6f2] p-3">
-                            <p className="text-[9px] text-[#9a9087]">
+                          <div className="rounded-none bg-[var(--cp-ivory)] p-3">
+                            <p className="text-[9px] text-[var(--cp-muted-light)]">
                               {language === "ar"
                                 ? "تاريخ البداية"
                                 : language === "zh"
@@ -1688,8 +1688,8 @@ export default function ToolsMenu({
                             </p>
                           </div>
 
-                          <div className="rounded-xl bg-[#f8f6f2] p-3">
-                            <p className="text-[9px] text-[#9a9087]">
+                          <div className="rounded-none bg-[var(--cp-ivory)] p-3">
+                            <p className="text-[9px] text-[var(--cp-muted-light)]">
                               {language === "ar"
                                 ? "مدة الإجازة"
                                 : language === "zh"
@@ -1708,12 +1708,12 @@ export default function ToolsMenu({
                           </div>
                         </div>
 
-                        <div className="mt-3 rounded-xl border border-[#ead3ce] bg-[#fff8f6] p-3">
-                          <p className="text-[9px] font-semibold text-[#c94a3d]">
+                        <div className="mt-3 rounded-none border border-[#ead3ce] bg-[var(--cp-white)8f6] p-3">
+                          <p className="text-[9px] font-semibold text-[var(--cp-red)]">
                             ⚠️ {t.factoryWarning}
                           </p>
 
-                          <p className="mt-1 text-[10px] leading-5 text-[#756b62]">
+                          <p className="mt-1 text-[10px] leading-5 text-[var(--cp-muted)]">
                             {holiday.note[language]}
                           </p>
                         </div>
@@ -1722,12 +1722,12 @@ export default function ToolsMenu({
                   ))}
                 </div>
 
-                <div className="mt-4 rounded-2xl border border-[#ead3ce] bg-[#fff8f6] p-4">
-                  <p className="text-[10px] font-semibold text-[#c94a3d]">
+                <div className="mt-4 rounded-none border border-[#ead3ce] bg-[var(--cp-white)8f6] p-4">
+                  <p className="text-[10px] font-semibold text-[var(--cp-red)]">
                     ⚠️ {t.factoryWarning}
                   </p>
 
-                  <p className="mt-2 text-[10px] leading-5 text-[#756b62]">
+                  <p className="mt-2 text-[10px] leading-5 text-[var(--cp-muted)]">
                     {t.factoryNote}
                   </p>
                 </div>

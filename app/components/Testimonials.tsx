@@ -1,57 +1,11 @@
+import {
+  ArrowLeft,
+  ArrowRight,
+  Compass,
+  MessageCircle,
+  Route,
+} from "lucide-react";
 import type { Language } from "../lib/i18n";
-
-const icons = [
-  <svg
-    key="direct"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <path
-      d="M10 14H54V42H28L18 50V42H10V14Z"
-      strokeLinejoin="round"
-    />
-    <path d="M20 24H44" strokeLinecap="round" />
-    <path d="M20 32H37" strokeLinecap="round" />
-  </svg>,
-
-  <svg
-    key="follow"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <circle cx="32" cy="32" r="20" />
-    <path d="M32 20V32L40 38" strokeLinecap="round" />
-    <path d="M20 48L14 54" strokeLinecap="round" />
-    <path d="M44 48L50 54" strokeLinecap="round" />
-  </svg>,
-
-  <svg
-    key="clarity"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <path
-      d="M12 48L24 36L32 42L50 22"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M42 22H50V30"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path d="M12 54H52" strokeLinecap="round" />
-  </svg>,
-];
 
 export default function Testimonials({
   language = "ar",
@@ -60,158 +14,248 @@ export default function Testimonials({
 }) {
   const isArabic = language === "ar";
 
-  const points = [
-    {
-      title:
-        language === "ar"
-          ? "نفهم احتياجك أولًا"
-          : language === "zh"
-            ? "先了解您的需求"
-            : "We Understand First",
-      description:
-        language === "ar"
-          ? "نبدأ بفهم هدفك واحتياجك، ثم نقترح لك الطريق المناسب."
-          : language === "zh"
-            ? "我们先了解您的目标和需求，再为您提供合适的方向。"
-            : "We start by understanding your goals and needs before suggesting the right path.",
+  const content = {
+    ar: {
+      label: "ليش كوكب الصين؟",
+      titleTop: "مو بس نوصلك.",
+      titleBottom: "نفهمك الطريق.",
+      statement:
+        "الصين مو مكان واحد، ولا احتياجك يشبه غيرك. لذلك نبدأ منك، ونبني لك الطريق المناسب.",
+      points: [
+        {
+          number: "01",
+          title: "نفهم احتياجك",
+          description:
+            "نبدأ من هدفك الحقيقي، ونفهم وش تحتاج قبل ما نقترح عليك أي خطوة.",
+          Icon: MessageCircle,
+        },
+        {
+          number: "02",
+          title: "نرتّب الطريق",
+          description:
+            "نحوّل الخيارات الكثيرة إلى خطوات واضحة ومفهومة تقدر تمشي عليها.",
+          Icon: Route,
+        },
+        {
+          number: "03",
+          title: "نبقى معك",
+          description:
+            "ما ينتهي دورنا عند أول تواصل. نتابع معك ونوضح لك الخطوة التالية.",
+          Icon: Compass,
+        },
+      ],
+      footerLabel: "CHINA PLANET",
+      footerText: "الصين أقرب لما تكون الصورة أوضح.",
+      region: "السعودية × الصين",
     },
-    {
-      title:
-        language === "ar"
-          ? "نرتّبها معك"
-          : language === "zh"
-            ? "陪您一步一步完成"
-            : "We Make It Clear",
-      description:
-        language === "ar"
-          ? "نرتّب الخطوات المهمة ونوضح لك التفاصيل بدل ما تضيع بين الخيارات."
-          : language === "zh"
-            ? "我们梳理重要步骤，让您不必在复杂选择中摸索。"
-            : "We organize the important steps so you can move forward without getting lost in the details.",
+
+    en: {
+      label: "WHY CHINA PLANET?",
+      titleTop: "We don't just get you there.",
+      titleBottom: "We make the way clearer.",
+      statement:
+        "China is not one destination, and your needs are not one-size-fits-all. We start with you and build the right path from there.",
+      points: [
+        {
+          number: "01",
+          title: "We understand first",
+          description:
+            "We start with what you actually need before recommending the next step.",
+          Icon: MessageCircle,
+        },
+        {
+          number: "02",
+          title: "We make the way clear",
+          description:
+            "We turn complex options into clear, practical steps you can act on.",
+          Icon: Route,
+        },
+        {
+          number: "03",
+          title: "We stay involved",
+          description:
+            "Our role does not end at the first conversation. We stay close to the next step.",
+          Icon: Compass,
+        },
+      ],
+      footerLabel: "CHINA PLANET",
+      footerText: "China feels closer when the picture is clear.",
+      region: "SAUDI ARABIA × CHINA",
     },
-    {
-      title:
-        language === "ar"
-          ? "نبقى معك"
-          : language === "zh"
-            ? "持续跟进"
-            : "We Stay With You",
-      description:
-        language === "ar"
-          ? "من أول تواصل إلى الخطوة التالية، نحرص أن تكون الصورة واضحة أمامك."
-          : language === "zh"
-            ? "从第一次联系到下一步，我们持续跟进，让每一步都更加清晰。"
-            : "From the first conversation to the next step, we stay involved and keep things clear.",
+
+    zh: {
+      label: "为什么选择中国星球？",
+      titleTop: "我们不只是带您到中国。",
+      titleBottom: "我们让这条路更清晰。",
+      statement:
+        "中国不是一个单一的目的地，您的需求也各不相同。我们从您的需求出发，为您找到合适的方向。",
+      points: [
+        {
+          number: "01",
+          title: "先了解您的需求",
+          description:
+            "我们先了解您的真正目标，再为您建议下一步。",
+          Icon: MessageCircle,
+        },
+        {
+          number: "02",
+          title: "把路径变清晰",
+          description:
+            "把复杂的选择整理成清晰、实际、可以执行的步骤。",
+          Icon: Route,
+        },
+        {
+          number: "03",
+          title: "持续陪伴",
+          description:
+            "我们的工作不会停留在第一次沟通，而是继续陪您走向下一步。",
+          Icon: Compass,
+        },
+      ],
+      footerLabel: "CHINA PLANET",
+      footerText: "当方向更清晰，中国自然更近。",
+      region: "沙特阿拉伯 × 中国",
     },
-  ];
+  };
+
+  const c = content[language];
 
   return (
     <section
       id="trust"
       dir={isArabic ? "rtl" : "ltr"}
-      className="cp-editorial-section cp-section-atmosphere"
+      className="relative overflow-hidden bg-[var(--cp-ivory)] text-[var(--cp-brown)]"
     >
-      <div className="cp-editorial-container">
-        <div className="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-end">
-          <div>
-            <div className="cp-editorial-kicker">
-              <span>
-                {language === "ar"
-                  ? "ليش كوكب الصين؟"
-                  : language === "zh"
-                    ? "为什么选择中国星球？"
-                    : "WHY CHINA PLANET?"}
-              </span>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -end-40 top-20 h-[420px] w-[420px] rounded-full bg-[var(--cp-red-soft)]/[0.05] blur-3xl"
+      />
+
+      <div className="cp-editorial-container relative z-10 py-24 sm:py-28 lg:py-32">
+        <div className="border-t border-[var(--cp-line)] pt-8">
+          <div className="grid gap-10 lg:grid-cols-[0.6fr_1.4fr] lg:gap-20">
+            <div>
+              <div className="flex items-center gap-3 text-[var(--cp-red)]">
+                <span className="h-px w-12 bg-current" />
+
+                <span className="text-[10px] font-semibold tracking-[0.28em]">
+                  {c.label}
+                </span>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="max-w-5xl text-[clamp(3.5rem,8vw,7.5rem)] font-semibold leading-[0.88] tracking-[-0.08em]">
+                <span className="block">{c.titleTop}</span>
+
+                <span className="mt-3 block text-[var(--cp-red-soft)]">
+                  {c.titleBottom}
+                </span>
+              </h2>
             </div>
           </div>
 
-          <div className={isArabic ? "lg:pr-10" : "lg:pl-10"}>
-            <h2 className="cp-editorial-heading">
-              {language === "ar" ? (
-                <>
-                  <span className="block">مو بس نوصلك.</span>
-                  <span className="cp-editorial-accent block">
-                    نفهمك الطريق.
-                  </span>
-                </>
-              ) : language === "zh" ? (
-                <>
-                  <span className="block">我们不只是带您到中国。</span>
-                  <span className="cp-editorial-accent block">
-                    我们让这条路更清晰。
-                  </span>
-                </>
-              ) : (
-                <>
-                  <span className="block">We do more than get you there.</span>
-                  <span className="cp-editorial-accent block">
-                    We make the journey clearer.
-                  </span>
-                </>
-              )}
-            </h2>
-          </div>
-        </div>
-
-        <div className="mt-16 border-y border-[var(--cp-line)]">
-          <div className="grid md:grid-cols-3">
-            {points.map((point, index) => (
-              <article
-                key={point.title}
-                className={[
-                  "group relative min-h-[330px] overflow-hidden px-7 py-9 transition-all duration-700 hover:bg-[var(--cp-white)] sm:px-9",
-                  index > 0 ? "md:border-s md:border-[var(--cp-line)]" : "",
-                  index < points.length - 1
-                    ? "border-b md:border-b-0"
-                    : "",
-                ].join(" ")}
+          <div className="mt-16 grid gap-8 lg:grid-cols-[1.18fr_0.82fr]">
+            <div className="relative overflow-hidden bg-[var(--cp-brown-deep)] p-8 sm:p-10 lg:p-14">
+              <div
+                aria-hidden="true"
+                className="absolute -bottom-20 -start-8 text-[210px] font-semibold leading-none tracking-[-0.12em] text-white/[0.035]"
               >
-                <span className="pointer-events-none absolute -bottom-6 end-2 text-[130px] font-semibold leading-none tracking-[-0.1em] text-[var(--cp-brown)]/[0.035] transition-all duration-700 group-hover:text-[var(--cp-red)]/[0.055]">
-                  {String(index + 1).padStart(2, "0")}
+                CP
+              </div>
+
+              <div className="relative z-10">
+                <span className="text-[9px] font-semibold tracking-[0.28em] text-[var(--cp-gold-light)]">
+                  CHINA PLANET
                 </span>
 
-                <div className="relative z-10 flex items-start justify-between">
-                  <span className="text-[10px] font-semibold tracking-[0.2em] text-[var(--cp-muted-light)]">
-                    {String(index + 1).padStart(2, "0")}
+                <p className="mt-10 max-w-3xl text-2xl font-medium leading-[1.35] tracking-[-0.035em] text-white sm:text-3xl lg:text-4xl">
+                  {c.statement}
+                </p>
+
+                <div className="mt-12 flex items-center gap-4">
+                  <span className="h-px w-14 bg-[var(--cp-red-soft)]" />
+
+                  <span className="text-[10px] font-semibold tracking-[0.2em] text-white/45">
+                    {c.region}
                   </span>
-
-                  <div className="flex h-11 w-11 items-center justify-center border border-[var(--cp-line)] text-[var(--cp-gold)] transition-all duration-500 group-hover:-translate-y-1 group-hover:border-[var(--cp-red)] group-hover:text-[var(--cp-red)]">
-                    {icons[index]}
-                  </div>
                 </div>
+              </div>
+            </div>
 
-                <div className="relative z-10 mt-20">
-                  <span className="mb-6 block h-px w-8 bg-[var(--cp-red)] transition-all duration-500 group-hover:w-14" />
+            <div className="border border-[var(--cp-line)] bg-[var(--cp-white)]">
+              <div className="border-b border-[var(--cp-line)] bg-[var(--cp-ivory)] px-7 py-6 sm:px-8">
+                <span className="text-[9px] font-semibold tracking-[0.28em] text-[var(--cp-muted-light)]">
+                  03 THINGS THAT MATTER
+                </span>
+              </div>
 
-                  <h3 className="text-2xl font-semibold tracking-[-0.035em] text-[var(--cp-brown)]">
-                    {point.title}
-                  </h3>
+              <div>
+                {c.points.map((point, index) => {
+                  const Icon = point.Icon;
 
-                  <p className="mt-4 max-w-sm text-sm leading-8 text-[var(--cp-muted)]">
-                    {point.description}
-                  </p>
-                </div>
-              </article>
-            ))}
+                  return (
+                    <div
+                      key={point.number}
+                      className={[
+                        "group relative px-7 py-8 transition-colors duration-300 sm:px-8",
+                        index < c.points.length - 1
+                          ? "border-b border-[var(--cp-line)]"
+                          : "",
+                        "hover:bg-[var(--cp-ivory)]",
+                      ].join(" ")}
+                    >
+                      <div className="flex items-start justify-between gap-6">
+                        <span className="text-[10px] font-semibold tracking-[0.22em] text-[var(--cp-red)]">
+                          {point.number}
+                        </span>
+
+                        <Icon
+                          size={20}
+                          strokeWidth={1.25}
+                          className="text-[var(--cp-gold)] transition-transform duration-300 group-hover:scale-110"
+                        />
+                      </div>
+
+                      <h3 className="mt-8 text-xl font-semibold tracking-[-0.03em]">
+                        {point.title}
+                      </h3>
+
+                      <p className="mt-3 max-w-md text-sm leading-7 text-[var(--cp-muted)]">
+                        {point.description}
+                      </p>
+
+                      <span className="absolute bottom-0 start-7 h-px w-0 bg-[var(--cp-red)] transition-all duration-500 group-hover:w-10 sm:start-8" />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-10 flex flex-col gap-6 border-t border-[var(--cp-line)] pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[10px] font-semibold tracking-[0.24em] text-[var(--cp-muted-light)]">
-              CHINA PLANET
-            </p>
+          <div className="mt-14 grid gap-6 border-t border-[var(--cp-line)] pt-8 sm:grid-cols-[1fr_auto] sm:items-end">
+            <div>
+              <span className="text-[10px] font-semibold tracking-[0.24em] text-[var(--cp-muted-light)]">
+                {c.footerLabel}
+              </span>
 
-            <p className="mt-3 text-lg font-medium tracking-[-0.02em] text-[var(--cp-brown)]">
-              {language === "ar"
-                ? "الصين أقرب لما يكون الطريق واضح."
-                : language === "zh"
-                  ? "当道路清晰，中国就会更近。"
-                  : "China feels closer when the way forward is clear."}
-            </p>
+              <p className="mt-4 max-w-xl text-xl font-medium tracking-[-0.03em] text-[var(--cp-brown)] sm:text-2xl">
+                {c.footerText}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3 text-[var(--cp-red)]">
+              {isArabic ? (
+                <ArrowLeft size={18} strokeWidth={1.3} />
+              ) : (
+                <ArrowRight size={18} strokeWidth={1.3} />
+              )}
+
+              <span className="text-[10px] font-semibold tracking-[0.22em]">
+                03 / 03
+              </span>
+            </div>
           </div>
-
-          <div className="h-px w-16 bg-[var(--cp-red)]" />
         </div>
       </div>
     </section>

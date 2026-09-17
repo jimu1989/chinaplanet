@@ -87,7 +87,6 @@ function buildActions(
       whatsappMessages[locale]
     )}`,
   });
-
   return actions;
 }
 

@@ -3,7 +3,6 @@ import { notFound } from "next/navigation";
 
 import Hero from "../components/Hero";
 import Services from "../components/Services";
-import WhyUs from "../components/WhyUs";
 import Destinations from "../components/Destinations";
 import Goals from "../components/Goals";
 import Testimonials from "../components/Testimonials";
@@ -115,7 +114,6 @@ export default async function LocalizedHomePage({
         <Destinations language={language} />
 
         {/* 04 — WHY CHINA PLANET */}
-        <WhyUs language={language} />
 
         {/* 05 — EXPERIENCE / PROCESS */}
         <Goals language={language} />

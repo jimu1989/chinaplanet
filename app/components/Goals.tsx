@@ -1,104 +1,15 @@
 "use client";
 
+import {
+  ArrowLeft,
+  ArrowRight,
+} from "lucide-react";
+import { useState } from "react";
 import type { Language } from "../lib/i18n";
-import { useEffect, useState } from "react";
-
-const icons = [
-  <svg
-    key="travel"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <path d="M8 34.5L56 18" strokeLinecap="round" />
-    <path d="M28 28L20 13" strokeLinecap="round" />
-    <path d="M28 28L38 39" strokeLinecap="round" />
-    <path d="M20 13L25 14.5" strokeLinecap="round" />
-    <path d="M38 39L45 40" strokeLinecap="round" />
-    <path d="M8 34.5L16 35.5" strokeLinecap="round" />
-  </svg>,
-
-  <svg
-    key="study"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <path d="M8 24L32 12L56 24L32 36L8 24Z" strokeLinejoin="round" />
-    <path
-      d="M16 29V43C16 43 21 50 32 50C43 50 48 43 48 43V29"
-      strokeLinecap="round"
-    />
-    <path d="M56 24V39" strokeLinecap="round" />
-  </svg>,
-
-  <svg
-    key="chinese"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <path
-      d="M10 14H42C45.3 14 48 16.7 48 20V35C48 38.3 45.3 41 42 41H27L18 49V41H16C12.7 41 10 38.3 10 35V14Z"
-      strokeLinejoin="round"
-    />
-    <path d="M19 23H39" strokeLinecap="round" />
-    <path d="M19 31H33" strokeLinecap="round" />
-    <path d="M48 27H54C55.1 27 56 27.9 56 29V43C56 45.2 54.2 47 52 47H50L45 52V47" />
-  </svg>,
-
-  <svg
-    key="trade"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <path d="M12 22H52" strokeLinecap="round" />
-    <path d="M18 22V50" strokeLinecap="round" />
-    <path d="M46 22V50" strokeLinecap="round" />
-    <path d="M14 50H50" strokeLinecap="round" />
-    <path d="M22 28H42" strokeLinecap="round" />
-    <path d="M22 35H42" strokeLinecap="round" />
-    <path d="M22 42H42" strokeLinecap="round" />
-    <path
-      d="M8 16L16 10L24 16"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <path
-      d="M40 16L48 10L56 16"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>,
-
-  <svg
-    key="factory"
-    viewBox="0 0 64 64"
-    fill="none"
-    className="h-8 w-8"
-    stroke="currentColor"
-    strokeWidth="1.4"
-  >
-    <path d="M10 52H54" strokeLinecap="round" />
-    <path d="M14 52V28L25 20V52" strokeLinejoin="round" />
-    <path d="M25 52V34L36 27V52" strokeLinejoin="round" />
-    <path d="M36 52V22L50 14V52" strokeLinejoin="round" />
-    <path d="M19 35H20" strokeLinecap="round" />
-    <path d="M30 41H31" strokeLinecap="round" />
-    <path d="M42 30H43" strokeLinecap="round" />
-    <path d="M46 30L53 37" strokeLinecap="round" />
-    <circle cx="44" cy="28" r="6" />
-  </svg>,
-];
+import {
+  customerGoals,
+  type CustomerGoalId,
+} from "../lib/journey/customerJourney";
 
 export default function Goals({
   language = "ar",
@@ -106,289 +17,242 @@ export default function Goals({
   language?: Language;
 }) {
   const isArabic = language === "ar";
+  const direction = isArabic ? "rtl" : "ltr";
 
-  const goals = [
-    {
-      id: "travel",
-      title:
-        language === "en"
-          ? "I Travel"
-          : language === "zh"
-            ? "我要旅行"
-            : "أسافر",
-      short:
-        language === "en"
-          ? "TRAVEL"
-          : language === "zh"
-            ? "旅行"
-            : "سفر",
-      text:
-        language === "en"
-          ? "Trips, bookings, reception, and programs inside China."
-          : language === "zh"
-            ? "旅行、预订、接待以及中国境内行程安排。"
-            : "رحلات، حجوزات، استقبال وبرامج داخل الصين.",
-    },
+  const [activeId, setActiveId] =
+    useState<CustomerGoalId>("travel");
 
-    {
-      id: "study",
-      title:
-        language === "en"
-          ? "I Study"
-          : language === "zh"
-            ? "我要留学"
-            : "أدرس",
-      short:
-        language === "en"
-          ? "STUDY"
-          : language === "zh"
-            ? "留学"
-            : "دراسة",
-      text:
-        language === "en"
-          ? "University admission, scholarships, housing, and educational consulting."
-          : language === "zh"
-            ? "大学录取、奖学金、住宿以及教育咨询。"
-            : "قبول جامعي، منح، سكن واستشارات تعليمية.",
-    },
+  const activeGoal =
+    customerGoals.find((goal) => goal.id === activeId) ??
+    customerGoals[0];
 
-    {
-      id: "chinese",
-      title:
-        language === "en"
-          ? "I Learn Chinese"
-          : language === "zh"
-            ? "我要学习中文"
-            : "أتعلم الصينية",
-      short:
-        language === "en"
-          ? "LANGUAGE"
-          : language === "zh"
-            ? "中文"
-            : "لغة",
-      text:
-        language === "en"
-          ? "Chinese language, HSK, and conversation with teachers."
-          : language === "zh"
-            ? "中文学习、HSK以及与教师进行中文会话。"
-            : "لغة صينية، HSK ومحادثة مع مدرسين.",
-    },
+  const ActiveIcon = activeGoal.icon;
 
-    {
-      id: "trade",
-      title:
-        language === "en"
-          ? "I Trade"
-          : language === "zh"
-            ? "我要做贸易"
-            : "أتاجر",
-      short:
-        language === "en"
-          ? "TRADE"
-          : language === "zh"
-            ? "贸易"
-            : "تجارة",
-      text:
-        language === "en"
-          ? "Importing, shipping, negotiation, and supplier follow-up."
-          : language === "zh"
-            ? "进口、运输、谈判以及供应商跟进。"
-            : "استيراد، شحن، تفاوض ومتابعة الموردين.",
-    },
+  const title =
+    language === "en"
+      ? "What do you need from China?"
+      : language === "zh"
+        ? "您需要从中国得到什么？"
+        : "وش تبي من الصين؟";
 
-    {
-      id: "factory",
-      title:
-        language === "en"
-          ? "I'm Looking for a Factory"
-          : language === "zh"
-            ? "我要找工厂"
-            : "أبحث عن مصنع",
-      short:
-        language === "en"
-          ? "FACTORY"
-          : language === "zh"
-            ? "工厂"
-            : "مصنع",
-      text:
-        language === "en"
-          ? "Finding suitable factories and suppliers in China."
-          : language === "zh"
-            ? "寻找合适的中国工厂和供应商。"
-            : "العثور على مصانع وموردين مناسبين في الصين.",
-    },
-  ];
-
-  const [activeIndex, setActiveIndex] = useState(0);
-
-  useEffect(() => {
-    const timer = window.setInterval(() => {
-      setActiveIndex((current) => (current + 1) % goals.length);
-    }, 4500);
-
-    return () => window.clearInterval(timer);
-  }, [goals.length]);
-
-  const activeGoal = goals[activeIndex];
-
-  const journeyLabel =
+  const eyebrow =
     language === "en"
       ? "YOUR CHINA JOURNEY"
       : language === "zh"
         ? "您的中国之旅"
-        : "رحلتك إلى الصين";
+        : "رحلتك مع الصين";
+
+  const description =
+    language === "en"
+      ? "Start with what you need. We will help you find the right path."
+      : language === "zh"
+        ? "从您的需求开始，我们帮您找到合适的方向。"
+        : "ابدأ من احتياجك، ونقرّب لك الطريق المناسب.";
+
+  const getCopy = (
+    goal: typeof activeGoal,
+  ) => goal[language];
+
+  const current = getCopy(activeGoal);
 
   return (
     <section
       id="goals"
-      dir={isArabic ? "rtl" : "ltr"}
-      className="cp-editorial-section bg-[var(--cp-brown-deep)] text-white"
+      dir={direction}
+      className="relative overflow-hidden bg-[var(--cp-ivory)] text-[var(--cp-brown)]"
     >
-      <div className="cp-editorial-container">
-        <div className="grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
-          <div>
-            <div className="flex items-center gap-3 text-[var(--cp-red-soft)]">
-              <span className="h-px w-10 bg-current" />
-              <span className="text-[10px] font-semibold tracking-[0.25em]">
-                {journeyLabel}
-              </span>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -end-40 -top-40 h-[520px] w-[520px] rounded-full bg-[var(--cp-red-soft)]/[0.055] blur-3xl"
+      />
+
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -start-32 bottom-0 h-[360px] w-[360px] rounded-full bg-[var(--cp-gold)]/[0.07] blur-3xl"
+      />
+
+      <div className="cp-editorial-container relative z-10 py-24 sm:py-28 lg:py-32">
+        <div className="border-t border-[var(--cp-line)] pt-8">
+          <div className="grid gap-12 lg:grid-cols-[1fr_0.85fr] lg:gap-24">
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="h-px w-12 bg-[var(--cp-red)]" />
+
+                <span className="text-[10px] font-semibold tracking-[0.28em] text-[var(--cp-red)]">
+                  {eyebrow}
+                </span>
+              </div>
+
+              <h2 className="mt-8 max-w-[780px] text-[clamp(3.5rem,8vw,7.6rem)] font-semibold leading-[0.88] tracking-[-0.08em]">
+                {title}
+              </h2>
+
+              <p className="mt-8 max-w-xl text-sm leading-8 text-[var(--cp-muted)] sm:text-base">
+                {description}
+              </p>
             </div>
 
-            <h2 className="mt-7 max-w-3xl text-[clamp(3rem,7vw,6.5rem)] font-semibold leading-[0.94] tracking-[-0.06em]">
-              {language === "en"
-                ? "What brings you to China?"
-                : language === "zh"
-                  ? "您为什么来到中国？"
-                  : "وش هدفك من الصين؟"}
-            </h2>
-          </div>
+            <div className="lg:pt-14">
+              <div className="relative overflow-hidden bg-[var(--cp-brown-deep)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(201,74,61,0.2),transparent_32%),radial-gradient(circle_at_15%_100%,rgba(181,150,108,0.12),transparent_30%)]" />
 
-          <div className={isArabic ? "lg:pr-12" : "lg:pl-12"}>
-            <p className="max-w-xl text-sm leading-8 text-white/55 sm:text-base">
-              {activeGoal.text}
-            </p>
+                <div className="relative p-7 sm:p-10">
+                  <div className="flex items-start justify-between gap-8">
+                    <div>
+                      <span className="text-[10px] font-semibold tracking-[0.28em] text-[var(--cp-gold-light)]">
+                        {String(
+                          customerGoals.findIndex(
+                            (goal) => goal.id === activeGoal.id,
+                          ) + 1,
+                        ).padStart(2, "0")}{" "}
+                        / 05
+                      </span>
 
-            <div className="mt-8 flex items-center gap-4">
-              <span className="text-[10px] font-semibold tracking-[0.2em] text-white/35">
-                {String(activeIndex + 1).padStart(2, "0")} / 05
-              </span>
+                      <p className="mt-3 text-[9px] font-semibold tracking-[0.28em] text-[var(--cp-red-soft)]">
+                        {current.short}
+                      </p>
+                    </div>
 
-              <span className="h-px w-12 bg-[var(--cp-red-soft)]" />
+                    <ActiveIcon
+                      size={30}
+                      strokeWidth={1.2}
+                      className="text-[var(--cp-red-soft)]"
+                    />
+                  </div>
+
+                  <h3 className="mt-20 text-3xl font-semibold leading-tight tracking-[-0.045em] text-white sm:text-5xl">
+                    {current.title}
+                  </h3>
+
+                  <p className="mt-6 max-w-xl text-sm leading-8 text-white/65 sm:text-base">
+                    {current.description}
+                  </p>
+
+                  <div className="mt-10 flex items-center gap-3 text-white">
+                    <span className="h-px w-10 bg-[var(--cp-red-soft)]" />
+
+                    <span className="text-[10px] font-semibold tracking-[0.2em]">
+                      {language === "ar"
+                        ? "وش تحتاج بعد؟"
+                        : language === "zh"
+                          ? "您接下来需要什么？"
+                          : "WHAT DO YOU NEED NEXT?"}
+                    </span>
+                  </div>
+
+                  <div className="mt-7 grid gap-2 sm:grid-cols-2">
+                    {activeGoal.next[language].map(
+                      (item) => (
+                        <span
+                          key={item}
+                          className="border border-white/10 px-4 py-3 text-xs text-white/70"
+                        >
+                          {item}
+                        </span>
+                      ),
+                    )}
+                  </div>
+                </div>
+
+                <div className="h-1 bg-white/10">
+                  <div
+                    className="h-full bg-[var(--cp-red)] transition-all duration-500"
+                    style={{
+                      width: `${((customerGoals.findIndex((goal) => goal.id === activeGoal.id) + 1) / customerGoals.length) * 100}%`,
+                    }}
+                  />
+                </div>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-16 overflow-hidden border-y border-white/10">
-          <div className="grid md:grid-cols-5">
-            {goals.map((goal, index) => {
-              const active = index === activeIndex;
+          <div className="mt-16 grid border-y border-[var(--cp-line)] md:grid-cols-5">
+            {customerGoals.map((goal, index) => {
+              const active = goal.id === activeGoal.id;
+              const Icon = goal.icon;
+              const copy = goal[language];
 
               return (
                 <button
                   key={goal.id}
                   type="button"
-                  onClick={() => setActiveIndex(index)}
+                  onClick={() => setActiveId(goal.id)}
                   className={[
-                    "group relative min-h-[250px] border-b border-white/10 px-6 py-7 text-start transition-all duration-700 md:border-b-0",
-                    index > 0 ? "md:border-s md:border-white/10" : "",
-                    active ? "bg-white/[0.065]" : "hover:bg-white/[0.03]",
+                    "group relative min-h-[155px] px-5 py-6 text-start transition-all duration-400 sm:px-6",
+                    index < customerGoals.length - 1
+                      ? "border-b border-[var(--cp-line)] md:border-b-0 md:border-e"
+                      : "",
+                    active
+                      ? "bg-[var(--cp-white)]"
+                      : "hover:bg-[var(--cp-white)]",
                   ].join(" ")}
                 >
                   <div className="flex items-start justify-between">
                     <span
                       className={[
-                        "text-[10px] font-semibold tracking-[0.2em] transition-colors duration-500",
+                        "text-[10px] font-semibold tracking-[0.22em]",
                         active
-                          ? "text-[var(--cp-red-soft)]"
-                          : "text-white/25",
+                          ? "text-[var(--cp-red)]"
+                          : "text-[var(--cp-muted-light)]",
                       ].join(" ")}
                     >
                       {String(index + 1).padStart(2, "0")}
                     </span>
 
-                    <div
+                    <Icon
+                      size={18}
+                      strokeWidth={1.25}
                       className={[
-                        "flex h-11 w-11 items-center justify-center border transition-all duration-500",
+                        "transition-colors duration-300",
                         active
-                          ? "border-[var(--cp-red-soft)] text-[var(--cp-red-soft)]"
-                          : "border-white/10 text-white/35 group-hover:border-white/25 group-hover:text-white/65",
-                      ].join(" ")}
-                    >
-                      {icons[index]}
-                    </div>
-                  </div>
-
-                  <div className="mt-20">
-                    <span className="text-[9px] font-semibold tracking-[0.22em] text-white/30">
-                      {goal.short}
-                    </span>
-
-                    <h3
-                      className={[
-                        "mt-3 text-xl font-semibold tracking-[-0.03em] transition-colors duration-500 sm:text-2xl",
-                        active ? "text-white" : "text-white/65",
-                      ].join(" ")}
-                    >
-                      {goal.title}
-                    </h3>
-
-                    <div
-                      className={[
-                        "mt-6 h-px transition-all duration-700",
-                        active
-                          ? "w-14 bg-[var(--cp-red-soft)]"
-                          : "w-7 bg-white/15",
+                          ? "text-[var(--cp-red)]"
+                          : "text-[var(--cp-muted-light)] group-hover:text-[var(--cp-brown)]",
                       ].join(" ")}
                     />
                   </div>
 
+                  <div className="mt-9">
+                    <span className="text-[9px] font-semibold tracking-[0.2em] text-[var(--cp-muted-light)]">
+                      {copy.short}
+                    </span>
+
+                    <p className="mt-2 text-lg font-semibold tracking-[-0.03em]">
+                      {copy.title}
+                    </p>
+                  </div>
+
                   <span
                     className={[
-                      "pointer-events-none absolute bottom-0 text-[100px] font-semibold leading-none tracking-[-0.1em] transition-all duration-700",
-                      isArabic ? "left-3" : "right-3",
-                      active
-                        ? "text-white/[0.045]"
-                        : "text-white/[0.018]",
+                      "absolute bottom-0 start-0 h-1 bg-[var(--cp-red)] transition-all duration-400",
+                      active ? "w-full" : "w-0 group-hover:w-1/2",
                     ].join(" ")}
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
+                  />
                 </button>
               );
             })}
           </div>
-        </div>
 
-        <div className="mt-10 flex flex-col gap-6 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="text-[10px] font-semibold tracking-[0.25em] text-white/30">
+          <div className="mt-8 flex items-center justify-between">
+            <span className="text-[10px] font-semibold tracking-[0.24em] text-[var(--cp-muted-light)]">
               CHINA PLANET
-            </p>
+            </span>
 
-            <p className="mt-3 text-lg text-white/65">
-              {language === "ar"
-                ? "حدد هدفك، ونقرّب لك الطريق."
-                : language === "zh"
-                  ? "确定您的目标，让我们帮您更接近中国。"
-                  : "Choose your goal. We’ll bring the journey closer."}
-            </p>
-          </div>
+            <div className="flex items-center gap-3 text-[var(--cp-red)]">
+              {isArabic ? (
+                <ArrowLeft size={16} strokeWidth={1.3} />
+              ) : (
+                <ArrowRight size={16} strokeWidth={1.3} />
+              )}
 
-          <div className="flex gap-2">
-            {goals.map((goal, index) => (
-              <button
-                key={goal.id}
-                type="button"
-                onClick={() => setActiveIndex(index)}
-                aria-label={`Go to ${goal.title}`}
-                className={[
-                  "h-1 transition-all duration-500",
-                  index === activeIndex
-                    ? "w-10 bg-[var(--cp-red-soft)]"
-                    : "w-5 bg-white/15",
-                ].join(" ")}
-              />
-            ))}
+              <span className="text-[10px] font-semibold tracking-[0.2em]">
+                {String(
+                  customerGoals.findIndex(
+                    (goal) => goal.id === activeGoal.id,
+                  ) + 1,
+                ).padStart(2, "0")}{" "}
+                / 05
+              </span>
+            </div>
           </div>
         </div>
       </div>

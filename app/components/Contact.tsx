@@ -1,443 +1,1078 @@
 "use client";
 
-import type { Language } from "../lib/i18n";
-import { useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Factory,
+  GraduationCap,
+  Languages,
+  Mail,
+  MessageCircle,
+  PhoneCall,
+  Plane,
+  Send,
+  Ship,
+  UserRound,
+} from "lucide-react";
 import { siteConfig } from "../lib/site";
+import {
+  customerGoals,
+  CustomerGoalId,
+  getCustomerGoal,
+} from "../lib/journey/customerJourney";
 
-const services = {
-  ar: [
-    "السياحة في الصين",
-    "الدراسة في الصين",
-    "تعلم اللغة الصينية",
-    "الترجمة",
-    "تنظيم الفعاليات الصينية",
-    "التجارة والاستيراد",
-    "خدمات الشركات",
-    "خدمات الأفراد",
-  ],
-  en: [
-    "China Tourism",
-    "Study in China",
-    "Learn Chinese",
-    "Translation",
-    "Chinese Events & Celebrations",
-    "Trade & Import",
-    "Corporate Services",
-    "Individual Services",
-  ],
-  zh: [
-    "中国旅游",
-    "中国留学",
-    "学习中文",
-    "翻译服务",
-    "中国主题活动与庆典策划",
-    "贸易与进口",
-    "企业服务",
-    "个人服务",
-  ],
+type Language = "ar" | "en" | "zh";
+
+type ContactProps = {
+  language: Language;
+};
+
+const goalIcons = {
+  travel: Plane,
+  study: GraduationCap,
+  language: Languages,
+  trade: Ship,
+  factory: Factory,
 } as const;
 
-const contactTranslations = {
+const copy = {
   ar: {
-    label: "تواصل معنا",
-    title: "الصين؟",
-    titleAccent: "خلّها علينا.",
-    description:
-      "قل لنا وش تحتاج، ونرتّب لك الخطوة التالية مع كوكب الصين.",
-    request: "YOUR REQUEST",
-    choose: "وش تحتاج؟",
+    label: "ابدأ من هنا",
+    title: "وش تبي من الصين؟",
+    intro: "اختر هدفك، وبعدها نوصلك مباشرةً للسؤال والخطوة المناسبة.",
+    step1: "هدفك",
+    step2: "التفاصيل",
+    step3: "بياناتك",
+    next: "التالي",
+    back: "رجوع",
+    chooseGoal: "اختر المسار الأقرب لاحتياجك",
+    chooseDetail: "وش تحتاج تحديدًا؟",
+    detailsHint: "اختر الخيار الأقرب لاحتياجك",
+    yourDetails: "خلّنا نعرف كيف نتواصل معك",
     name: "الاسم",
-    namePlaceholder: "اسمك الكامل",
-    chooseService: "الخدمة",
-    chooseServiceHint: "اختر الخدمة الأقرب لاحتياجك",
-    details: "تفاصيل طلبك",
-    detailsPlaceholder: "اكتب لنا التفاصيل أو الشيء الذي تريد معرفته...",
-    whatsappButton: "تواصل معنا عبر واتساب",
-    whatsappHint: "ستفتح واتساب مع تجهيز رسالة طلبك تلقائيًا.",
-    brand: "CHINA PLANET",
-    heading: "جاهز تبدأ؟",
-    headingAccent: "خلّنا نبدأ.",
-    phone: "اتصل بنا",
-    email: "راسلنا عبر البريد",
-    whatsapp: "واتساب",
-    phoneLabel: "PHONE",
-    emailLabel: "EMAIL",
-    whatsappLabel: "WHATSAPP",
-    location: "السعودية · الصين",
-    whatsappGreeting: "السلام عليكم،",
-    whatsappName: "أنا",
-    whatsappService: "أرغب بالاستفسار عن:",
-    whatsappDetails: "تفاصيل الطلب:",
-    whatsappSource: "أرسلت هذا الطلب من موقع كوكب الصين.",
-    defaultName: "عميل",
-    defaultService: "استفسار عام",
-    defaultDetails: "أرغب في معرفة المزيد عن الخدمة.",
+    namePlaceholder: "اكتب اسمك",
+    email: "البريد الإلكتروني",
+    emailPlaceholder: "name@example.com",
+    phone: "رقم الجوال",
+    phonePlaceholder: "+966",
+    notes: "ملاحظات إضافية",
+    notesPlaceholder: "اكتب أي تفاصيل تساعدنا نفهم طلبك...",
+    send: "إرسال الطلب",
+    whatsapp: "تواصل عبر واتساب",
+    selected: "تم الاختيار",
+    requestReady: "طلبك جاهز للإرسال",
+    requestNote: "سنستخدم هذه المعلومات لفهم احتياجك والتواصل معك.",
+    required: "فضلاً أكمل الاختيارات والبيانات الأساسية.",
+    success: "وصلنا طلبك. سنتواصل معك قريبًا.",
+    error: "تعذر إرسال الطلب الآن. حاول مرة أخرى.",
+    phoneLabel: "اتصال",
+    emailLabel: "إيميل",
+    whatsappLabel: "واتساب",
   },
-
   en: {
-    label: "CONTACT US",
-    title: "China?",
-    titleAccent: "We’ll Bring It Closer.",
-    description:
-      "Tell us what you need, and we’ll help you take the next step with China Planet.",
-    request: "YOUR REQUEST",
-    choose: "What do you need?",
+    label: "START HERE",
+    title: "What do you need from China?",
+    intro: "Choose your goal first. Then we’ll take you directly to the right next step.",
+    step1: "GOAL",
+    step2: "DETAIL",
+    step3: "YOUR DETAILS",
+    next: "Continue",
+    back: "Back",
+    chooseGoal: "Choose the path closest to what you need",
+    chooseDetail: "What exactly do you need?",
+    detailsHint: "Choose the option closest to your request",
+    yourDetails: "Tell us how to reach you",
     name: "Name",
-    namePlaceholder: "Your full name",
-    chooseService: "Service",
-    chooseServiceHint: "Choose the service closest to your needs",
-    details: "Request details",
-    detailsPlaceholder: "Tell us what you need or what you would like to know...",
-    whatsappButton: "Contact us on WhatsApp",
-    whatsappHint: "WhatsApp will open with your request prepared automatically.",
-    brand: "CHINA PLANET",
-    heading: "Ready to start?",
-    headingAccent: "Let’s begin.",
-    phone: "Call us",
-    email: "Email us",
-    whatsapp: "WhatsApp",
-    phoneLabel: "PHONE",
+    namePlaceholder: "Your name",
+    email: "Email",
+    emailPlaceholder: "name@example.com",
+    phone: "Phone",
+    phonePlaceholder: "+966",
+    notes: "Additional details",
+    notesPlaceholder: "Anything that would help us understand your request...",
+    send: "Send request",
+    whatsapp: "Continue on WhatsApp",
+    selected: "SELECTED",
+    requestReady: "Your request is ready",
+    requestNote: "We’ll use these details to understand your request and contact you.",
+    required: "Please complete the required choices and details.",
+    success: "Your request has been received. We’ll be in touch soon.",
+    error: "We couldn’t send the request right now. Please try again.",
+    phoneLabel: "CALL",
     emailLabel: "EMAIL",
     whatsappLabel: "WHATSAPP",
-    location: "Saudi Arabia · China",
-    whatsappGreeting: "Hello,",
-    whatsappName: "My name is",
-    whatsappService: "I would like to inquire about:",
-    whatsappDetails: "Request details:",
-    whatsappSource: "I sent this request from the China Planet website.",
-    defaultName: "Customer",
-    defaultService: "General inquiry",
-    defaultDetails: "I would like to know more about the service.",
   },
-
   zh: {
-    label: "联系我们",
-    title: "中国？",
-    titleAccent: "让我们为您拉近距离。",
-    description:
-      "告诉我们您的需求，我们会帮助您与中国星球一起迈出下一步。",
-    request: "YOUR REQUEST",
-    choose: "您需要什么？",
+    label: "从这里开始",
+    title: "您需要什么？",
+    intro: "先选择您的目标，我们会带您进入最合适的下一步。",
+    step1: "目标",
+    step2: "需求",
+    step3: "您的信息",
+    next: "继续",
+    back: "返回",
+    chooseGoal: "请选择最符合您需求的方向",
+    chooseDetail: "您具体需要什么？",
+    detailsHint: "请选择最符合您需求的选项",
+    yourDetails: "告诉我们如何联系您",
     name: "姓名",
-    namePlaceholder: "您的姓名",
-    chooseService: "服务",
-    chooseServiceHint: "请选择最符合您需求的服务",
-    details: "需求详情",
-    detailsPlaceholder: "请告诉我们您的需求或想了解的内容...",
-    whatsappButton: "通过 WhatsApp 联系我们",
-    whatsappHint: "WhatsApp 将自动打开并准备好您的需求消息。",
-    brand: "CHINA PLANET",
-    heading: "准备好了吗？",
-    headingAccent: "让我们开始。",
-    phone: "联系我们",
-    email: "发送邮件",
-    whatsapp: "WhatsApp",
-    phoneLabel: "PHONE",
-    emailLabel: "EMAIL",
-    whatsappLabel: "WHATSAPP",
-    location: "沙特阿拉伯 · 中国",
-    whatsappGreeting: "您好，",
-    whatsappName: "我的名字是",
-    whatsappService: "我想咨询：",
-    whatsappDetails: "需求详情：",
-    whatsappSource: "此请求来自中国星球官方网站。",
-    defaultName: "客户",
-    defaultService: "一般咨询",
-    defaultDetails: "我想了解更多关于这项服务的信息。",
+    namePlaceholder: "请输入姓名",
+    email: "电子邮箱",
+    emailPlaceholder: "name@example.com",
+    phone: "手机号码",
+    phonePlaceholder: "+966",
+    notes: "补充说明",
+    notesPlaceholder: "请告诉我们更多需求...",
+    send: "提交需求",
+    whatsapp: "通过 WhatsApp 联系",
+    selected: "已选择",
+    requestReady: "您的需求已准备好",
+    requestNote: "我们会根据这些信息了解您的需求并与您联系。",
+    required: "请完成必要的选择和信息。",
+    success: "我们已收到您的需求，很快会与您联系。",
+    error: "暂时无法提交，请稍后再试。",
+    phoneLabel: "电话",
+    emailLabel: "邮箱",
+    whatsappLabel: "WhatsApp",
   },
 } as const;
 
-export default function Contact({
-  language = "ar",
-}: {
-  language?: Language;
-}) {
-  const [service, setService] = useState("");
+export default function Contact({ language }: ContactProps) {
+  const t = copy[language];
+  const isRTL = language === "ar";
+
+  const [goalId, setGoalId] = useState<CustomerGoalId | null>(null);
+  const [nextChoice, setNextChoice] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [details, setDetails] = useState("");
+  const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
 
-  const t = contactTranslations[language];
-  const currentServices = services[language];
-  const isArabic = language === "ar";
-  const direction = language === "ar" ? "rtl" : "ltr";
+  const selectedGoal = useMemo(
+    () => (goalId ? getCustomerGoal(goalId) : undefined),
+    [goalId],
+  );
 
-  const handleWhatsApp = async () => {
-    const customerName = name.trim();
-    const customerEmail = email.trim();
-    const customerPhone = phone.trim();
-    const selectedService = service;
-    const customerDetails = details.trim();
+  const GoalIcon = goalId ? goalIcons[goalId] : UserRound;
+  const BackIcon = isRTL ? ArrowRight : ArrowLeft;
 
-    if (!customerName || !selectedService) {
+  const selectGoal = (id: CustomerGoalId) => {
+    setGoalId(id);
+    setNextChoice("");
+    setError("");
+    setStep(2);
+  };
+
+  const selectNextChoice = (choice: string) => {
+    setNextChoice(choice);
+    setError("");
+    setStep(3);
+  };
+
+  const submitRequest = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+
+    if (!selectedGoal || !nextChoice || !name.trim() || !phone.trim()) {
+      setError(t.required);
       return;
     }
 
-    const message = [
-      t.whatsappGreeting,
-      "",
-      t.whatsappName + " " + customerName + ".",
-      "",
-      "البريد الإلكتروني: " + (customerEmail || "غير مذكور"),
-      "رقم الجوال: " + (customerPhone || "غير مذكور"),
-      "",
-      t.whatsappService + " " + selectedService,
-      "",
-      t.whatsappDetails,
-      customerDetails || t.defaultDetails,
-      "",
-      t.whatsappSource,
-    ].join(String.fromCharCode(10));
-
-    const whatsappUrl =
-      "https://api.whatsapp.com/send?phone=" +
-      siteConfig.contact.whatsapp +
-      "&text=" +
-      encodeURIComponent(message);
-
-    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
-
     try {
-      await fetch("/api/service-requests", {
+      const response = await fetch("/api/service-requests", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: customerName,
-          email: customerEmail,
-          phone: customerPhone,
-          service: selectedService,
-          details: customerDetails,
+          name: name.trim(),
+          email: email.trim(),
+          phone: phone.trim(),
+          service: selectedGoal[language].title,
+          details: `${selectedGoal[language].title} — ${nextChoice}${details.trim() ? `\n${details.trim()}` : ""}`,
           language,
         }),
       });
+
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+
+      setSubmitted(true);
     } catch {
-      // WhatsApp already opened; request logging is best-effort.
+      setError(t.error);
     }
   };
+
+  const openWhatsApp = () => {
+    if (!selectedGoal) {
+      setError(t.required);
+      setStep(1);
+      return;
+    }
+
+    const safeName =
+      name.trim() ||
+      (language === "ar"
+        ? "عميل جديد"
+        : language === "zh"
+          ? "新客户"
+          : "New customer");
+
+    const message =
+      language === "ar"
+        ? `السلام عليكم، أنا ${safeName}.\nأحتاج: ${selectedGoal.ar.title}\nالتحديد: ${nextChoice || "غير محدد"}${details.trim() ? `\nالتفاصيل: ${details.trim()}` : ""}`
+        : language === "zh"
+          ? `您好，我是${safeName}。\n需求：${selectedGoal.zh.title}\n具体需求：${nextChoice || "未选择"}${details.trim() ? `\n补充：${details.trim()}` : ""}`
+          : `Hello, I’m ${safeName}.\nI need: ${selectedGoal.en.title}\nSpecific need: ${nextChoice || "Not selected"}${details.trim() ? `\nDetails: ${details.trim()}` : ""}`;
+
+    const phoneNumber = siteConfig.contact.whatsapp.replace(/\D/g, "");
+    const url = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodeURIComponent(message)}`;
+
+    window.open(url, "_blank", "noopener,noreferrer");
+  };
+
+  if (submitted) {
+    return (
+      <section
+        id="contact"
+        dir={isRTL ? "rtl" : "ltr"}
+        className="cp-contact"
+      >
+        <div className="cp-contact-shell cp-contact-success">
+          <div className="cp-success-mark">
+            <Check size={30} strokeWidth={1.7} />
+          </div>
+
+          <p className="cp-contact-kicker">{t.label}</p>
+          <h2>{t.success}</h2>
+
+          <button
+            type="button"
+            className="cp-contact-secondary"
+            onClick={() => {
+              setSubmitted(false);
+              setStep(1);
+              setGoalId(null);
+              setNextChoice("");
+              setName("");
+              setEmail("");
+              setPhone("");
+              setDetails("");
+            }}
+          >
+            {t.next}
+          </button>
+        </div>
+
+        <style jsx>{styles}</style>
+      </section>
+    );
+  }
 
   return (
     <section
       id="contact"
-      dir={direction}
-      className="cp-editorial-section bg-[var(--cp-brown-deep)] text-white"
+      dir={isRTL ? "rtl" : "ltr"}
+      className="cp-contact"
     >
-      <div className="cp-editorial-container">
-        <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:items-end">
+      <div className="cp-contact-shell">
+        <div className="cp-contact-top">
           <div>
-            <div className="flex items-center gap-3 text-[var(--cp-red-soft)]">
-              <span className="h-px w-10 bg-current" />
-              <span className="text-[10px] font-semibold tracking-[0.25em]">
-                {t.label}
-              </span>
-            </div>
-
-            <h2 className="mt-7 max-w-3xl text-[clamp(3.3rem,7vw,7rem)] font-semibold leading-[0.9] tracking-[-0.065em]">
-              <span className="block">{t.title}</span>
-              <span className="block text-[var(--cp-red-soft)]">
-                {t.titleAccent}
-              </span>
-            </h2>
+            <p className="cp-contact-kicker">{t.label}</p>
+            <h2>{t.title}</h2>
           </div>
 
-          <div className={isArabic ? "lg:pr-10" : "lg:pl-10"}>
-            <p className="max-w-xl text-sm leading-8 text-white/55 sm:text-base">
-              {t.description}
-            </p>
-
-            <div className="mt-8 flex items-center gap-3">
-              <span className="text-[10px] font-semibold tracking-[0.24em] text-white/30">
-                CHINA PLANET
-              </span>
-              <span className="h-px w-10 bg-[var(--cp-red-soft)]" />
-              <span className="text-[10px] font-semibold tracking-[0.18em] text-white/30">
-                {t.location}
-              </span>
-            </div>
-          </div>
+          <p className="cp-contact-intro">{t.intro}</p>
         </div>
 
-        <div className="mt-16 grid overflow-hidden border border-white/10 lg:grid-cols-[0.72fr_1.28fr]">
-          <div className="relative overflow-hidden p-8 sm:p-10 lg:p-12">
-            <span className="pointer-events-none absolute -bottom-10 -start-2 text-[180px] font-semibold leading-none tracking-[-0.12em] text-white/[0.035]">
-              →
-            </span>
-
-            <div className="relative z-10">
-              <p className="text-[10px] font-semibold tracking-[0.24em] text-white/30">
-                {t.request}
-              </p>
-
-              <h3 className="mt-6 text-3xl font-semibold tracking-[-0.04em] sm:text-4xl">
-                {t.heading}
-              </h3>
-
-              <p className="mt-2 text-2xl text-[var(--cp-red-soft)] sm:text-3xl">
-                {t.headingAccent}
-              </p>
-
-              <div className="mt-12 space-y-3 text-sm text-white/50">
-                <div className="flex items-center gap-4 border-t border-white/10 pt-4">
-                  <span className="w-20 text-[9px] font-semibold tracking-[0.2em] text-white/25">
-                    {t.phoneLabel}
-                  </span>
-                  <span>{t.phone}</span>
-                </div>
-
-                <div className="flex items-center gap-4 border-t border-white/10 pt-4">
-                  <span className="w-20 text-[9px] font-semibold tracking-[0.2em] text-white/25">
-                    {t.emailLabel}
-                  </span>
-                  <span className="truncate">{siteConfig.contact.email}</span>
-                </div>
-
-                <div className="flex items-center gap-4 border-t border-white/10 pt-4">
-                  <span className="w-20 text-[9px] font-semibold tracking-[0.2em] text-white/25">
-                    {t.whatsappLabel}
-                  </span>
-                  <span>{t.whatsapp}</span>
-                </div>
-              </div>
+        <div className="cp-contact-grid">
+          <aside className="cp-contact-aside">
+            <div className="cp-aside-icon">
+              <GoalIcon size={28} strokeWidth={1.6} />
             </div>
-          </div>
 
-          <div className="border-t border-white/10 bg-white/[0.035] p-7 sm:p-10 lg:border-s lg:border-t-0 lg:p-12">
-            <div className="grid gap-7">
-              <div>
-                <label
-                  htmlFor="contact-name"
-                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
-                >
-                  {t.name}
-                </label>
+            {selectedGoal ? (
+              <>
+                <span className="cp-aside-label">{t.selected}</span>
+                <h3>{selectedGoal[language].title}</h3>
+                <p>{selectedGoal[language].description}</p>
 
-                <input
-                  id="contact-name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                  placeholder={t.namePlaceholder}
-                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
-                />
+                <div className="cp-aside-route">
+                  <span>{selectedGoal[language].short}</span>
+                  <span>→</span>
+                  <span>{nextChoice || "..."}</span>
+                </div>
+              </>
+            ) : (
+              <>
+                <span className="cp-aside-label">{t.step1}</span>
+                <h3>{t.title}</h3>
+                <p>{t.intro}</p>
+              </>
+            )}
+
+            <div className="cp-contact-links">
+              <a href={`tel:${siteConfig.contact.phone}`}>
+                <PhoneCall size={17} />
+                <span>{t.phoneLabel}</span>
+              </a>
+
+              <a href={`mailto:${siteConfig.contact.email}`}>
+                <Mail size={17} />
+                <span>{t.emailLabel}</span>
+              </a>
+
+              <button type="button" onClick={openWhatsApp}>
+                <MessageCircle size={17} />
+                <span>{t.whatsappLabel}</span>
+              </button>
+            </div>
+          </aside>
+
+          <form className="cp-contact-form" onSubmit={submitRequest}>
+            <div className="cp-steps">
+              <span className={step >= 1 ? "active" : ""}>01 {t.step1}</span>
+              <span className={step >= 2 ? "active" : ""}>02 {t.step2}</span>
+              <span className={step >= 3 ? "active" : ""}>03 {t.step3}</span>
+            </div>
+
+            {step === 1 && (
+              <div className="cp-flow-panel">
+                <div className="cp-panel-head">
+                  <span>01</span>
+                  <div>
+                    <h3>{t.chooseGoal}</h3>
+                    <p>{t.intro}</p>
+                  </div>
+                </div>
+
+                <div className="cp-goals">
+                  {customerGoals.map((goal) => {
+                    const Icon = goal.icon;
+                    const active = goal.id === goalId;
+
+                    return (
+                      <button
+                        key={goal.id}
+                        type="button"
+                        className={`cp-goal ${active ? "active" : ""}`}
+                        onClick={() => selectGoal(goal.id)}
+                      >
+                        <span className="cp-goal-icon">
+                          <Icon size={23} strokeWidth={1.6} />
+                        </span>
+
+                        <span className="cp-goal-copy">
+                          <strong>{goal[language].title}</strong>
+                          <small>{goal[language].description}</small>
+                        </span>
+
+                        <span className="cp-goal-arrow">
+                          {isRTL ? <ArrowLeft size={17} /> : <ArrowRight size={17} />}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
+            )}
 
-              <div>
-                <label
-                  htmlFor="contact-service"
-                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
-                >
-                  {t.chooseService}
-                </label>
+            {step === 2 && selectedGoal && (
+              <div className="cp-flow-panel">
+                <div className="cp-panel-head">
+                  <span>02</span>
+                  <div>
+                    <h3>{t.chooseDetail}</h3>
+                    <p>{selectedGoal[language].description}</p>
+                  </div>
+                </div>
 
-                <select
-                  id="contact-service"
-                  value={service}
-                  onChange={(event) => setService(event.target.value)}
-                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none focus:border-[var(--cp-red-soft)]"
-                >
-                  <option value="" className="bg-[var(--cp-brown-deep)] text-white">
-                    {t.chooseServiceHint}
-                  </option>
+                <div className="cp-choice-grid">
+                  {selectedGoal.next[language].map((choice) => {
+                    const active = choice === nextChoice;
 
-                  {currentServices.map((item) => (
-                    <option
-                      key={item}
-                      value={item}
-                      className="bg-[var(--cp-brown-deep)] text-white"
-                    >
-                      {item}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                    return (
+                      <button
+                        key={choice}
+                        type="button"
+                        className={`cp-choice ${active ? "active" : ""}`}
+                        onClick={() => selectNextChoice(choice)}
+                      >
+                        <span>{choice}</span>
+                        {active ? (
+                          <Check size={17} />
+                        ) : isRTL ? (
+                          <ArrowLeft size={17} />
+                        ) : (
+                          <ArrowRight size={17} />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
 
-              <div>
-                <label
-                  htmlFor="contact-email"
-                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
-                >
-                  {t.email}
-                </label>
-
-                <input
-                  id="contact-email"
-                  type="email"
-                  value={email}
-                  onChange={(event) => setEmail(event.target.value)}
-                  placeholder={siteConfig.contact.email}
-                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="contact-phone"
-                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
-                >
-                  {t.phone}
-                </label>
-
-                <input
-                  id="contact-phone"
-                  type="tel"
-                  value={phone}
-                  onChange={(event) => setPhone(event.target.value)}
-                  placeholder="+966..."
-                  className="w-full border-b border-white/15 bg-transparent px-0 py-3 text-sm text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
-                />
-              </div>
-
-              <div>
-                <label
-                  htmlFor="contact-details"
-                  className="mb-3 block text-[10px] font-semibold tracking-[0.2em] text-white/40"
-                >
-                  {t.details}
-                </label>
-
-                <textarea
-                  id="contact-details"
-                  value={details}
-                  onChange={(event) => setDetails(event.target.value)}
-                  placeholder={t.detailsPlaceholder}
-                  rows={4}
-                  className="w-full resize-none border-b border-white/15 bg-transparent px-0 py-3 text-sm leading-7 text-white outline-none placeholder:text-white/25 focus:border-[var(--cp-red-soft)]"
-                />
-              </div>
-
-              <div className="pt-3">
                 <button
                   type="button"
-                  onClick={handleWhatsApp}
-                  disabled={!name.trim() || !service}
-                  className="group inline-flex min-h-12 items-center gap-4 border border-[var(--cp-red-soft)] px-6 text-sm font-semibold text-white transition-all duration-500 hover:bg-[var(--cp-red-soft)] disabled:cursor-not-allowed disabled:border-white/10 disabled:text-white/25"
+                  className="cp-back-button"
+                  onClick={() => setStep(1)}
                 >
-                  <span>{t.whatsappButton}</span>
-                  <span className="transition-transform duration-500 group-hover:translate-x-1">
-                    {isArabic ? "←" : "→"}
-                  </span>
+                  <BackIcon size={17} />
+                  {t.back}
                 </button>
-
-                <p className="mt-4 text-[11px] leading-6 text-white/30">
-                  {t.whatsappHint}
-                </p>
               </div>
-            </div>
-          </div>
-        </div>
+            )}
 
-        <div className="mt-10 flex flex-col gap-5 border-t border-white/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-white/35">{t.location}</p>
+            {step === 3 && selectedGoal && (
+              <div className="cp-flow-panel">
+                <div className="cp-panel-head">
+                  <span>03</span>
+                  <div>
+                    <h3>{t.yourDetails}</h3>
+                    <p>{t.requestNote}</p>
+                  </div>
+                </div>
 
-          <div className="flex items-center gap-3">
-            <span className="h-px w-10 bg-[var(--cp-red-soft)]" />
-            <span className="text-[10px] font-semibold tracking-[0.24em] text-white/25">
-              CHINA PLANET
-            </span>
-          </div>
+                <div className="cp-selection-summary">
+                  <span>{selectedGoal[language].title}</span>
+                  <span>·</span>
+                  <strong>{nextChoice}</strong>
+                </div>
+
+                <div className="cp-fields">
+                  <label>
+                    <span>{t.name}</span>
+                    <input
+                      value={name}
+                      onChange={(event) => setName(event.target.value)}
+                      placeholder={t.namePlaceholder}
+                      autoComplete="name"
+                    />
+                  </label>
+
+                  <label>
+                    <span>{t.email}</span>
+                    <input
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder={t.emailPlaceholder}
+                      type="email"
+                      autoComplete="email"
+                    />
+                  </label>
+
+                  <label>
+                    <span>{t.phone}</span>
+                    <input
+                      value={phone}
+                      onChange={(event) => setPhone(event.target.value)}
+                      placeholder={t.phonePlaceholder}
+                      type="tel"
+                      autoComplete="tel"
+                      required
+                    />
+                  </label>
+
+                  <label className="wide">
+                    <span>{t.notes}</span>
+                    <textarea
+                      value={details}
+                      onChange={(event) => setDetails(event.target.value)}
+                      placeholder={t.notesPlaceholder}
+                      rows={5}
+                    />
+                  </label>
+                </div>
+
+                {error && <p className="cp-error">{error}</p>}
+
+                <div className="cp-actions">
+                  <button
+                    type="button"
+                    className="cp-back-button"
+                    onClick={() => setStep(2)}
+                  >
+                    <BackIcon size={17} />
+                    {t.back}
+                  </button>
+
+                  <button type="button" className="cp-whatsapp" onClick={openWhatsApp}>
+                    <MessageCircle size={18} />
+                    {t.whatsapp}
+                  </button>
+
+                  <button type="submit" className="cp-submit">
+                    <span>{t.send}</span>
+                    <Send size={17} />
+                  </button>
+                </div>
+              </div>
+            )}
+          </form>
         </div>
       </div>
+
+      <style jsx>{styles}</style>
     </section>
   );
 }
+
+const styles = `
+.cp-contact {
+  position: relative;
+  padding: 8rem 1.5rem 7rem;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(201, 74, 61, 0.07), transparent 24rem),
+    radial-gradient(circle at 88% 78%, rgba(181, 150, 108, 0.12), transparent 24rem),
+    #f7f4ee;
+  color: #332d28;
+}
+
+.cp-contact-shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
+}
+
+.cp-contact-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+  gap: 4rem;
+  align-items: end;
+  margin-bottom: 4rem;
+}
+
+.cp-contact-kicker {
+  margin: 0 0 1rem;
+  color: #c94a3d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.cp-contact-top h2 {
+  margin: 0;
+  max-width: 760px;
+  font-size: clamp(3rem, 7vw, 6.7rem);
+  line-height: 0.94;
+  letter-spacing: -0.055em;
+  font-weight: 500;
+}
+
+.cp-contact-intro {
+  margin: 0;
+  max-width: 420px;
+  color: #786e65;
+  font-size: 1.05rem;
+  line-height: 1.9;
+}
+
+.cp-contact-grid {
+  display: grid;
+  grid-template-columns: 0.34fr 0.66fr;
+  gap: 1px;
+  background: #d5ccc2;
+  border: 1px solid #d5ccc2;
+}
+
+.cp-contact-aside,
+.cp-contact-form {
+  background: #fffdf9;
+}
+
+.cp-contact-aside {
+  min-height: 620px;
+  padding: 2.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.cp-aside-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 4rem;
+  border: 1px solid #e4ddd4;
+  border-radius: 50%;
+  color: #c94a3d;
+}
+
+.cp-aside-label {
+  color: #9a9087;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+}
+
+.cp-contact-aside h3 {
+  margin: 0.8rem 0 0;
+  font-size: clamp(2rem, 3.2vw, 3.4rem);
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+
+.cp-contact-aside p {
+  max-width: 290px;
+  margin: 1.25rem 0 0;
+  color: #786e65;
+  line-height: 1.8;
+}
+
+.cp-aside-route {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  align-items: center;
+  margin-top: 2rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid #e4ddd4;
+  color: #40372f;
+  font-size: 0.82rem;
+}
+
+.cp-aside-route span:last-child {
+  color: #c94a3d;
+  font-weight: 700;
+}
+
+.cp-contact-links {
+  margin-top: auto;
+  padding-top: 3rem;
+  display: flex;
+  gap: 0.6rem;
+}
+
+.cp-contact-links a,
+.cp-contact-links button {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e4ddd4;
+  border-radius: 50%;
+  background: transparent;
+  color: #40372f;
+  cursor: pointer;
+  transition: all 180ms var(--cp-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.cp-contact-links span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.cp-contact-links a:hover,
+.cp-contact-links button:hover {
+  background: #c94a3d;
+  border-color: #c94a3d;
+  color: #fffdf9;
+  transform: translateY(-2px);
+}
+
+.cp-contact-form {
+  min-height: 620px;
+  padding: 2.25rem;
+}
+
+.cp-steps {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e4ddd4;
+}
+
+.cp-steps span {
+  color: #b1a79e;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.cp-steps span.active {
+  color: #40372f;
+}
+
+.cp-flow-panel {
+  padding-top: 2rem;
+}
+
+.cp-panel-head {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.cp-panel-head > span {
+  color: #c94a3d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.cp-panel-head h3 {
+  margin: 0;
+  font-size: clamp(1.7rem, 3vw, 2.8rem);
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.035em;
+}
+
+.cp-panel-head p {
+  margin: 0.8rem 0 0;
+  color: #786e65;
+  line-height: 1.7;
+}
+
+.cp-goals {
+  display: grid;
+  gap: 0;
+  border-top: 1px solid #e4ddd4;
+}
+
+.cp-goal {
+  display: grid;
+  grid-template-columns: 52px 1fr 28px;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.15rem 0;
+  border: 0;
+  border-bottom: 1px solid #e4ddd4;
+  background: transparent;
+  color: #40372f;
+  text-align: start;
+  cursor: pointer;
+  transition: padding 180ms var(--cp-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.cp-goal:hover,
+.cp-goal.active {
+  padding-inline: 0.8rem;
+  background: #fbf9f5;
+}
+
+.cp-goal.active {
+  color: #c94a3d;
+}
+
+.cp-goal-icon {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #e4ddd4;
+  border-radius: 50%;
+}
+
+.cp-goal-copy {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.cp-goal-copy strong {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.cp-goal-copy small {
+  max-width: 560px;
+  color: #9a9087;
+  font-size: 0.82rem;
+  line-height: 1.55;
+}
+
+.cp-goal-arrow,
+.cp-choice svg {
+  color: #9a9087;
+}
+
+.cp-choice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.8rem;
+}
+
+.cp-choice {
+  min-height: 92px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  border: 1px solid #e4ddd4;
+  border-radius: 12px;
+  background:
+    linear-gradient(135deg, rgba(201, 74, 61, 0.035), rgba(181, 150, 108, 0.05)),
+    #fffdf9;
+  color: #40372f;
+  text-align: start;
+  cursor: pointer;
+  transition: all 180ms var(--cp-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.cp-choice:hover,
+.cp-choice.active {
+  border-color: #c94a3d;
+  transform: translateY(-2px);
+}
+
+.cp-choice.active {
+  background: #40372f;
+  color: #fffdf9;
+}
+
+.cp-choice.active svg {
+  color: #d6bd94;
+}
+
+.cp-selection-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1.7rem;
+  padding: 0.9rem 1rem;
+  background: #f7f4ee;
+  border-inline-start: 3px solid #c94a3d;
+  color: #786e65;
+  font-size: 0.88rem;
+}
+
+.cp-selection-summary strong {
+  color: #40372f;
+}
+
+.cp-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.cp-fields label {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.cp-fields label.wide {
+  grid-column: 1 / -1;
+}
+
+.cp-fields label > span {
+  color: #786e65;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.cp-fields input,
+.cp-fields textarea {
+  width: 100%;
+  border: 1px solid #e4ddd4;
+  border-radius: 10px;
+  background: #fbf9f5;
+  color: #332d28;
+  padding: 0.95rem 1rem;
+  outline: 0;
+  font: inherit;
+  transition: border-color 180ms ease, background 180ms ease;
+  box-sizing: border-box;
+}
+
+.cp-fields textarea {
+  resize: vertical;
+  min-height: 140px;
+}
+
+.cp-fields input:focus,
+.cp-fields textarea:focus {
+  border-color: #c94a3d;
+  background: #fffdf9;
+}
+
+.cp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+.cp-back-button,
+.cp-whatsapp,
+.cp-submit,
+.cp-contact-secondary {
+  min-height: 46px;
+  border-radius: 999px;
+  padding: 0 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 1px solid #e4ddd4;
+  font: inherit;
+  font-size: 0.84rem;
+  cursor: pointer;
+  transition: all 180ms var(--cp-ease, cubic-bezier(0.22, 1, 0.36, 1));
+}
+
+.cp-back-button {
+  background: transparent;
+  color: #786e65;
+}
+
+.cp-back-button:hover {
+  color: #40372f;
+  border-color: #d5ccc2;
+}
+
+.cp-whatsapp {
+  margin-inline-start: auto;
+  background: #fffdf9;
+  color: #40372f;
+}
+
+.cp-whatsapp:hover {
+  background: #c94a3d;
+  border-color: #c94a3d;
+  color: #fffdf9;
+}
+
+.cp-submit,
+.cp-contact-secondary {
+  border-color: #40372f;
+  background: #40372f;
+  color: #fffdf9;
+}
+
+.cp-submit:hover,
+.cp-contact-secondary:hover {
+  border-color: #c94a3d;
+  background: #c94a3d;
+}
+
+.cp-error {
+  margin: 1rem 0 0;
+  color: #a93c32;
+  font-size: 0.82rem;
+}
+
+.cp-contact-success {
+  min-height: 500px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  text-align: center;
+  padding: 5rem 2rem;
+  border: 1px solid #e4ddd4;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(201, 74, 61, 0.09), transparent 22rem),
+    #fffdf9;
+}
+
+.cp-success-mark {
+  width: 70px;
+  height: 70px;
+  margin-bottom: 2rem;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #c94a3d;
+  color: #fffdf9;
+}
+
+.cp-contact-success h2 {
+  max-width: 700px;
+  margin: 0 0 2rem;
+  font-size: clamp(2.2rem, 5vw, 5rem);
+  line-height: 0.98;
+  font-weight: 500;
+  letter-spacing: -0.045em;
+}
+
+@media (max-width: 900px) {
+  .cp-contact {
+    padding: 6rem 1rem;
+  }
+
+  .cp-contact-top,
+  .cp-contact-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cp-contact-top {
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .cp-contact-aside {
+    min-height: auto;
+    padding: 1.5rem;
+  }
+
+  .cp-aside-icon {
+    margin-bottom: 2rem;
+  }
+
+  .cp-contact-links {
+    margin-top: 2rem;
+  }
+
+  .cp-contact-form {
+    min-height: auto;
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 620px) {
+  .cp-contact-top h2 {
+    font-size: clamp(2.7rem, 14vw, 4.5rem);
+  }
+
+  .cp-steps {
+    gap: 0.7rem;
+    overflow-x: auto;
+  }
+
+  .cp-choice-grid,
+  .cp-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .cp-fields label.wide {
+    grid-column: auto;
+  }
+
+  .cp-goal {
+    grid-template-columns: 44px 1fr 20px;
+  }
+
+  .cp-goal-copy small {
+    display: none;
+  }
+
+  .cp-actions {
+    align-items: stretch;
+  }
+
+  .cp-back-button,
+  .cp-whatsapp,
+  .cp-submit {
+    width: 100%;
+    margin-inline-start: 0;
+  }
+}
+`;

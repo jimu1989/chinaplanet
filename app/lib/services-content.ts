@@ -89,7 +89,7 @@ export const servicesContent: ServiceContent[] = [
           en: "What you should know before visiting China's capital.",
           zh: "前往中国首都前需要了解的重要信息。",
         },
-        image: "/images/services/travel/beijing.jpg",
+        image: "/images/destinations/beijing.jpg",
       },
       {
         slug: "shanghai",
@@ -103,7 +103,7 @@ export const servicesContent: ServiceContent[] = [
           en: "A city where business, shopping, culture, and modern life meet.",
           zh: "融合商务、购物、文化与现代生活的国际都市。",
         },
-        image: "/images/services/travel/shanghai.jpg",
+        image: "/images/destinations/shanghai.jpg",
       },
     ],
   },

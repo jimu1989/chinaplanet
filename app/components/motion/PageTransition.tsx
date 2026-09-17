@@ -4,14 +4,15 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
 
-const NAVIGATION_DELAY = 120;
-const REVEAL_DURATION = 700;
+const COVER_DELAY = 650;
+const REVEAL_DURATION = 750;
 
 export default function PageTransition() {
   const pathname = usePathname();
   const previousPathname = useRef(pathname);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const revealTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const [visible, setVisible] = useState(false);
   const [phase, setPhase] = useState<"cover" | "reveal">("cover");
 
@@ -27,11 +28,16 @@ export default function PageTransition() {
     }
   };
 
-  const reveal = (delay: number) => {
+  useEffect(() => {
+    if (previousPathname.current === pathname) {
+      return;
+    }
+
+    previousPathname.current = pathname;
     clearTimers();
 
-    setVisible(true);
     setPhase("cover");
+    setVisible(true);
 
     timerRef.current = setTimeout(() => {
       setPhase("reveal");
@@ -42,19 +48,12 @@ export default function PageTransition() {
       }, REVEAL_DURATION);
 
       timerRef.current = null;
-    }, delay);
-  };
-
-  useEffect(() => {
-    if (previousPathname.current === pathname) return;
-
-    previousPathname.current = pathname;
-    reveal(NAVIGATION_DELAY);
+    }, COVER_DELAY);
 
     return () => {
       clearTimers();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
   }, [pathname]);
 
   useEffect(() => {
@@ -77,8 +76,8 @@ export default function PageTransition() {
         "transition-opacity",
         "ease-[cubic-bezier(0.76,0,0.24,1)]",
         phase === "cover"
-          ? "opacity-100 duration-[420ms]"
-          : "opacity-0 duration-[700ms]",
+          ? "opacity-100 duration-300"
+          : "opacity-0 duration-[900ms]",
       ].join(" ")}
     >
       <div
@@ -88,33 +87,37 @@ export default function PageTransition() {
           "ease-[cubic-bezier(0.76,0,0.24,1)]",
           phase === "cover"
             ? "scale-100 opacity-100 duration-500"
-            : "scale-[0.96] opacity-0 duration-500",
+            : "scale-[0.94] opacity-0 duration-[800ms]",
         ].join(" ")}
       >
-        <div className="absolute h-44 w-44 rounded-full bg-[var(--cp-red)]/[0.025] blur-3xl" />
+        <div className="absolute h-48 w-48 rounded-full bg-[var(--cp-red)]/[0.035] blur-3xl" />
 
-        <div className="absolute h-[142px] w-[142px] rounded-full border border-[var(--cp-red)]/10" />
+        <div className="absolute h-[150px] w-[150px] rounded-full border border-[var(--cp-red)]/10" />
 
         <div
-          className="absolute h-[142px] w-[142px] rounded-full border border-transparent animate-[chinaPlanetSpin_1.5s_linear_infinite]"
+          className="absolute h-[150px] w-[150px] rounded-full border border-transparent animate-[chinaPlanetSpin_1.5s_linear_infinite]"
           style={{
             borderTopColor: "var(--cp-red)",
-            borderRightColor: "rgba(201,74,61,0.08)",
+            borderRightColor: "rgba(201,74,61,0.10)",
           }}
         />
 
-        <span className="absolute left-1/2 top-1/2 h-[7px] w-[7px] rounded-full bg-[var(--cp-red)] shadow-[0_0_18px_rgba(201,74,61,0.4)] animate-[chinaPlanetOrbit_1.5s_linear_infinite]" />
+        <span className="absolute left-1/2 top-1/2 h-[7px] w-[7px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[var(--cp-red)] shadow-[0_0_18px_rgba(201,74,61,0.4)] animate-[chinaPlanetOrbit_1.5s_linear_infinite]" />
 
-        <div className="relative h-[72px] w-[175px] sm:h-[82px] sm:w-[200px]">
+        <div className="relative h-[78px] w-[185px] sm:h-[88px] sm:w-[210px]">
           <Image
             src="/images/china-planet-logo.png"
             alt="China Planet"
             fill
             priority
-            sizes="200px"
+            sizes="210px"
             className="object-contain"
           />
         </div>
+
+        <p className="absolute top-[calc(100%+24px)] whitespace-nowrap text-[9px] font-semibold tracking-[0.35em] text-[var(--cp-muted)]">
+          CHINA PLANET
+        </p>
       </div>
     </div>
   );

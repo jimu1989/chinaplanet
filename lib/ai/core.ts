@@ -37,6 +37,9 @@ const FALLBACK_MODELS = [
   "minimax/minimax-m3:free",
   "nvidia/nemotron-3-super-120b-a12b:free",
 ];
+const OPENROUTER_MODEL =
+  process.env.OPENROUTER_MODEL ||
+  FALLBACK_MODELS[0];
 
 type OpenRouterMessage = {
   role: "system" | "user" | "assistant";
@@ -86,6 +89,28 @@ function buildSystemPrompt(
 - احترافي وودود وواضح.
 - يتحدث بثقة وبدون مبالغة.
 - عملي ومفيد ويعطي المستخدم الخطوة التالية بوضوح.
+
+معلومات المؤسس الرسمية:
+
+المهندس والمدرب جميل خنكار هو مؤسس China Planet والمدير التنفيذي لها، وهو مؤسس الموقع ومبرمجه ومطوره.
+
+نبذة المؤسس:
+- بدأ ابتعاثه إلى الصين عام 2006.
+- عاش في الصين لأكثر من 11 سنة.
+- درس اللغة الصينية في الصين.
+- أكمل دراسته الجامعية ثم الماجستير في الصين.
+- تخصصه هندسة الشبكات والاتصالات، وهو مهندس شبكات واتصالات.
+- كان من أوائل من درّبوا اللغة الصينية في السعودية.
+- لديه خبرة طويلة ومباشرة في البيئة الصينية، والتعليم، واللغة، والعلاقات بين السعودية والصين.
+
+قواعد الحديث عن المؤسس:
+- إذا سأل المستخدم: "من هو جميل خنكار؟" أو "مين جميل خنكار؟" أو سأل عن مؤسس China Planet أو مديرها التنفيذي، أجب مباشرة بهذه المعلومات.
+- لا تقل: "لا أعرف" أو "لم أفهم سؤالك" إذا كان السؤال عن جميل خنكار أو مؤسس China Planet.
+- لا تخلط بين جميل خنكار وبين خدمة أو منتج أو شخصية أخرى.
+- لا تضف شهادات أو مناصب أو جوائز أو تواريخ غير مذكورة هنا.
+- يمكنك تلخيص النبذة بحسب لغة المستخدم.
+- في العربية استخدم الاسم: "المهندس والمدرب جميل خنكار".
+- وضّح عند الحاجة أنه مؤسس China Planet ومديرها التنفيذي ومؤسس الموقع ومبرمجه ومطوره.
 - يفهم أن المستخدم يتعامل مع China Planet للحصول على مساعدة وخدمات مرتبطة بالصين.
 - لا يتحدث بطريقة روبوتية أو عامة.
 - لا يكرر اسم China Planet في كل جملة.
@@ -137,6 +162,21 @@ ${
 }
 
 قواعد China Planet:
+
+قواعد فهم سياق المحادثة مهمة جدًا:
+
+- لا تفسّر آخر رسالة بمعزل عن الرسائل السابقة.
+- إذا كان آخر سؤال من المساعد يطلب اختيارًا أو إجابة قصيرة، فاعتبر الرسالة القصيرة إجابة على السؤال السابق.
+- أمثلة:
+  - إذا سألت المستخدم: "ما اللغة التي تفضلها؟" وقال: "العربية"، فافهم "العربية" على أنها تفضيل لغة التواصل، وليس طلبًا لتعلّم اللغة العربية.
+  - إذا سألت المستخدم: "أي خدمة تهمك؟" وقال: "الدراسة"، فافهمها كاختيار لخدمة الدراسة.
+  - إذا سألت المستخدم: "هل تريد أن نكمل؟" وقال: "نعم"، فاعتبرها موافقة على الخطوة السابقة.
+  - إذا سألت المستخدم عن خيار من عدة خيارات ثم كتب اسم خيار واحد فقط، لا تبدأ موضوعًا جديدًا من الصفر.
+- عندما تكون الرسالة القصيرة مرتبطة بالسياق السابق، أكمل الحوار من نفس النقطة مباشرة.
+- لا تصحح المستخدم ولا تخبره أن China Planet لا تقدم شيئًا إلا إذا كان قد طلب هذا الشيء فعلًا.
+- لا تفترض أن كلمة "العربية" أو "الإنجليزية" أو "الصينية" تعني أن المستخدم يريد تعلّم تلك اللغة؛ قد تكون فقط لغة التواصل المفضلة.
+- استخدم لغة المستخدم في الرد.
+- إذا كان المقصود غير واضح فعلًا، اسأل سؤالًا واحدًا قصيرًا لتوضيح المقصود بدل إعطاء افتراض طويل.
 
 - ابدأ بالإجابة مباشرة.
 - اجعل الإجابة عملية ومختصرة.
@@ -287,7 +327,7 @@ async function requestModel(
         model,
         messages,
         temperature: 0.2,
-        max_tokens: 220,
+        max_tokens: 900,
         stream: false,
 
         provider: {
@@ -384,9 +424,9 @@ export async function runAI(
     };
   }
 
-  if (!GEMINI_API_KEY) {
+  if (!OPENROUTER_API_KEY) {
     console.error(
-      "GEMINI_API_KEY is missing."
+      "OPENROUTER_API_KEY is missing."
     );
 
     return {
@@ -463,17 +503,34 @@ export async function runAI(
       })
     );
 
+    const model =
+      OPENROUTER_MODEL;
+
+    console.log(
+      `China Planet AI → OpenRouter: ${model}`
+    );
+
+    console.log(
+      "AI ROUTING →",
+      JSON.stringify({
+        intent: routing.intent,
+        tools: routing.tools,
+        knowledge:
+          Boolean(knowledgeContext),
+      })
+    );
+
     const {
       response,
       data,
-    } =
-      await requestGeminiModel(
-        messages
-      );
+    } = await requestModel(
+      model,
+      messages
+    );
 
     if (!response?.ok) {
       console.error(
-        "Gemini ERROR:",
+        "OpenRouter ERROR:",
         response?.status,
         JSON.stringify(data)
       );
@@ -490,32 +547,21 @@ export async function runAI(
     }
 
     console.log(
-      "Gemini DEBUG → finishReason:",
-      data?.candidates?.[0]
-        ?.finishReason
+      "OpenRouter DEBUG → finishReason:",
+      data?.choices?.[0]?.finish_reason
     );
 
     console.log(
-      "Gemini DEBUG → usageMetadata:",
+      "OpenRouter DEBUG → usage:",
       JSON.stringify(
-        data?.usageMetadata
+        data?.usage
       )
     );
 
     const rawAnswer =
-      data
-        ?.candidates?.[0]
-        ?.content?.parts
-        ?.map(
-          (
-            part: {
-              text?: string;
-            }
-          ) =>
-            part.text || ""
-        )
-        .join("")
-        .trim();
+      data?.choices?.[0]?.message?.content
+        ?.toString()
+        .trim() || "";
 
     const answer =
       cleanAIAnswer(
@@ -524,7 +570,7 @@ export async function runAI(
 
     if (!answer) {
       console.error(
-        "Gemini returned an empty or invalid answer"
+        "OpenRouter returned an empty or invalid answer"
       );
 
       return {
@@ -548,7 +594,7 @@ export async function runAI(
     };
   } catch (error) {
     console.error(
-      "Gemini request failed:",
+      "OpenRouter request failed:",
       error
     );
 

@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -164,6 +166,12 @@ const articleBody: Record<
   },
 };
 
+function imageExists(src: string) {
+  return fs.existsSync(
+    path.join(process.cwd(), "public", src.replace(/^\//, "")),
+  );
+}
+
 export function generateStaticParams() {
   return languages
     ? Object.keys(languages).flatMap((lang) =>
@@ -206,14 +214,18 @@ export default async function ArticlePage({
       <article>
         <section className="relative overflow-hidden">
           <div className="relative min-h-[520px]">
-            <Image
-              src={article.image}
-              alt={article.title[lang]}
-              fill
-              priority
-              sizes="100vw"
-              className="object-cover"
-            />
+            {imageExists(article.image) ? (
+              <Image
+                src={article.image}
+                alt={article.title[lang]}
+                fill
+                priority
+                sizes="100vw"
+                className="object-cover"
+              />
+            ) : (
+              <div className="absolute inset-0 bg-[#40372f]" />
+            )}
 
             <div className="absolute inset-0 bg-black/50" />
 

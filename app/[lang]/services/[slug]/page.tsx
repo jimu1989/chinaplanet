@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -5,6 +7,12 @@ import { notFound } from "next/navigation";
 import type { Language } from "../../../lib/i18n";
 import { languages } from "../../../lib/i18n";
 import { getService, servicesContent } from "../../../lib/services-content";
+
+function imageExists(src: string) {
+  return fs.existsSync(
+    path.join(process.cwd(), "public", src.replace(/^\//, "")),
+  );
+}
 
 export function generateStaticParams() {
   return languages
@@ -40,14 +48,18 @@ export default async function ServicePage({
     >
       <section className="relative overflow-hidden">
         <div className="relative min-h-[500px]">
-          <Image
-            src={service.heroImage}
-            alt={title}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          {imageExists(service.heroImage) ? (
+            <Image
+              src={service.heroImage}
+              alt={title}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          ) : (
+            <div className="absolute inset-0 bg-[#40372f]" />
+          )}
 
           <div className="absolute inset-0 bg-black/45" />
 
@@ -94,13 +106,17 @@ export default async function ServicePage({
                   className="group overflow-hidden rounded-[28px] bg-white shadow-[0_16px_55px_rgba(40,30,20,0.06)]"
                 >
                   <div className="relative aspect-[16/9] overflow-hidden">
-                    <Image
-                      src={article.image}
-                      alt={article.title[lang]}
-                      fill
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
+                    {imageExists(article.image) ? (
+                      <Image
+                        src={article.image}
+                        alt={article.title[lang]}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-[#f0ebe4]" />
+                    )}
 
                     <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
 

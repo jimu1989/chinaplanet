@@ -1,6 +1,6 @@
-import type { Language } from "../lib/i18n";
 import Image from "next/image";
 import Link from "next/link";
+import type { Language } from "../lib/i18n";
 
 export default function WhyUs({
   language = "ar",
@@ -11,90 +11,88 @@ export default function WhyUs({
 
   const content = {
     ar: {
-      label: "من نحن",
-      eyebrow: "أكثر من 20 عامًا من الخبرة في الصين · منذ 2006",
-      titleTop: "نعرف الصين.",
-      titleBottom: "ونعرف كيف نقرّبها لك.",
+      label: "ليش كوكب الصين؟",
+      eyebrow: "منذ 2006 · خبرة تمتد لأكثر من 20 عامًا",
+      titleTop: "مو بس نوصلك.",
+      titleBottom: "نفهمك الطريق.",
       description:
-        "منذ 2006، نعيش الصين عن قرب ونفهم التعليم والتجارة والأعمال والثقافة من الداخل. اليوم نستخدم هذه الخبرة لنساعد الأفراد والشركات في السعودية على الوصول إلى الصين بوضوح وثقة.",
-      story:
-        "كوكب الصين يجمع بين الخبرة المحلية في السعودية والمعرفة العملية بالسوق الصيني، حتى تكون خطواتك أوضح من أول قرار إلى آخر تفصيل.",
+        "نعرف الصين من الداخل، ونعرف كيف نترجم احتياجك إلى خطوة واضحة. من السعودية إلى الصين، نقرّب لك الصورة والعلاقات والفرص.",
       experience: "20+",
       experienceLabel: "عامًا من الخبرة والارتباط بالصين",
+      since: "2006",
+      sinceLabel: "البداية",
       bridge: "السعودية × الصين",
       bridgeText:
-        "نربط احتياجاتك بالمعرفة والعلاقات والفرص المناسبة في الصين.",
+        "خبرة محلية هنا، ومعرفة عملية هناك. وهذا هو الفرق.",
       education: "التعليم",
       educationText:
-        "فهم البيئة التعليمية والجامعات والفرص المتاحة للطلاب في الصين.",
+        "نفهم الجامعات والبيئة التعليمية والمسارات التي تناسب الطالب.",
       business: "الأعمال",
       businessText:
-        "خبرة عملية في التواصل والسوق الصيني وبناء العلاقات التجارية.",
-      visionLabel: "رؤية السعودية 2030",
-      visionTitle: "نبني جسورًا للمستقبل.",
-      visionText:
-        "نؤمن بأن العلاقة المتنامية بين السعودية والصين تصنع فرصًا أكبر في التعليم والتجارة والاستثمار والتبادل الثقافي.",
+        "نفهم السوق والتواصل والعلاقات التي تحتاجها لتتحرك بثقة.",
       button: "تعرف علينا أكثر",
-      region: "SAUDI ARABIA × CHINA",
-      imageAlt: "منظر من الصين",
+      visionLabel: "نظرة أبعد",
+      visionTitle: "نبني جسورًا تستمر.",
+      visionText:
+        "العلاقة بين السعودية والصين تكبر كل يوم. ونحن نرى فرصًا أكبر في التعليم والتجارة والاستثمار والتبادل الثقافي.",
+      imageAlt: "منظر من تشنغدو في الصين",
+      region: "CHENGDU · CHINA",
     },
-
     en: {
-      label: "ABOUT US",
-      eyebrow: "OVER 20 YEARS OF EXPERIENCE IN CHINA · SINCE 2006",
-      titleTop: "We know China.",
-      titleBottom: "And we know how to bring it closer.",
+      label: "WHY CHINA PLANET?",
+      eyebrow: "SINCE 2006 · MORE THAN 20 YEARS OF EXPERIENCE",
+      titleTop: "We don't just get you there.",
+      titleBottom: "We help you understand the way.",
       description:
-        "Since 2006, we have built first-hand knowledge of China across education, trade, business, and culture. Today, we use that experience to help individuals and businesses in Saudi Arabia navigate China with clarity and confidence.",
-      story:
-        "China Planet brings together local understanding in Saudi Arabia and practical knowledge of China, making every step clearer from the first decision to the final detail.",
+        "We know China from the inside, and we know how to turn what you need into a clear next step. From Saudi Arabia to China, we make the picture, relationships, and opportunities easier to navigate.",
       experience: "20+",
       experienceLabel: "Years of experience and connection with China",
+      since: "2006",
+      sinceLabel: "Started",
       bridge: "SAUDI ARABIA × CHINA",
       bridgeText:
-        "Connecting your needs with the right knowledge, relationships, and opportunities in China.",
+        "Local understanding here. Practical knowledge there. That is the difference.",
       education: "Education",
       educationText:
-        "Understanding China's universities, educational environment, and opportunities for students.",
+        "We understand universities, the educational environment, and the right paths for students.",
       business: "Business",
       businessText:
-        "Practical experience with the Chinese market, communication, and commercial relationships.",
-      visionLabel: "SAUDI VISION 2030",
-      visionTitle: "Building bridges for the future.",
-      visionText:
-        "We believe the growing Saudi-China relationship creates greater opportunities in education, trade, investment, and cultural exchange.",
+        "We understand the market, communication, and relationships you need to move with confidence.",
       button: "Learn More About Us",
-      region: "SAUDI ARABIA × CHINA",
-      imageAlt: "A view of China",
+      visionLabel: "LOOKING AHEAD",
+      visionTitle: "Building bridges that last.",
+      visionText:
+        "The relationship between Saudi Arabia and China continues to grow, creating bigger opportunities across education, trade, investment, and cultural exchange.",
+      imageAlt: "A view of Chengdu, China",
+      region: "CHENGDU · CHINA",
     },
-
     zh: {
-      label: "关于我们",
-      eyebrow: "20 多年中国经验 · 始于 2006 年",
-      titleTop: "我们了解中国。",
-      titleBottom: "也知道如何让中国离您更近。",
+      label: "为什么选择中国星球？",
+      eyebrow: "始于2006年 · 20多年中国经验",
+      titleTop: "我们不只是带您到达。",
+      titleBottom: "我们更懂该怎么走。",
       description:
-        "自 2006 年以来，我们长期深入中国，积累了教育、贸易、商业与文化方面的实践经验。如今，我们将这些经验服务于沙特的个人与企业，帮助您更清晰、更自信地走进中国。",
-      story:
-        "中国星球结合沙特本地理解与中国市场的实践经验，让您从第一步到最后一个细节，都能更清楚地前进。",
+        "我们深入了解中国，也知道如何把您的需求转化为清晰的下一步。从沙特到中国，让信息、关系与机会更容易被理解与连接。",
       experience: "20+",
-      experienceLabel: "年深耕中国的经验",
+      experienceLabel: "年中国经验与连接",
+      since: "2006",
+      sinceLabel: "始于",
       bridge: "沙特 × 中国",
       bridgeText:
-        "连接您的需求与中国的知识、关系和合适的机会。",
+        "连接沙特本地理解与中国市场实践，这就是我们的不同。",
       education: "教育",
       educationText:
-        "深入了解中国高校、教育环境以及学生可获得的学习机会。",
+        "深入了解中国高校、教育环境以及适合学生的发展路径。",
       business: "商业",
       businessText:
-        "积累中国市场、商业沟通与合作关系方面的实践经验。",
-      visionLabel: "沙特 2030 愿景",
-      visionTitle: "携手构建面向未来的桥梁。",
-      visionText:
-        "我们相信，沙特与中国日益深入的合作将为教育、贸易、投资与文化交流带来更多机会。",
+        "理解中国市场、沟通方式以及建立商业关系所需要的实际经验。",
       button: "了解更多",
-      region: "SAUDI ARABIA × CHINA",
-      imageAlt: "中国风景",
+      visionLabel: "面向未来",
+      visionTitle: "连接持续发生的机会。",
+      visionText:
+        "沙特与中国的关系不断深入，在教育、贸易、投资与文化交流领域带来更多机会。",
+      imageAlt: "中国成都风景",
+      region: "成都 · 中国",
     },
   };
 
@@ -104,139 +102,166 @@ export default function WhyUs({
     <section
       id="why-us"
       dir={isArabic ? "rtl" : "ltr"}
-      className="cp-editorial-section"
+      className="relative overflow-hidden bg-[var(--cp-ivory)] text-[var(--cp-brown)]"
     >
-      <div className="cp-editorial-container">
-        <div className="grid gap-12 lg:grid-cols-[0.78fr_1.22fr] lg:items-end">
-          <div>
-            <div className="cp-editorial-kicker">
-              <span>{c.label}</span>
-            </div>
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute -end-40 top-0 h-[500px] w-[500px] rounded-full bg-[var(--cp-red-soft)]/[0.045] blur-3xl"
+      />
 
-            <p className="mt-8 max-w-sm text-[10px] font-semibold tracking-[0.22em] text-[var(--cp-gold)]">
-              {c.eyebrow}
-            </p>
+      <div className="cp-editorial-container relative z-10 py-24 sm:py-28 lg:py-32">
+        <div className="flex flex-col gap-6 border-t border-[var(--cp-line)] pt-8 sm:flex-row sm:items-end sm:justify-between">
+          <div className="flex items-center gap-3 text-[var(--cp-red)]">
+            <span className="h-px w-12 bg-current" />
+            <span className="text-[10px] font-semibold tracking-[0.28em]">
+              {c.label}
+            </span>
           </div>
 
-          <div className={isArabic ? "lg:pr-10" : "lg:pl-10"}>
-            <h2 className="cp-editorial-heading">
+          <span className="text-[10px] font-semibold tracking-[0.2em] text-[var(--cp-muted-light)]">
+            {c.eyebrow}
+          </span>
+        </div>
+
+        <div className="mt-10 grid gap-12 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+          <div>
+            <h2 className="max-w-4xl text-[clamp(3.5rem,8vw,7.6rem)] font-semibold leading-[0.88] tracking-[-0.08em]">
               <span className="block">{c.titleTop}</span>
-              <span className="cp-editorial-accent block">
+              <span className="mt-3 block text-[var(--cp-red-soft)]">
                 {c.titleBottom}
               </span>
             </h2>
 
-            <p className="cp-editorial-copy mt-8 max-w-2xl">
+            <p className="mt-9 max-w-2xl text-sm leading-8 text-[var(--cp-muted)] sm:text-base">
               {c.description}
             </p>
           </div>
-        </div>
 
-        <div className="mt-20 grid lg:grid-cols-[0.7fr_1.3fr]">
-          <div className="cp-editorial-dark relative min-h-[430px] overflow-hidden p-8 sm:p-10 lg:p-12">
-            <span className="pointer-events-none absolute -bottom-16 -left-4 text-[190px] font-semibold leading-none tracking-[-0.12em] text-white/[0.035]">
-              20
-            </span>
-
-            <div className="relative z-10">
-              <p className="text-[10px] font-semibold tracking-[0.24em] text-[var(--cp-red-soft)]">
-                2006 — 2030+
-              </p>
-
-              <div className="mt-14">
-                <p className="text-[clamp(5rem,10vw,8.5rem)] font-semibold leading-[0.8] tracking-[-0.09em] text-white">
-                  {c.experience}
-                </p>
-
-                <p className="mt-7 max-w-xs text-sm leading-7 text-white/55">
-                  {c.experienceLabel}
-                </p>
+          <div className="relative lg:pt-12">
+            <div className="relative overflow-hidden bg-[var(--cp-brown-deep)] px-7 py-8 sm:px-10 sm:py-10">
+              <div
+                aria-hidden="true"
+                className="absolute -bottom-20 -end-12 text-[190px] font-semibold leading-none tracking-[-0.1em] text-white/[0.035]"
+              >
+                20
               </div>
 
-              <div className="mt-16 h-px bg-white/10" />
+              <div className="relative z-10">
+                <div className="flex items-start justify-between gap-6">
+                  <div>
+                    <span className="text-[10px] font-semibold tracking-[0.28em] text-[var(--cp-red-soft)]">
+                      {c.since} — NOW
+                    </span>
 
-              <p className="mt-5 text-[10px] font-semibold tracking-[0.22em] text-white/35">
+                    <p className="mt-2 text-[10px] font-semibold tracking-[0.2em] text-white/40">
+                      {c.sinceLabel}
+                    </p>
+                  </div>
+
+                  <span className="text-[10px] font-semibold tracking-[0.22em] text-[var(--cp-gold-light)]">
+                    {c.bridge}
+                  </span>
+                </div>
+
+                <div className="mt-20">
+                  <span className="text-[clamp(6rem,12vw,10rem)] font-semibold leading-[0.7] tracking-[-0.1em] text-white">
+                    {c.experience}
+                  </span>
+
+                  <p className="mt-8 max-w-sm text-sm leading-7 text-white/60">
+                    {c.experienceLabel}
+                  </p>
+                </div>
+
+                <div className="mt-10 h-px bg-white/10" />
+
+                <p className="mt-5 max-w-sm text-xs leading-7 text-white/40">
+                  {c.bridgeText}
+                </p>
+              </div>
+            </div>
+
+            <div className="absolute -bottom-5 -start-5 h-24 w-24 border border-[var(--cp-gold)]/25" />
+          </div>
+        </div>
+
+        <div className="mt-20 grid gap-8 lg:grid-cols-[0.52fr_1.48fr]">
+          <div className="relative min-h-[440px] overflow-hidden bg-[var(--cp-brown-deep)]">
+            <Image
+              src="/cities/chengdu.jpg"
+              alt={c.imageAlt}
+              fill
+              className="object-cover transition duration-[1200ms] ease-out hover:scale-[1.04]"
+              sizes="(max-width: 1024px) 100vw, 38vw"
+            />
+
+            <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(43,37,33,0.72),rgba(43,37,33,0.08)_55%,rgba(43,37,33,0.08))]" />
+
+            <div className="absolute inset-x-0 bottom-0 p-7 sm:p-9">
+              <span className="text-[9px] font-semibold tracking-[0.28em] text-white/60">
                 {c.region}
-              </p>
+              </span>
             </div>
           </div>
 
-          <div className="border-y border-[var(--cp-line)] bg-[var(--cp-white)]">
-            <div className="grid lg:grid-cols-[0.95fr_1.05fr]">
-              <div className="relative min-h-[430px] overflow-hidden">
-                <Image
-                  src="/cities/chengdu.jpg"
-                  alt={c.imageAlt}
-                  fill
-                  className="object-cover transition duration-1000 ease-out hover:scale-[1.035]"
-                  sizes="(max-width: 1024px) 100vw, 40vw"
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-
-                <span className="absolute bottom-7 start-7 text-[10px] font-semibold tracking-[0.24em] text-white/75">
-                  CHINA / CHENGDU
-                </span>
-              </div>
-
-              <div className="flex flex-col justify-center p-8 sm:p-10 lg:p-12">
+          <div className="border border-[var(--cp-line)] bg-[var(--cp-white)]">
+            <div className="grid lg:grid-cols-[1.15fr_0.85fr]">
+              <div className="p-8 sm:p-10 lg:p-12">
                 <p className="max-w-xl text-base leading-8 text-[var(--cp-muted)] sm:text-lg sm:leading-9">
-                  {c.story}
+                  {c.bridgeText}
                 </p>
-
-                <div className="mt-12 border-t border-[var(--cp-line)]">
-                  <div className="grid sm:grid-cols-3">
-                    <div className="border-b border-[var(--cp-line)] py-7 sm:border-b-0 sm:pe-6">
-                      <span className="mb-5 block h-px w-8 bg-[var(--cp-red)]" />
-                      <h3 className="text-sm font-semibold text-[var(--cp-brown)]">
-                        {c.education}
-                      </h3>
-                      <p className="mt-3 text-xs leading-6 text-[var(--cp-muted-light)]">
-                        {c.educationText}
-                      </p>
-                    </div>
-
-                    <div className="border-b border-[var(--cp-line)] py-7 sm:border-x sm:border-b-0 sm:px-6">
-                      <span className="mb-5 block h-px w-8 bg-[var(--cp-red)]" />
-                      <h3 className="text-sm font-semibold text-[var(--cp-brown)]">
-                        {c.business}
-                      </h3>
-                      <p className="mt-3 text-xs leading-6 text-[var(--cp-muted-light)]">
-                        {c.businessText}
-                      </p>
-                    </div>
-
-                    <div className="py-7 sm:ps-6">
-                      <span className="mb-5 block h-px w-8 bg-[var(--cp-red)]" />
-                      <h3 className="text-sm font-semibold text-[var(--cp-brown)]">
-                        {c.bridge}
-                      </h3>
-                      <p className="mt-3 text-xs leading-6 text-[var(--cp-muted-light)]">
-                        {c.bridgeText}
-                      </p>
-                    </div>
-                  </div>
-                </div>
 
                 <Link
                   href={`/${language}/about`}
-                  className="cp-editorial-button mt-10 inline-flex w-fit items-center gap-4"
+                  className="group mt-10 inline-flex items-center gap-4 border-b border-[var(--cp-brown)] pb-3 text-[11px] font-semibold tracking-[0.14em] text-[var(--cp-brown)] transition-colors hover:border-[var(--cp-red)] hover:text-[var(--cp-red)]"
                 >
                   {c.button}
-                  <span>{isArabic ? "←" : "→"}</span>
+                  <span className="transition-transform duration-300 group-hover:translate-x-1">
+                    {isArabic ? "←" : "→"}
+                  </span>
                 </Link>
+              </div>
+
+              <div className="border-t border-[var(--cp-line)] bg-[var(--cp-ivory)] lg:border-s lg:border-t-0">
+                <div className="border-b border-[var(--cp-line)] p-8 sm:p-10">
+                  <span className="text-[9px] font-semibold tracking-[0.22em] text-[var(--cp-red)]">
+                    01
+                  </span>
+
+                  <h3 className="mt-7 text-xl font-semibold tracking-[-0.03em]">
+                    {c.education}
+                  </h3>
+
+                  <p className="mt-4 text-xs leading-7 text-[var(--cp-muted)]">
+                    {c.educationText}
+                  </p>
+                </div>
+
+                <div className="p-8 sm:p-10">
+                  <span className="text-[9px] font-semibold tracking-[0.22em] text-[var(--cp-gold)]">
+                    02
+                  </span>
+
+                  <h3 className="mt-7 text-xl font-semibold tracking-[-0.03em]">
+                    {c.business}
+                  </h3>
+
+                  <p className="mt-4 text-xs leading-7 text-[var(--cp-muted)]">
+                    {c.businessText}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mt-16 grid gap-8 border-t border-[var(--cp-line)] pt-10 lg:grid-cols-[0.7fr_1.3fr]">
-          <p className="text-[10px] font-semibold tracking-[0.22em] text-[var(--cp-red)]">
+        <div className="mt-20 grid gap-8 border-t border-[var(--cp-line)] pt-10 lg:grid-cols-[0.52fr_1.48fr]">
+          <span className="text-[10px] font-semibold tracking-[0.24em] text-[var(--cp-red)]">
             {c.visionLabel}
-          </p>
+          </span>
 
           <div>
-            <h3 className="text-3xl font-semibold tracking-[-0.045em] text-[var(--cp-brown)] sm:text-4xl">
+            <h3 className="max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.045em] sm:text-4xl lg:text-5xl">
               {c.visionTitle}
             </h3>
 
@@ -244,6 +269,16 @@ export default function WhyUs({
               {c.visionText}
             </p>
           </div>
+        </div>
+
+        <div className="mt-8 flex items-center justify-between">
+          <span className="text-[10px] font-semibold tracking-[0.24em] text-[var(--cp-muted-light)]">
+            CHINA PLANET
+          </span>
+
+          <span className="text-[10px] font-semibold tracking-[0.18em] text-[var(--cp-muted-light)]">
+            SAUDI ARABIA × CHINA
+          </span>
         </div>
       </div>
     </section>
